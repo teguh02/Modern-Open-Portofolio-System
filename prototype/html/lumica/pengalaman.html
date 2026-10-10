@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="id" class="scroll-smooth">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Pengalaman — Nadia Prameswari</title>
+<meta name="description" content="Riwayat pengalaman kerja Nadia Prameswari, Product Designer, dari 2017 hingga sekarang." />
+<meta name="theme-color" content="#FAF9F6" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Inter:wght@300;400;500&display=swap" rel="stylesheet" />
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        fontFamily: {
+          serif: ['Fraunces', 'Georgia', 'serif'],
+          sans: ['Inter', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+        },
+        colors: {
+          paper: '#FAF9F6',
+          ink: '#1C1917',
+          muted: '#78716C',
+          line: '#E7E3DC',
+          accent: '#9A7B4F',
+        },
+      },
+    },
+  };
+</script>
+<style>
+  [x-cloak] { display: none !important; }
+  ::selection { background: #E7E3DC; }
+</style>
+<script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.14.1/dist/cdn.min.js"></script>
+</head>
+<body class="bg-paper font-sans text-ink antialiased">
+
+  <!-- Header -->
+  <header class="sticky top-0 z-40 border-b border-line bg-paper/85 backdrop-blur" x-data="{ open: false }">
+    <div class="mx-auto flex h-16 max-w-5xl items-center justify-between px-6">
+      <a href="index.html" class="font-serif text-lg tracking-tight text-ink">Lumica<span class="text-accent">.</span></a>
+
+      <nav class="hidden items-center gap-7 text-sm text-muted md:flex">
+        <a href="pengalaman.html" class="text-ink">Pengalaman</a>
+        <a href="proyek.html" class="transition hover:text-ink">Proyek</a>
+        <a href="keahlian.html" class="transition hover:text-ink">Keahlian</a>
+        <a href="blog.html" class="transition hover:text-ink">Tulisan</a>
+        <a href="index.html#kontak" class="rounded-full border border-line px-4 py-1.5 text-ink transition hover:border-ink">Kontak</a>
+      </nav>
+
+      <button type="button" class="-mr-2 p-2 text-ink md:hidden" @click="open = !open" :aria-expanded="open" aria-label="Menu">
+        <svg x-show="!open" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+          <path stroke-linecap="round" d="M4 7h16M4 12h16M4 17h16" />
+        </svg>
+        <svg x-show="open" x-cloak xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+          <path stroke-linecap="round" d="M6 6l12 12M18 6L6 18" />
+        </svg>
+      </button>
+    </div>
+
+    <div x-show="open" x-cloak class="border-t border-line bg-paper md:hidden">
+      <nav class="mx-auto flex max-w-5xl flex-col px-6 py-1 text-sm text-muted">
+        <a href="pengalaman.html" class="border-b border-line/70 py-3 text-ink">Pengalaman</a>
+        <a href="proyek.html" class="border-b border-line/70 py-3 transition hover:text-ink">Proyek</a>
+        <a href="keahlian.html" class="border-b border-line/70 py-3 transition hover:text-ink">Keahlian</a>
+        <a href="blog.html" class="border-b border-line/70 py-3 transition hover:text-ink">Tulisan</a>
+        <a href="pendidikan.html" class="border-b border-line/70 py-3 transition hover:text-ink">Pendidikan</a>
+        <a href="sertifikasi.html" class="border-b border-line/70 py-3 transition hover:text-ink">Sertifikasi</a>
+        <a href="penghargaan.html" class="border-b border-line/70 py-3 transition hover:text-ink">Penghargaan</a>
+        <a href="index.html#kontak" class="py-3 text-ink">Kontak</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Main -->
+  <main class="mx-auto max-w-5xl px-6 pb-24 pt-12 md:pt-16">
+    <a href="index.html" class="inline-flex items-center text-sm text-muted transition hover:text-ink">← Kembali ke beranda</a>
+
+    <h1 class="mt-8 font-serif text-4xl leading-tight tracking-tight md:text-5xl">Pengalaman</h1>
+    <p class="mt-5 max-w-2xl text-[15px] leading-relaxed text-muted">
+      Delapan tahun terakhir saya habiskan untuk merancang produk digital di Jakarta — dari studio kecil,
+      startup tahap awal, sampai perusahaan yang melayani puluhan juta pengguna. Berikut urutannya, terbaru lebih dulu.
+    </p>
+
+    <section class="mt-14 border-t border-line">
+
+      <article class="grid gap-4 border-b border-line py-9 md:grid-cols-12 md:gap-8">
+        <div class="md:col-span-3">
+          <p class="text-sm text-muted">2022 — Sekarang</p>
+          <p class="mt-1 text-sm font-medium text-ink">Tokopedia</p>
+          <p class="mt-0.5 text-xs text-muted">Jakarta</p>
+        </div>
+        <div class="md:col-span-9">
+          <h2 class="font-serif text-xl leading-snug">Senior Product Designer</h2>
+          <p class="mt-3 text-[15px] leading-relaxed text-muted">
+            Memimpin desain untuk alur pembayaran dan pembiayaan konsumen, mulai dari riset awal hingga peluncuran
+            ke puluhan juta pengguna. Mengelola dua desainer junior, menyusun ritme design critique mingguan, dan
+            mengawal adopsi design system lintas tim.
+          </p>
+          <p class="mt-3 text-[15px] leading-relaxed text-muted">
+            Bekerja berdampingan dengan tim data untuk menyepakati metrik keberhasilan sebelum satu pun layar digambar.
+          </p>
+          <ul class="mt-5 flex flex-wrap gap-2 text-xs text-muted">
+            <li class="rounded-full border border-line px-2.5 py-1">Riset kualitatif</li>
+            <li class="rounded-full border border-line px-2.5 py-1">Design system</li>
+            <li class="rounded-full border border-line px-2.5 py-1">Kepemimpinan desain</li>
+          </ul>
+        </div>
+      </article>
+
+      <article class="grid gap-4 border-b border-line py-9 md:grid-cols-12 md:gap-8">
+        <div class="md:col-span-3">
+          <p class="text-sm text-muted">2020 — 2022</p>
+          <p class="mt-1 text-sm font-medium text-ink">Gojek</p>
+          <p class="mt-0.5 text-xs text-muted">Jakarta</p>
+        </div>
+        <div class="md:col-span-9">
+          <h2 class="font-serif text-xl leading-snug">Product Designer</h2>
+          <p class="mt-3 text-[15px] leading-relaxed text-muted">
+            Merancang pengalaman untuk mitra driver di wilayah Jabodetabek, termasuk alur penerimaan order dan
+            riwayat pendapatan harian. Berkolaborasi dengan tim riset lapangan untuk menguji prototipe langsung
+            bersama mitra di pangkalan.
+          </p>
+          <p class="mt-3 text-[15px] leading-relaxed text-muted">
+            Dua alur utama berhasil memangkas waktu penyelesaian tugas mitra hingga hampir sepertiga.
+          </p>
+          <ul class="mt-5 flex flex-wrap gap-2 text-xs text-muted">
+            <li class="rounded-full border border-line px-2.5 py-1">Riset lapangan</li>
+            <li class="rounded-full border border-line px-2.5 py-1">Prototipe</li>
+            <li class="rounded-full border border-line px-2.5 py-1">Mobile</li>
+          </ul>
+        </div>
+      </article>
+
+      <article class="grid gap-4 border-b border-line py-9 md:grid-cols-12 md:gap-8">
+        <div class="md:col-span-3">
+          <p class="text-sm text-muted">2019 — 2020</p>
+          <p class="mt-1 text-sm font-medium text-ink">Bibit</p>
+          <p class="mt-0.5 text-xs text-muted">Jakarta</p>
+        </div>
+        <div class="md:col-span-9">
+          <h2 class="font-serif text-xl leading-snug">UI/UX Designer</h2>
+          <p class="mt-3 text-[15px] leading-relaxed text-muted">
+            Menangani desain antarmuka aplikasi investasi reksa dana, dari proses onboarding hingga laporan
+            portofolio bulanan. Membangun komponen dasar yang kemudian menjadi cikal bakal design system internal.
+          </p>
+          <p class="mt-3 text-[15px] leading-relaxed text-muted">
+            Bekerja erat dengan tim engineering kecil dengan siklus rilis dua minggu dan dokumentasi yang rapi.
+          </p>
+          <ul class="mt-5 flex flex-wrap gap-2 text-xs text-muted">
+            <li class="rounded-full border border-line px-2.5 py-1">Design system</li>
+            <li class="rounded-full border border-line px-2.5 py-1">Onboarding</li>
+            <li class="rounded-full border border-line px-2.5 py-1">Fintech</li>
+          </ul>
+        </div>
+      </article>
+
+      <article class="grid gap-4 border-b border-line py-9 md:grid-cols-12 md:gap-8">
+        <div class="md:col-span-3">
+          <p class="text-sm text-muted">2018 — 2019</p>
+          <p class="mt-1 text-sm font-medium text-ink">Studio Kata</p>
+          <p class="mt-0.5 text-xs text-muted">Bandung</p>
+        </div>
+        <div class="md:col-span-9">
+          <h2 class="font-serif text-xl leading-snug">Junior UI Designer</h2>
+          <p class="mt-3 text-[15px] leading-relaxed text-muted">
+            Mengerjakan identitas visual dan situs web untuk klien UMKM, yayasan, dan kafe lokal. Menyusun wireframe,
+            mockup, hingga aset akhir yang siap diserahkan ke developer.
+          </p>
+          <p class="mt-3 text-[15px] leading-relaxed text-muted">
+            Di sini saya belajar disiplin dokumentasi dan cara menjelaskan keputusan desain kepada klien non-teknis.
+          </p>
+          <ul class="mt-5 flex flex-wrap gap-2 text-xs text-muted">
+            <li class="rounded-full border border-line px-2.5 py-1">Web</li>
+            <li class="rounded-full border border-line px-2.5 py-1">Identitas visual</li>
+            <li class="rounded-full border border-line px-2.5 py-1">Klien</li>
+          </ul>
+        </div>
+      </article>
+
+      <article class="grid gap-4 border-b border-line py-9 md:grid-cols-12 md:gap-8">
+        <div class="md:col-span-3">
+          <p class="text-sm text-muted">2017 — 2018</p>
+          <p class="mt-1 text-sm font-medium text-ink">Kerja Lepas</p>
+          <p class="mt-0.5 text-xs text-muted">Bandung &amp; Jakarta</p>
+        </div>
+        <div class="md:col-span-9">
+          <h2 class="font-serif text-xl leading-snug">Desainer Antarmuka Lepas</h2>
+          <p class="mt-3 text-[15px] leading-relaxed text-muted">
+            Menerima proyek lepas dari startup tahap awal dan komunitas, mulai dari landing page hingga aplikasi
+            internal sederhana. Mengelola sendiri lingkup kerja, timeline, dan komunikasi dengan klien.
+          </p>
+          <p class="mt-3 text-[15px] leading-relaxed text-muted">
+            Menjadi ruang pertama untuk menguji cara kerja desain yang terstruktur — dan tempat belajar bilang "tidak"
+            pada lingkup yang tidak masuk akal.
+          </p>
+          <ul class="mt-5 flex flex-wrap gap-2 text-xs text-muted">
+            <li class="rounded-full border border-line px-2.5 py-1">Freelance</li>
+            <li class="rounded-full border border-line px-2.5 py-1">Landing page</li>
+            <li class="rounded-full border border-line px-2.5 py-1">Riset ringan</li>
+          </ul>
+        </div>
+      </article>
+
+      <article class="grid gap-4 border-b border-line py-9 md:grid-cols-12 md:gap-8">
+        <div class="md:col-span-3">
+          <p class="text-sm text-muted">Jun — Agu 2017</p>
+          <p class="mt-1 text-sm font-medium text-ink">Kumparan</p>
+          <p class="mt-0.5 text-xs text-muted">Jakarta</p>
+        </div>
+        <div class="md:col-span-9">
+          <h2 class="font-serif text-xl leading-snug">Magang Desain Produk</h2>
+          <p class="mt-3 text-[15px] leading-relaxed text-muted">
+            Magang di tim produk media digital, membantu pembuatan aset kampanye dan perbaikan tampilan halaman artikel.
+            Terlibat dalam satu proyek redesain halaman kategori sebagai pendamping desainer senior.
+          </p>
+          <p class="mt-3 text-[15px] leading-relaxed text-muted">
+            Menyusun laporan audit antarmuka sederhana di akhir periode, yang ternyata jadi kebiasaan yang bertahan
+            sampai sekarang.
+          </p>
+          <ul class="mt-5 flex flex-wrap gap-2 text-xs text-muted">
+            <li class="rounded-full border border-line px-2.5 py-1">Magang</li>
+            <li class="rounded-full border border-line px-2.5 py-1">Editorial</li>
+            <li class="rounded-full border border-line px-2.5 py-1">Audit UI</li>
+          </ul>
+        </div>
+      </article>
+
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <footer class="border-t border-line">
+    <div class="mx-auto max-w-5xl px-6 py-14">
+      <div class="grid gap-10 md:grid-cols-12">
+        <div class="md:col-span-4">
+          <p class="font-serif text-lg text-ink">Lumica<span class="text-accent">.</span></p>
+          <p class="mt-3 max-w-xs text-sm leading-relaxed text-muted">
+            Portofolio Nadia Prameswari, Product Designer di Jakarta. Ruang kecil untuk proses, catatan, dan karya.
+          </p>
+        </div>
+        <div class="md:col-span-2 md:col-start-6">
+          <p class="text-xs uppercase tracking-[0.18em] text-muted">Halaman</p>
+          <ul class="mt-4 space-y-2 text-sm text-muted">
+            <li><a href="index.html" class="transition hover:text-ink">Beranda</a></li>
+            <li><a href="pengalaman.html" class="transition hover:text-ink">Pengalaman</a></li>
+            <li><a href="proyek.html" class="transition hover:text-ink">Proyek</a></li>
+            <li><a href="keahlian.html" class="transition hover:text-ink">Keahlian</a></li>
+          </ul>
+        </div>
+        <div class="md:col-span-2">
+          <p class="text-xs uppercase tracking-[0.18em] text-muted">Lainnya</p>
+          <ul class="mt-4 space-y-2 text-sm text-muted">
+            <li><a href="pendidikan.html" class="transition hover:text-ink">Pendidikan</a></li>
+            <li><a href="sertifikasi.html" class="transition hover:text-ink">Sertifikasi</a></li>
+            <li><a href="penghargaan.html" class="transition hover:text-ink">Penghargaan</a></li>
+            <li><a href="blog.html" class="transition hover:text-ink">Tulisan</a></li>
+          </ul>
+        </div>
+        <div class="md:col-span-3">
+          <p class="text-xs uppercase tracking-[0.18em] text-muted">Kontak</p>
+          <ul class="mt-4 space-y-2 text-sm text-muted">
+            <li><a href="mailto:nadia@lumica.studio" class="transition hover:text-ink">nadia@lumica.studio</a></li>
+            <li><a href="#" class="transition hover:text-ink">LinkedIn</a></li>
+            <li><a href="#" class="transition hover:text-ink">Dribbble</a></li>
+            <li><a href="#" class="transition hover:text-ink">Instagram</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="mt-12 flex flex-col gap-3 border-t border-line pt-6 text-xs text-muted sm:flex-row sm:items-center sm:justify-between">
+        <p>© 2025 Nadia Prameswari. Dirancang &amp; dibangun di Jakarta.</p>
+        <p>Dibuat dengan Figma, kopi, dan sedikit keras kepala.</p>
+      </div>
+    </div>
+  </footer>
+
+</body>
+</html>

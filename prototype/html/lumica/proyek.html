@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="id" class="scroll-smooth">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Proyek — Nadia Prameswari</title>
+<meta name="description" content="Kumpulan proyek desain produk Nadia Prameswari: aplikasi, marketplace, design system, dan lainnya." />
+<meta name="theme-color" content="#FAF9F6" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Inter:wght@300;400;500&display=swap" rel="stylesheet" />
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        fontFamily: {
+          serif: ['Fraunces', 'Georgia', 'serif'],
+          sans: ['Inter', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+        },
+        colors: {
+          paper: '#FAF9F6',
+          ink: '#1C1917',
+          muted: '#78716C',
+          line: '#E7E3DC',
+          accent: '#9A7B4F',
+        },
+      },
+    },
+  };
+</script>
+<style>
+  [x-cloak] { display: none !important; }
+  ::selection { background: #E7E3DC; }
+</style>
+<script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.14.1/dist/cdn.min.js"></script>
+</head>
+<body class="bg-paper font-sans text-ink antialiased">
+
+  <!-- Header -->
+  <header class="sticky top-0 z-40 border-b border-line bg-paper/85 backdrop-blur" x-data="{ open: false }">
+    <div class="mx-auto flex h-16 max-w-5xl items-center justify-between px-6">
+      <a href="index.html" class="font-serif text-lg tracking-tight text-ink">Lumica<span class="text-accent">.</span></a>
+
+      <nav class="hidden items-center gap-7 text-sm text-muted md:flex">
+        <a href="pengalaman.html" class="transition hover:text-ink">Pengalaman</a>
+        <a href="proyek.html" class="text-ink">Proyek</a>
+        <a href="keahlian.html" class="transition hover:text-ink">Keahlian</a>
+        <a href="blog.html" class="transition hover:text-ink">Tulisan</a>
+        <a href="index.html#kontak" class="rounded-full border border-line px-4 py-1.5 text-ink transition hover:border-ink">Kontak</a>
+      </nav>
+
+      <button type="button" class="-mr-2 p-2 text-ink md:hidden" @click="open = !open" :aria-expanded="open" aria-label="Menu">
+        <svg x-show="!open" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+          <path stroke-linecap="round" d="M4 7h16M4 12h16M4 17h16" />
+        </svg>
+        <svg x-show="open" x-cloak xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+          <path stroke-linecap="round" d="M6 6l12 12M18 6L6 18" />
+        </svg>
+      </button>
+    </div>
+
+    <div x-show="open" x-cloak class="border-t border-line bg-paper md:hidden">
+      <nav class="mx-auto flex max-w-5xl flex-col px-6 py-1 text-sm text-muted">
+        <a href="pengalaman.html" class="border-b border-line/70 py-3 transition hover:text-ink">Pengalaman</a>
+        <a href="proyek.html" class="border-b border-line/70 py-3 text-ink">Proyek</a>
+        <a href="keahlian.html" class="border-b border-line/70 py-3 transition hover:text-ink">Keahlian</a>
+        <a href="blog.html" class="border-b border-line/70 py-3 transition hover:text-ink">Tulisan</a>
+        <a href="pendidikan.html" class="border-b border-line/70 py-3 transition hover:text-ink">Pendidikan</a>
+        <a href="sertifikasi.html" class="border-b border-line/70 py-3 transition hover:text-ink">Sertifikasi</a>
+        <a href="penghargaan.html" class="border-b border-line/70 py-3 transition hover:text-ink">Penghargaan</a>
+        <a href="index.html#kontak" class="py-3 text-ink">Kontak</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Main -->
+  <main class="mx-auto max-w-5xl px-6 pb-24 pt-12 md:pt-16">
+    <a href="index.html" class="inline-flex items-center text-sm text-muted transition hover:text-ink">← Kembali ke beranda</a>
+
+    <h1 class="mt-8 font-serif text-4xl leading-tight tracking-tight md:text-5xl">Proyek</h1>
+    <p class="mt-5 max-w-2xl text-[15px] leading-relaxed text-muted">
+      Sembilan proyek yang paling menggambarkan cara saya bekerja — mulai dari riset, perumusan masalah,
+      hingga serah terima ke tim engineering. Sebagian dikerjakan di dalam tim, sebagian sebagai eksplorasi pribadi.
+    </p>
+
+    <section class="mt-14 grid gap-x-8 gap-y-14 sm:grid-cols-2">
+
+      <article class="group">
+        <div class="relative aspect-[4/3] overflow-hidden rounded-2xl bg-gradient-to-br from-[#EFE9DE] to-[#DCD2C0]">
+          <span class="absolute inset-0 flex items-center justify-center font-serif text-5xl text-ink/15">Ra</span>
+        </div>
+        <p class="mt-5 text-xs uppercase tracking-[0.18em] text-muted">2024 · E-commerce</p>
+        <h2 class="mt-2 font-serif text-xl leading-snug">Rapikan</h2>
+        <p class="mt-3 text-[15px] leading-relaxed text-muted">
+          Menyederhanakan tiga langkah checkout menjadi satu halaman, dengan fokus pada kejelasan biaya dan rasa percaya pengguna.
+        </p>
+        <ul class="mt-4 flex flex-wrap gap-2 text-xs text-muted">
+          <li class="rounded-full border border-line px-2.5 py-1">Figma</li>
+          <li class="rounded-full border border-line px-2.5 py-1">Maze</li>
+          <li class="rounded-full border border-line px-2.5 py-1">Amplitude</li>
+        </ul>
+        <a href="#" class="mt-5 inline-flex items-center gap-1.5 text-sm text-ink underline decoration-line underline-offset-4 transition hover:decoration-ink">
+          Lihat studi kasus <span aria-hidden="true">→</span>
+        </a>
+      </article>
+
+      <article class="group">
+        <div class="relative aspect-[4/3] overflow-hidden rounded-2xl bg-gradient-to-br from-[#E6EAE4] to-[#C9D2C6]">
+          <span class="absolute inset-0 flex items-center justify-center font-serif text-5xl text-ink/15">Sa</span>
+        </div>
+        <p class="mt-5 text-xs uppercase tracking-[0.18em] text-muted">2024 · Fintech</p>
+        <h2 class="mt-2 font-serif text-xl leading-snug">Saku</h2>
+        <p class="mt-3 text-[15px] leading-relaxed text-muted">
+          Aplikasi dompet digital untuk pekerja lepas: pencatatan pemasukan tidak tetap dan pengingat pajak sederhana.
+        </p>
+        <ul class="mt-4 flex flex-wrap gap-2 text-xs text-muted">
+          <li class="rounded-full border border-line px-2.5 py-1">Figma</li>
+          <li class="rounded-full border border-line px-2.5 py-1">Protopie</li>
+          <li class="rounded-full border border-line px-2.5 py-1">Wawancara</li>
+        </ul>
+        <a href="#" class="mt-5 inline-flex items-center gap-1.5 text-sm text-ink underline decoration-line underline-offset-4 transition hover:decoration-ink">
+          Lihat studi kasus <span aria-hidden="true">→</span>
+        </a>
+      </article>
+
+      <article class="group">
+        <div class="relative aspect-[4/3] overflow-hidden rounded-2xl bg-gradient-to-br from-[#EDE7E4] to-[#D6C9C2]">
+          <span class="absolute inset-0 flex items-center justify-center font-serif text-5xl text-ink/15">Tu</span>
+        </div>
+        <p class="mt-5 text-xs uppercase tracking-[0.18em] text-muted">2023 · Keuangan keluarga</p>
+        <h2 class="mt-2 font-serif text-xl leading-snug">Tumbuh</h2>
+        <p class="mt-3 text-[15px] leading-relaxed text-muted">
+          Fitur target tabungan bersama, dengan kontribusi transparan antar anggota keluarga dan riwayat yang mudah dibaca.
+        </p>
+        <ul class="mt-4 flex flex-wrap gap-2 text-xs text-muted">
+          <li class="rounded-full border border-line px-2.5 py-1">Figma</li>
+          <li class="rounded-full border border-line px-2.5 py-1">Framer</li>
+          <li class="rounded-full border border-line px-2.5 py-1">Usability test</li>
+        </ul>
+        <a href="#" class="mt-5 inline-flex items-center gap-1.5 text-sm text-ink underline decoration-line underline-offset-4 transition hover:decoration-ink">
+          Lihat studi kasus <span aria-hidden="true">→</span>
+        </a>
+      </article>
+
+      <article class="group">
+        <div class="relative aspect-[4/3] overflow-hidden rounded-2xl bg-gradient-to-br from-[#E4E8EC] to-[#C4CED8]">
+          <span class="absolute inset-0 flex items-center justify-center font-serif text-5xl text-ink/15">Kk</span>
+        </div>
+        <p class="mt-5 text-xs uppercase tracking-[0.18em] text-muted">2023 · Pendidikan</p>
+        <h2 class="mt-2 font-serif text-xl leading-snug">Kelas Kita</h2>
+        <p class="mt-3 text-[15px] leading-relaxed text-muted">
+          Platform belajar untuk sekolah menengah: struktur navigasi baru dan sistem penilaian yang mudah dipahami guru.
+        </p>
+        <ul class="mt-4 flex flex-wrap gap-2 text-xs text-muted">
+          <li class="rounded-full border border-line px-2.5 py-1">Figma</li>
+          <li class="rounded-full border border-line px-2.5 py-1">Notion</li>
+          <li class="rounded-full border border-line px-2.5 py-1">Card sorting</li>
+        </ul>
+        <a href="#" class="mt-5 inline-flex items-center gap-1.5 text-sm text-ink underline decoration-line underline-offset-4 transition hover:decoration-ink">
+          Lihat studi kasus <span aria-hidden="true">→</span>
+        </a>
+      </article>
+
+      <article class="group">
+        <div class="relative aspect-[4/3] overflow-hidden rounded-2xl bg-gradient-to-br from-[#F0E7E0] to-[#DBC9BA]">
+          <span class="absolute inset-0 flex items-center justify-center font-serif text-5xl text-ink/15">Pl</span>
+        </div>
+        <p class="mt-5 text-xs uppercase tracking-[0.18em] text-muted">2022 · Marketplace</p>
+        <h2 class="mt-2 font-serif text-xl leading-snug">Pasar Lokal</h2>
+        <p class="mt-3 text-[15px] leading-relaxed text-muted">
+          Alur unggah produk untuk UMKM daerah yang bisa diselesaikan dalam lima menit lewat ponsel, tanpa istilah teknis.
+        </p>
+        <ul class="mt-4 flex flex-wrap gap-2 text-xs text-muted">
+          <li class="rounded-full border border-line px-2.5 py-1">Figma</li>
+          <li class="rounded-full border border-line px-2.5 py-1">UserTesting</li>
+          <li class="rounded-full border border-line px-2.5 py-1">Riset lapangan</li>
+        </ul>
+        <a href="#" class="mt-5 inline-flex items-center gap-1.5 text-sm text-ink underline decoration-line underline-offset-4 transition hover:decoration-ink">
+          Lihat studi kasus <span aria-hidden="true">→</span>
+        </a>
+      </article>
+
+      <article class="group">
+        <div class="relative aspect-[4/3] overflow-hidden rounded-2xl bg-gradient-to-br from-[#E9E6EF] to-[#CBC5DA]">
+          <span class="absolute inset-0 flex items-center justify-center font-serif text-5xl text-ink/15">Rw</span>
+        </div>
+        <p class="mt-5 text-xs uppercase tracking-[0.18em] text-muted">2022 · Kesehatan</p>
+        <h2 class="mt-2 font-serif text-xl leading-snug">Rawat</h2>
+        <p class="mt-3 text-[15px] leading-relaxed text-muted">
+          Pemesanan layanan klinik dengan jadwal dokter yang jelas dan waktu pemesanan yang jauh lebih singkat.
+        </p>
+        <ul class="mt-4 flex flex-wrap gap-2 text-xs text-muted">
+          <li class="rounded-full border border-line px-2.5 py-1">Figma</li>
+          <li class="rounded-full border border-line px-2.5 py-1">Maze</li>
+          <li class="rounded-full border border-line px-2.5 py-1">A/B testing</li>
+        </ul>
+        <a href="#" class="mt-5 inline-flex items-center gap-1.5 text-sm text-ink underline decoration-line underline-offset-4 transition hover:decoration-ink">
+          Lihat studi kasus <span aria-hidden="true">→</span>
+        </a>
+      </article>
+
+      <article class="group">
+        <div class="relative aspect-[4/3] overflow-hidden rounded-2xl bg-gradient-to-br from-[#E7EDEA] to-[#C6D6CF]">
+          <span class="absolute inset-0 flex items-center justify-center font-serif text-5xl text-ink/15">Ru</span>
+        </div>
+        <p class="mt-5 text-xs uppercase tracking-[0.18em] text-muted">2021 · Transportasi</p>
+        <h2 class="mt-2 font-serif text-xl leading-snug">Rute</h2>
+        <p class="mt-3 text-[15px] leading-relaxed text-muted">
+          Eksplorasi pemilihan rute dan estimasi biaya untuk perjalanan darat antar kota, termasuk skenario gagal jaringan.
+        </p>
+        <ul class="mt-4 flex flex-wrap gap-2 text-xs text-muted">
+          <li class="rounded-full border border-line px-2.5 py-1">Figma</li>
+          <li class="rounded-full border border-line px-2.5 py-1">Protopie</li>
+          <li class="rounded-full border border-line px-2.5 py-1">Journey map</li>
+        </ul>
+        <a href="#" class="mt-5 inline-flex items-center gap-1.5 text-sm text-ink underline decoration-line underline-offset-4 transition hover:decoration-ink">
+          Lihat studi kasus <span aria-hidden="true">→</span>
+        </a>
+      </article>
+
+      <article class="group">
+        <div class="relative aspect-[4/3] overflow-hidden rounded-2xl bg-gradient-to-br from-[#F1ECE3] to-[#DED2BE]">
+          <span class="absolute inset-0 flex items-center justify-center font-serif text-5xl text-ink/15">Lm</span>
+        </div>
+        <p class="mt-5 text-xs uppercase tracking-[0.18em] text-muted">2021 · Design system</p>
+        <h2 class="mt-2 font-serif text-xl leading-snug">Lumica DS</h2>
+        <p class="mt-3 text-[15px] leading-relaxed text-muted">
+          Design system internal berisi komponen, token warna, dan panduan penulisan yang dipakai oleh lima tim produk.
+        </p>
+        <ul class="mt-4 flex flex-wrap gap-2 text-xs text-muted">
+          <li class="rounded-full border border-line px-2.5 py-1">Figma</li>
+          <li class="rounded-full border border-line px-2.5 py-1">Storybook</li>
+          <li class="rounded-full border border-line px-2.5 py-1">Tailwind</li>
+        </ul>
+        <a href="#" class="mt-5 inline-flex items-center gap-1.5 text-sm text-ink underline decoration-line underline-offset-4 transition hover:decoration-ink">
+          Lihat studi kasus <span aria-hidden="true">→</span>
+        </a>
+      </article>
+
+      <article class="group">
+        <div class="relative aspect-[4/3] overflow-hidden rounded-2xl bg-gradient-to-br from-[#EAE7E2] to-[#CFC8BE]">
+          <span class="absolute inset-0 flex items-center justify-center font-serif text-5xl text-ink/15">Ba</span>
+        </div>
+        <p class="mt-5 text-xs uppercase tracking-[0.18em] text-muted">2020 · Proyek pribadi</p>
+        <h2 class="mt-2 font-serif text-xl leading-snug">Baca</h2>
+        <p class="mt-3 text-[15px] leading-relaxed text-muted">
+          Aplikasi pembaca artikel panjang dengan mode baca bersih dan pengaturan tipografi yang bisa diubah pengguna.
+        </p>
+        <ul class="mt-4 flex flex-wrap gap-2 text-xs text-muted">
+          <li class="rounded-full border border-line px-2.5 py-1">Figma</li>
+          <li class="rounded-full border border-line px-2.5 py-1">Framer</li>
+          <li class="rounded-full border border-line px-2.5 py-1">Tipografi</li>
+        </ul>
+        <a href="#" class="mt-5 inline-flex items-center gap-1.5 text-sm text-ink underline decoration-line underline-offset-4 transition hover:decoration-ink">
+          Lihat studi kasus <span aria-hidden="true">→</span>
+        </a>
+      </article>
+
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <footer class="border-t border-line">
+    <div class="mx-auto max-w-5xl px-6 py-14">
+      <div class="grid gap-10 md:grid-cols-12">
+        <div class="md:col-span-4">
+          <p class="font-serif text-lg text-ink">Lumica<span class="text-accent">.</span></p>
+          <p class="mt-3 max-w-xs text-sm leading-relaxed text-muted">
+            Portofolio Nadia Prameswari, Product Designer di Jakarta. Ruang kecil untuk proses, catatan, dan karya.
+          </p>
+        </div>
+        <div class="md:col-span-2 md:col-start-6">
+          <p class="text-xs uppercase tracking-[0.18em] text-muted">Halaman</p>
+          <ul class="mt-4 space-y-2 text-sm text-muted">
+            <li><a href="index.html" class="transition hover:text-ink">Beranda</a></li>
+            <li><a href="pengalaman.html" class="transition hover:text-ink">Pengalaman</a></li>
+            <li><a href="proyek.html" class="transition hover:text-ink">Proyek</a></li>
+            <li><a href="keahlian.html" class="transition hover:text-ink">Keahlian</a></li>
+          </ul>
+        </div>
+        <div class="md:col-span-2">
+          <p class="text-xs uppercase tracking-[0.18em] text-muted">Lainnya</p>
+          <ul class="mt-4 space-y-2 text-sm text-muted">
+            <li><a href="pendidikan.html" class="transition hover:text-ink">Pendidikan</a></li>
+            <li><a href="sertifikasi.html" class="transition hover:text-ink">Sertifikasi</a></li>
+            <li><a href="penghargaan.html" class="transition hover:text-ink">Penghargaan</a></li>
+            <li><a href="blog.html" class="transition hover:text-ink">Tulisan</a></li>
+          </ul>
+        </div>
+        <div class="md:col-span-3">
+          <p class="text-xs uppercase tracking-[0.18em] text-muted">Kontak</p>
+          <ul class="mt-4 space-y-2 text-sm text-muted">
+            <li><a href="mailto:nadia@lumica.studio" class="transition hover:text-ink">nadia@lumica.studio</a></li>
+            <li><a href="#" class="transition hover:text-ink">LinkedIn</a></li>
+            <li><a href="#" class="transition hover:text-ink">Dribbble</a></li>
+            <li><a href="#" class="transition hover:text-ink">Instagram</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="mt-12 flex flex-col gap-3 border-t border-line pt-6 text-xs text-muted sm:flex-row sm:items-center sm:justify-between">
+        <p>© 2025 Nadia Prameswari. Dirancang &amp; dibangun di Jakarta.</p>
+        <p>Dibuat dengan Figma, kopi, dan sedikit keras kepala.</p>
+      </div>
+    </div>
+  </footer>
+
+</body>
+</html>

@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="id" class="scroll-smooth">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Keahlian — Teguh Rijanandi</title>
+<meta name="description" content="Daftar keahlian Teguh Rijanandi, Fullstack Developer." />
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        colors: {
+          ink: { 950: '#08080a', 900: '#0f0f12', 850: '#141418', 800: '#1a1a1f', 700: '#242429' },
+          accent: { DEFAULT: '#a3e635', 200: '#d9f99d', 300: '#bef264', 400: '#a3e635', 500: '#84cc16' }
+        },
+        fontFamily: {
+          sans: ['Inter', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+          mono: ['"JetBrains Mono"', 'ui-monospace', 'SFMono-Regular', 'monospace']
+        }
+      }
+    }
+  }
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+<script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.14.1/dist/cdn.min.js"></script>
+<style>
+  [x-cloak] { display: none !important; }
+  ::selection { background: #a3e635; color: #08080a; }
+  html { -webkit-tap-highlight-color: transparent; }
+  ::-webkit-scrollbar { width: 10px; height: 10px; }
+  ::-webkit-scrollbar-track { background: #0f0f12; }
+  ::-webkit-scrollbar-thumb { background: #242429; border-radius: 9999px; }
+  ::-webkit-scrollbar-thumb:hover { background: #33333a; }
+</style>
+</head>
+<body class="flex min-h-screen flex-col bg-ink-950 font-sans text-zinc-300 antialiased">
+
+  <header x-data="{ open: false }" class="sticky top-0 z-50 border-b border-white/5 bg-ink-950/80 backdrop-blur">
+    <div class="mx-auto flex max-w-4xl items-center justify-between px-6 py-4">
+      <a href="index.html" class="flex items-center gap-2">
+        <span class="grid h-8 w-8 place-items-center rounded-lg bg-accent font-mono text-sm font-bold text-ink-950">V</span>
+        <span class="font-mono text-sm font-semibold tracking-tight text-zinc-100">vantablo<span class="text-accent">.</span>dev</span>
+      </a>
+      <nav class="hidden items-center gap-1 md:flex">
+        <a href="index.html" class="rounded-md px-3 py-2 text-sm text-zinc-400 transition hover:bg-white/5 hover:text-zinc-100">Beranda</a>
+        <a href="proyek.html" class="rounded-md px-3 py-2 text-sm text-zinc-400 transition hover:bg-white/5 hover:text-zinc-100">Proyek</a>
+        <a href="keahlian.html" class="rounded-md px-3 py-2 text-sm text-zinc-400 transition hover:bg-white/5 hover:text-zinc-100">Keahlian</a>
+        <a href="blog.html" class="rounded-md px-3 py-2 text-sm text-zinc-400 transition hover:bg-white/5 hover:text-zinc-100">Blog</a>
+        <a href="index.html#kontak" class="ml-2 rounded-md bg-accent px-3.5 py-2 text-sm font-semibold text-ink-950 transition hover:bg-accent-300">Kontak</a>
+      </nav>
+      <button @click="open = !open" class="grid h-9 w-9 place-items-center rounded-md border border-white/10 text-zinc-300 transition hover:border-accent/40 hover:text-accent md:hidden" aria-label="Buka menu navigasi">
+        <svg x-show="!open" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor" class="h-5 w-5">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5M3.75 17.25h16.5" />
+        </svg>
+        <svg x-show="open" x-cloak xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor" class="h-5 w-5">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
+        </svg>
+      </button>
+    </div>
+    <div x-show="open" x-cloak x-transition.opacity.duration.150ms class="border-t border-white/5 bg-ink-950/95 px-6 pb-5 pt-2 md:hidden">
+      <nav class="flex flex-col gap-1">
+        <a href="index.html" class="rounded-md px-3 py-2.5 text-sm text-zinc-400 transition hover:bg-white/5 hover:text-zinc-100">Beranda</a>
+        <a href="proyek.html" class="rounded-md px-3 py-2.5 text-sm text-zinc-400 transition hover:bg-white/5 hover:text-zinc-100">Proyek</a>
+        <a href="keahlian.html" class="rounded-md px-3 py-2.5 text-sm text-zinc-400 transition hover:bg-white/5 hover:text-zinc-100">Keahlian</a>
+        <a href="blog.html" class="rounded-md px-3 py-2.5 text-sm text-zinc-400 transition hover:bg-white/5 hover:text-zinc-100">Blog</a>
+        <a href="index.html#kontak" class="mt-1 rounded-md bg-accent px-3 py-2.5 text-center text-sm font-semibold text-ink-950 transition hover:bg-accent-300">Kontak</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="flex-1">
+    <div class="mx-auto max-w-4xl px-6 pb-16 pt-10 sm:pt-14">
+
+      <a href="index.html" class="inline-flex items-center gap-2 font-mono text-xs text-zinc-500 transition hover:text-accent">← Kembali ke beranda</a>
+
+      <div class="mt-8 border-b border-white/5 pb-8">
+        <p class="font-mono text-xs uppercase tracking-[0.2em] text-accent">// keahlian</p>
+        <h1 class="mt-3 text-3xl font-bold tracking-tight text-zinc-100 sm:text-4xl">Keahlian</h1>
+        <p class="mt-3 max-w-2xl text-sm leading-relaxed text-zinc-400">
+          Tools dan teknologi yang saya pakai sehari-hari. Yang saya tandai sebagai "dasar"
+          berarti cukup untuk membaca kode dan membuat perubahan kecil, bukan spesialisasi.
+        </p>
+      </div>
+
+      <section class="mt-10 space-y-6">
+
+        <div class="rounded-xl border border-white/5 bg-ink-900 p-6">
+          <div class="flex items-center justify-between">
+            <h2 class="text-base font-semibold text-zinc-100">Bahasa</h2>
+            <span class="font-mono text-[10px] uppercase tracking-wider text-zinc-500">8 item</span>
+          </div>
+          <div class="mt-4 flex flex-wrap gap-2">
+            <span class="rounded-lg border border-white/5 bg-white/5 px-3 py-1.5 font-mono text-xs text-zinc-300 transition hover:border-accent/40 hover:text-accent">JavaScript</span>
+            <span class="rounded-lg border border-white/5 bg-white/5 px-3 py-1.5 font-mono text-xs text-zinc-300 transition hover:border-accent/40 hover:text-accent">TypeScript</span>
+            <span class="rounded-lg border border-white/5 bg-white/5 px-3 py-1.5 font-mono text-xs text-zinc-300 transition hover:border-accent/40 hover:text-accent">PHP</span>
+            <span class="rounded-lg border border-white/5 bg-white/5 px-3 py-1.5 font-mono text-xs text-zinc-300 transition hover:border-accent/40 hover:text-accent">Python</span>
+            <span class="rounded-lg border border-white/5 bg-white/5 px-3 py-1.5 font-mono text-xs text-zinc-300 transition hover:border-accent/40 hover:text-accent">Go (dasar)</span>
+            <span class="rounded-lg border border-white/5 bg-white/5 px-3 py-1.5 font-mono text-xs text-zinc-300 transition hover:border-accent/40 hover:text-accent">SQL</span>
+            <span class="rounded-lg border border-white/5 bg-white/5 px-3 py-1.5 font-mono text-xs text-zinc-300 transition hover:border-accent/40 hover:text-accent">HTML5</span>
+            <span class="rounded-lg border border-white/5 bg-white/5 px-3 py-1.5 font-mono text-xs text-zinc-300 transition hover:border-accent/40 hover:text-accent">CSS3</span>
+          </div>
+        </div>
+
+        <div class="rounded-xl border border-white/5 bg-ink-900 p-6">
+          <div class="flex items-center justify-between">
+            <h2 class="text-base font-semibold text-zinc-100">Framework &amp; Library</h2>
+            <span class="font-mono text-[10px] uppercase tracking-wider text-zinc-500">14 item</span>
+          </div>
+          <div class="mt-4 flex flex-wrap gap-2">
+            <span class="rounded-lg border border-white/5 bg-white/5 px-3 py-1.5 font-mono text-xs text-zinc-300 transition hover:border-accent/40 hover:text-accent">React</span>
+            <span class="rounded-lg border border-white/5 bg-white/5 px-3 py-1.5 font-mono text-xs text-zinc-300 transition hover:border-accent/40 hover:text-accent">Next.js</span>
+            <span class="rounded-lg border border-white/5 bg-white/5 px-3 py-1.5 font-mono text-xs text-zinc-300 transition hover:border-accent/40 hover:text-accent">Vue 3</span>
+            <span class="rounded-lg border border-white/5 bg-white/5 px-3 py-1.5 font-mono text-xs text-zinc-300 transition hover:border-accent/40 hover:text-accent">Nuxt</span>
+            <span class="rounded-lg border border-white/5 bg-white/5 px-3 py-1.5 font-mono text-xs text-zinc-300 transition hover:border-accent/40 hover:text-accent">SvelteKit</span>
+            <span class="rounded-lg border border-white/5 bg-white/5 px-3 py-1.5 font-mono text-xs text-zinc-300 transition hover:border-accent/40 hover:text-accent">Laravel</span>
+            <span class="rounded-lg border border-white/5 bg-white/5 px-3 py-1.5 font-mono text-xs text-zinc-300 transition hover:border-accent/40 hover:text-accent">NestJS</span>
+            <span class="rounded-lg border border-white/5 bg-white/5 px-3 py-1.5 font-mono text-xs text-zinc-300 transition hover:border-accent/40 hover:text-accent">Express</span>
+            <span class="rounded-lg border border-white/5 bg-white/5 px-3 py-1.5 font-mono text-xs text-zinc-300 transition hover:border-accent/40 hover:text-accent">FastAPI</span>
+            <span class="rounded-lg border border-white/5 bg-white/5 px-3 py-1.5 font-mono text-xs text-zinc-300 transition hover:border-accent/40 hover:text-accent">Tailwind CSS</span>
+            <span class="rounded-lg border border-white/5 bg-white/5 px-3 py-1.5 font-mono text-xs text-zinc-300 transition hover:border-accent/40 hover:text-accent">Alpine.js</span>
+            <span class="rounded-lg border border-white/5 bg-white/5 px-3 py-1.5 font-mono text-xs text-zinc-300 transition hover:border-accent/40 hover:text-accent">Pinia</span>
+            <span class="rounded-lg border border-white/5 bg-white/5 px-3 py-1.5 font-mono text-xs text-zinc-300 transition hover:border-accent/40 hover:text-accent">Prisma</span>
+            <span class="rounded-lg border border-white/5 bg-white/5 px-3 py-1.5 font-mono text-xs text-zinc-300 transition hover:border-accent/40 hover:text-accent">Livewire</span>
+          </div>
+        </div>
+
+        <div class="rounded-xl border border-white/5 bg-ink-900 p-6">
+          <div class="flex items-center justify-between">
+            <h2 class="text-base font-semibold text-zinc-100">Basis Data</h2>
+            <span class="font-mono text-[10px] uppercase tracking-wider text-zinc-500">7 item</span>
+          </div>
+          <div class="mt-4 flex flex-wrap gap-2">
+            <span class="rounded-lg border border-white/5 bg-white/5 px-3 py-1.5 font-mono text-xs text-zinc-300 transition hover:border-accent/40 hover:text-accent">PostgreSQL</span>
+            <span class="rounded-lg border border-white/5 bg-white/5 px-3 py-1.5 font-mono text-xs text-zinc-300 transition hover:border-accent/40 hover:text-accent">MySQL / MariaDB</span>
+            <span class="rounded-lg border border-white/5 bg-white/5 px-3 py-1.5 font-mono text-xs text-zinc-300 transition hover:border-accent/40 hover:text-accent">MongoDB</span>
+            <span class="rounded-lg border border-white/5 bg-white/5 px-3 py-1.5 font-mono text-xs text-zinc-300 transition hover:border-accent/40 hover:text-accent">Redis</span>
+            <span class="rounded-lg border border-white/5 bg-white/5 px-3 py-1.5 font-mono text-xs text-zinc-300 transition hover:border-accent/40 hover:text-accent">SQLite</span>
+            <span class="rounded-lg border border-white/5 bg-white/5 px-3 py-1.5 font-mono text-xs text-zinc-300 transition hover:border-accent/40 hover:text-accent">ClickHouse</span>
+            <span class="rounded-lg border border-white/5 bg-white/5 px-3 py-1.5 font-mono text-xs text-zinc-300 transition hover:border-accent/40 hover:text-accent">Supabase</span>
+          </div>
+        </div>
+
+        <div class="rounded-xl border border-white/5 bg-ink-900 p-6">
+          <div class="flex items-center justify-between">
+            <h2 class="text-base font-semibold text-zinc-100">DevOps</h2>
+            <span class="font-mono text-[10px] uppercase tracking-wider text-zinc-500">10 item</span>
+          </div>
+          <div class="mt-4 flex flex-wrap gap-2">
+            <span class="rounded-lg border border-white/5 bg-white/5 px-3 py-1.5 font-mono text-xs text-zinc-300 transition hover:border-accent/40 hover:text-accent">Docker</span>
+            <span class="rounded-lg border border-white/5 bg-white/5 px-3 py-1.5 font-mono text-xs text-zinc-300 transition hover:border-accent/40 hover:text-accent">Docker Compose</span>
+            <span class="rounded-lg border border-white/5 bg-white/5 px-3 py-1.5 font-mono text-xs text-zinc-300 transition hover:border-accent/40 hover:text-accent">GitHub Actions</span>
+            <span class="rounded-lg border border-white/5 bg-white/5 px-3 py-1.5 font-mono text-xs text-zinc-300 transition hover:border-accent/40 hover:text-accent">GitLab CI</span>
+            <span class="rounded-lg border border-white/5 bg-white/5 px-3 py-1.5 font-mono text-xs text-zinc-300 transition hover:border-accent/40 hover:text-accent">Nginx</span>
+            <span class="rounded-lg border border-white/5 bg-white/5 px-3 py-1.5 font-mono text-xs text-zinc-300 transition hover:border-accent/40 hover:text-accent">Linux (Ubuntu/Debian)</span>
+            <span class="rounded-lg border border-white/5 bg-white/5 px-3 py-1.5 font-mono text-xs text-zinc-300 transition hover:border-accent/40 hover:text-accent">AWS (EC2, S3, RDS)</span>
+            <span class="rounded-lg border border-white/5 bg-white/5 px-3 py-1.5 font-mono text-xs text-zinc-300 transition hover:border-accent/40 hover:text-accent">Vercel</span>
+            <span class="rounded-lg border border-white/5 bg-white/5 px-3 py-1.5 font-mono text-xs text-zinc-300 transition hover:border-accent/40 hover:text-accent">Cloudflare</span>
+            <span class="rounded-lg border border-white/5 bg-white/5 px-3 py-1.5 font-mono text-xs text-zinc-300 transition hover:border-accent/40 hover:text-accent">Terraform (dasar)</span>
+          </div>
+        </div>
+
+        <div class="rounded-xl border border-white/5 bg-ink-900 p-6">
+          <div class="flex items-center justify-between">
+            <h2 class="text-base font-semibold text-zinc-100">Lainnya</h2>
+            <span class="font-mono text-[10px] uppercase tracking-wider text-zinc-500">13 item</span>
+          </div>
+          <div class="mt-4 flex flex-wrap gap-2">
+            <span class="rounded-lg border border-white/5 bg-white/5 px-3 py-1.5 font-mono text-xs text-zinc-300 transition hover:border-accent/40 hover:text-accent">Git</span>
+            <span class="rounded-lg border border-white/5 bg-white/5 px-3 py-1.5 font-mono text-xs text-zinc-300 transition hover:border-accent/40 hover:text-accent">REST API</span>
+            <span class="rounded-lg border border-white/5 bg-white/5 px-3 py-1.5 font-mono text-xs text-zinc-300 transition hover:border-accent/40 hover:text-accent">GraphQL</span>
+            <span class="rounded-lg border border-white/5 bg-white/5 px-3 py-1.5 font-mono text-xs text-zinc-300 transition hover:border-accent/40 hover:text-accent">WebSocket</span>
+            <span class="rounded-lg border border-white/5 bg-white/5 px-3 py-1.5 font-mono text-xs text-zinc-300 transition hover:border-accent/40 hover:text-accent">Jest / Vitest</span>
+            <span class="rounded-lg border border-white/5 bg-white/5 px-3 py-1.5 font-mono text-xs text-zinc-300 transition hover:border-accent/40 hover:text-accent">Playwright</span>
+            <span class="rounded-lg border border-white/5 bg-white/5 px-3 py-1.5 font-mono text-xs text-zinc-300 transition hover:border-accent/40 hover:text-accent">PHPUnit</span>
+            <span class="rounded-lg border border-white/5 bg-white/5 px-3 py-1.5 font-mono text-xs text-zinc-300 transition hover:border-accent/40 hover:text-accent">Figma</span>
+            <span class="rounded-lg border border-white/5 bg-white/5 px-3 py-1.5 font-mono text-xs text-zinc-300 transition hover:border-accent/40 hover:text-accent">Postman</span>
+            <span class="rounded-lg border border-white/5 bg-white/5 px-3 py-1.5 font-mono text-xs text-zinc-300 transition hover:border-accent/40 hover:text-accent">Jira</span>
+            <span class="rounded-lg border border-white/5 bg-white/5 px-3 py-1.5 font-mono text-xs text-zinc-300 transition hover:border-accent/40 hover:text-accent">Scrum / Agile</span>
+            <span class="rounded-lg border border-white/5 bg-white/5 px-3 py-1.5 font-mono text-xs text-zinc-300 transition hover:border-accent/40 hover:text-accent">SEO On-Page</span>
+            <span class="rounded-lg border border-white/5 bg-white/5 px-3 py-1.5 font-mono text-xs text-zinc-300 transition hover:border-accent/40 hover:text-accent">UI/UX Dasar</span>
+          </div>
+        </div>
+
+      </section>
+    </div>
+  </main>
+
+  <footer class="border-t border-white/5">
+    <div class="mx-auto flex max-w-4xl flex-col gap-4 px-6 py-10 sm:flex-row sm:items-center sm:justify-between">
+      <p class="font-mono text-xs text-zinc-500">© 2025 Teguh Rijanandi · Vantablo</p>
+      <nav class="flex flex-wrap gap-x-5 gap-y-2 font-mono text-xs text-zinc-500">
+        <a href="riwayat-kerja.html" class="transition hover:text-accent">Riwayat Kerja</a>
+        <a href="proyek.html" class="transition hover:text-accent">Proyek</a>
+        <a href="keahlian.html" class="transition hover:text-accent">Keahlian</a>
+        <a href="blog.html" class="transition hover:text-accent">Blog</a>
+        <a href="index.html#kontak" class="transition hover:text-accent">Kontak</a>
+      </nav>
+    </div>
+  </footer>
+
+</body>
+</html>

@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="id" class="scroll-smooth">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Riwayat Kerja — Teguh Rijanandi</title>
+<meta name="description" content="Riwayat kerja lengkap Teguh Rijanandi, Fullstack Developer." />
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        colors: {
+          ink: { 950: '#08080a', 900: '#0f0f12', 850: '#141418', 800: '#1a1a1f', 700: '#242429' },
+          accent: { DEFAULT: '#a3e635', 200: '#d9f99d', 300: '#bef264', 400: '#a3e635', 500: '#84cc16' }
+        },
+        fontFamily: {
+          sans: ['Inter', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+          mono: ['"JetBrains Mono"', 'ui-monospace', 'SFMono-Regular', 'monospace']
+        }
+      }
+    }
+  }
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+<script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.14.1/dist/cdn.min.js"></script>
+<style>
+  [x-cloak] { display: none !important; }
+  ::selection { background: #a3e635; color: #08080a; }
+  html { -webkit-tap-highlight-color: transparent; }
+  ::-webkit-scrollbar { width: 10px; height: 10px; }
+  ::-webkit-scrollbar-track { background: #0f0f12; }
+  ::-webkit-scrollbar-thumb { background: #242429; border-radius: 9999px; }
+  ::-webkit-scrollbar-thumb:hover { background: #33333a; }
+</style>
+</head>
+<body class="flex min-h-screen flex-col bg-ink-950 font-sans text-zinc-300 antialiased">
+
+  <header x-data="{ open: false }" class="sticky top-0 z-50 border-b border-white/5 bg-ink-950/80 backdrop-blur">
+    <div class="mx-auto flex max-w-4xl items-center justify-between px-6 py-4">
+      <a href="index.html" class="flex items-center gap-2">
+        <span class="grid h-8 w-8 place-items-center rounded-lg bg-accent font-mono text-sm font-bold text-ink-950">V</span>
+        <span class="font-mono text-sm font-semibold tracking-tight text-zinc-100">vantablo<span class="text-accent">.</span>dev</span>
+      </a>
+      <nav class="hidden items-center gap-1 md:flex">
+        <a href="index.html" class="rounded-md px-3 py-2 text-sm text-zinc-400 transition hover:bg-white/5 hover:text-zinc-100">Beranda</a>
+        <a href="proyek.html" class="rounded-md px-3 py-2 text-sm text-zinc-400 transition hover:bg-white/5 hover:text-zinc-100">Proyek</a>
+        <a href="keahlian.html" class="rounded-md px-3 py-2 text-sm text-zinc-400 transition hover:bg-white/5 hover:text-zinc-100">Keahlian</a>
+        <a href="blog.html" class="rounded-md px-3 py-2 text-sm text-zinc-400 transition hover:bg-white/5 hover:text-zinc-100">Blog</a>
+        <a href="index.html#kontak" class="ml-2 rounded-md bg-accent px-3.5 py-2 text-sm font-semibold text-ink-950 transition hover:bg-accent-300">Kontak</a>
+      </nav>
+      <button @click="open = !open" class="grid h-9 w-9 place-items-center rounded-md border border-white/10 text-zinc-300 transition hover:border-accent/40 hover:text-accent md:hidden" aria-label="Buka menu navigasi">
+        <svg x-show="!open" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor" class="h-5 w-5">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5M3.75 17.25h16.5" />
+        </svg>
+        <svg x-show="open" x-cloak xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor" class="h-5 w-5">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
+        </svg>
+      </button>
+    </div>
+    <div x-show="open" x-cloak x-transition.opacity.duration.150ms class="border-t border-white/5 bg-ink-950/95 px-6 pb-5 pt-2 md:hidden">
+      <nav class="flex flex-col gap-1">
+        <a href="index.html" class="rounded-md px-3 py-2.5 text-sm text-zinc-400 transition hover:bg-white/5 hover:text-zinc-100">Beranda</a>
+        <a href="proyek.html" class="rounded-md px-3 py-2.5 text-sm text-zinc-400 transition hover:bg-white/5 hover:text-zinc-100">Proyek</a>
+        <a href="keahlian.html" class="rounded-md px-3 py-2.5 text-sm text-zinc-400 transition hover:bg-white/5 hover:text-zinc-100">Keahlian</a>
+        <a href="blog.html" class="rounded-md px-3 py-2.5 text-sm text-zinc-400 transition hover:bg-white/5 hover:text-zinc-100">Blog</a>
+        <a href="index.html#kontak" class="mt-1 rounded-md bg-accent px-3 py-2.5 text-center text-sm font-semibold text-ink-950 transition hover:bg-accent-300">Kontak</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="flex-1">
+    <div class="mx-auto max-w-4xl px-6 pb-16 pt-10 sm:pt-14">
+
+      <a href="index.html" class="inline-flex items-center gap-2 font-mono text-xs text-zinc-500 transition hover:text-accent">← Kembali ke beranda</a>
+
+      <div class="mt-8 border-b border-white/5 pb-8">
+        <p class="font-mono text-xs uppercase tracking-[0.2em] text-accent">// riwayat-kerja</p>
+        <h1 class="mt-3 text-3xl font-bold tracking-tight text-zinc-100 sm:text-4xl">Riwayat Kerja</h1>
+        <p class="mt-3 max-w-2xl text-sm leading-relaxed text-zinc-400">
+          Perjalanan karier saya dari freelance landing page sampai memimpin tim produk.
+          Diurutkan dari yang paling baru.
+        </p>
+      </div>
+
+      <section class="mt-10 space-y-5">
+
+        <article class="rounded-xl border border-white/5 bg-ink-900 p-6 transition hover:border-accent/30">
+          <div class="flex flex-wrap items-start justify-between gap-3">
+            <div>
+              <h2 class="text-lg font-semibold text-zinc-100">Senior Fullstack Developer</h2>
+              <p class="mt-1 text-sm text-accent">PT Nusantara Digital Teknologi · Jakarta (Remote)</p>
+            </div>
+            <span class="rounded-full border border-white/10 px-3 py-1 font-mono text-xs text-zinc-400">Jan 2024 — Sekarang</span>
+          </div>
+          <ul class="mt-4 space-y-2.5 text-sm leading-relaxed text-zinc-400">
+            <li class="flex gap-3"><span class="mt-2 h-1 w-1 shrink-0 rounded-full bg-accent"></span><span>Memimpin tim 5 developer membangun ulang platform logistik internal, memangkas waktu proses order dari 12 menit menjadi 90 detik.</span></li>
+            <li class="flex gap-3"><span class="mt-2 h-1 w-1 shrink-0 rounded-full bg-accent"></span><span>Merancang arsitektur modular monolith dengan NestJS + PostgreSQL dan menurunkan biaya infrastruktur bulanan sekitar 35%.</span></li>
+            <li class="flex gap-3"><span class="mt-2 h-1 w-1 shrink-0 rounded-full bg-accent"></span><span>Menetapkan standar code review, testing (Jest + Playwright), dan pipeline CI/CD yang menurunkan bug produksi 60% dalam dua kuartal.</span></li>
+          </ul>
+        </article>
+
+        <article class="rounded-xl border border-white/5 bg-ink-900 p-6 transition hover:border-accent/30">
+          <div class="flex flex-wrap items-start justify-between gap-3">
+            <div>
+              <h2 class="text-lg font-semibold text-zinc-100">Fullstack Developer</h2>
+              <p class="mt-1 text-sm text-accent">CV Karya Sinergi Mandiri · Bandung</p>
+            </div>
+            <span class="rounded-full border border-white/10 px-3 py-1 font-mono text-xs text-zinc-400">Mar 2022 — Des 2023</span>
+          </div>
+          <ul class="mt-4 space-y-2.5 text-sm leading-relaxed text-zinc-400">
+            <li class="flex gap-3"><span class="mt-2 h-1 w-1 shrink-0 rounded-full bg-accent"></span><span>Mengembangkan modul POS dan inventori multi-outlet yang kini dipakai lebih dari 120 toko di Jawa Barat.</span></li>
+            <li class="flex gap-3"><span class="mt-2 h-1 w-1 shrink-0 rounded-full bg-accent"></span><span>Membangun REST API Laravel dengan 200+ endpoint serta integrasi payment gateway Midtrans dan Xendit.</span></li>
+            <li class="flex gap-3"><span class="mt-2 h-1 w-1 shrink-0 rounded-full bg-accent"></span><span>Mengoptimalkan query dan caching Redis sehingga waktu muat dashboard turun dari 4,8 detik menjadi 800 ms.</span></li>
+          </ul>
+        </article>
+
+        <article class="rounded-xl border border-white/5 bg-ink-900 p-6 transition hover:border-accent/30">
+          <div class="flex flex-wrap items-start justify-between gap-3">
+            <div>
+              <h2 class="text-lg font-semibold text-zinc-100">Frontend Developer</h2>
+              <p class="mt-1 text-sm text-accent">PT Aksara Media Kreatif · Bandung</p>
+            </div>
+            <span class="rounded-full border border-white/10 px-3 py-1 font-mono text-xs text-zinc-400">Jul 2020 — Feb 2022</span>
+          </div>
+          <ul class="mt-4 space-y-2.5 text-sm leading-relaxed text-zinc-400">
+            <li class="flex gap-3"><span class="mt-2 h-1 w-1 shrink-0 rounded-full bg-accent"></span><span>Membangun antarmuka Vue 3 + Tailwind untuk 8 produk klien, termasuk portal berita dengan 500 ribu pembaca bulanan.</span></li>
+            <li class="flex gap-3"><span class="mt-2 h-1 w-1 shrink-0 rounded-full bg-accent"></span><span>Menerapkan design system internal yang mempercepat pembuatan halaman baru dari 3 hari menjadi 4 jam.</span></li>
+            <li class="flex gap-3"><span class="mt-2 h-1 w-1 shrink-0 rounded-full bg-accent"></span><span>Berkolaborasi dengan desainer dan backend dalam sprint dua mingguan menggunakan Jira dan Git Flow.</span></li>
+          </ul>
+        </article>
+
+        <article class="rounded-xl border border-white/5 bg-ink-900 p-6 transition hover:border-accent/30">
+          <div class="flex flex-wrap items-start justify-between gap-3">
+            <div>
+              <h2 class="text-lg font-semibold text-zinc-100">Backend Developer (Kontrak)</h2>
+              <p class="mt-1 text-sm text-accent">PT Solusi Data Prima · Jakarta</p>
+            </div>
+            <span class="rounded-full border border-white/10 px-3 py-1 font-mono text-xs text-zinc-400">Jan 2020 — Jun 2020</span>
+          </div>
+          <ul class="mt-4 space-y-2.5 text-sm leading-relaxed text-zinc-400">
+            <li class="flex gap-3"><span class="mt-2 h-1 w-1 shrink-0 rounded-full bg-accent"></span><span>Mengembangkan layanan sinkronisasi data antar cabang menggunakan Node.js dan RabbitMQ.</span></li>
+            <li class="flex gap-3"><span class="mt-2 h-1 w-1 shrink-0 rounded-full bg-accent"></span><span>Menulis dokumentasi API dengan OpenAPI 3 dan Postman collection untuk tim mitra integrasi.</span></li>
+            <li class="flex gap-3"><span class="mt-2 h-1 w-1 shrink-0 rounded-full bg-accent"></span><span>Menangani migrasi data 2 juta baris dari MySQL ke PostgreSQL tanpa downtime layanan.</span></li>
+          </ul>
+        </article>
+
+        <article class="rounded-xl border border-white/5 bg-ink-900 p-6 transition hover:border-accent/30">
+          <div class="flex flex-wrap items-start justify-between gap-3">
+            <div>
+              <h2 class="text-lg font-semibold text-zinc-100">Web Developer</h2>
+              <p class="mt-1 text-sm text-accent">Studio Kreatif Rembulan · Bandung</p>
+            </div>
+            <span class="rounded-full border border-white/10 px-3 py-1 font-mono text-xs text-zinc-400">Agu 2018 — Des 2019</span>
+          </div>
+          <ul class="mt-4 space-y-2.5 text-sm leading-relaxed text-zinc-400">
+            <li class="flex gap-3"><span class="mt-2 h-1 w-1 shrink-0 rounded-full bg-accent"></span><span>Mengerjakan 20+ website company profile dan e-commerce berbasis WordPress dan CodeIgniter.</span></li>
+            <li class="flex gap-3"><span class="mt-2 h-1 w-1 shrink-0 rounded-full bg-accent"></span><span>Menangani hosting, migrasi domain, dan optimasi SEO on-page untuk klien UMKM.</span></li>
+            <li class="flex gap-3"><span class="mt-2 h-1 w-1 shrink-0 rounded-full bg-accent"></span><span>Menjadi penghubung utama dengan klien mulai dari pengumpulan kebutuhan sampai serah terima proyek.</span></li>
+          </ul>
+        </article>
+
+        <article class="rounded-xl border border-white/5 bg-ink-900 p-6 transition hover:border-accent/30">
+          <div class="flex flex-wrap items-start justify-between gap-3">
+            <div>
+              <h2 class="text-lg font-semibold text-zinc-100">Freelance Web Developer</h2>
+              <p class="mt-1 text-sm text-accent">Mandiri · Bandung</p>
+            </div>
+            <span class="rounded-full border border-white/10 px-3 py-1 font-mono text-xs text-zinc-400">2016 — 2018</span>
+          </div>
+          <ul class="mt-4 space-y-2.5 text-sm leading-relaxed text-zinc-400">
+            <li class="flex gap-3"><span class="mt-2 h-1 w-1 shrink-0 rounded-full bg-accent"></span><span>Melayani pembuatan landing page dan sistem informasi sekolah untuk klien lokal.</span></li>
+            <li class="flex gap-3"><span class="mt-2 h-1 w-1 shrink-0 rounded-full bg-accent"></span><span>Mengelola sendiri seluruh proses: requirement, desain, pengembangan, dan deployment.</span></li>
+          </ul>
+        </article>
+
+        <article class="rounded-xl border border-white/5 bg-ink-900 p-6 transition hover:border-accent/30">
+          <div class="flex flex-wrap items-start justify-between gap-3">
+            <div>
+              <h2 class="text-lg font-semibold text-zinc-100">Magang IT Support</h2>
+              <p class="mt-1 text-sm text-accent">Dinas Komunikasi dan Informatika Kota Bandung</p>
+            </div>
+            <span class="rounded-full border border-white/10 px-3 py-1 font-mono text-xs text-zinc-400">Jul 2015 — Des 2015</span>
+          </div>
+          <ul class="mt-4 space-y-2.5 text-sm leading-relaxed text-zinc-400">
+            <li class="flex gap-3"><span class="mt-2 h-1 w-1 shrink-0 rounded-full bg-accent"></span><span>Membantu pemeliharaan jaringan dan perangkat komputer di 12 ruang kerja.</span></li>
+            <li class="flex gap-3"><span class="mt-2 h-1 w-1 shrink-0 rounded-full bg-accent"></span><span>Membuat aplikasi pencatatan inventaris sederhana dengan PHP dan MySQL.</span></li>
+          </ul>
+        </article>
+
+      </section>
+    </div>
+  </main>
+
+  <footer class="border-t border-white/5">
+    <div class="mx-auto flex max-w-4xl flex-col gap-4 px-6 py-10 sm:flex-row sm:items-center sm:justify-between">
+      <p class="font-mono text-xs text-zinc-500">© 2025 Teguh Rijanandi · Vantablo</p>
+      <nav class="flex flex-wrap gap-x-5 gap-y-2 font-mono text-xs text-zinc-500">
+        <a href="riwayat-kerja.html" class="transition hover:text-accent">Riwayat Kerja</a>
+        <a href="proyek.html" class="transition hover:text-accent">Proyek</a>
+        <a href="keahlian.html" class="transition hover:text-accent">Keahlian</a>
+        <a href="blog.html" class="transition hover:text-accent">Blog</a>
+        <a href="index.html#kontak" class="transition hover:text-accent">Kontak</a>
+      </nav>
+    </div>
+  </footer>
+
+</body>
+</html>

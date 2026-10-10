@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="id" class="scroll-smooth">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Merancang untuk Kepercayaan — Nadia Prameswari</title>
+<meta name="description" content="Catatan dari tiga iterasi alur pembayaran: bagaimana pengguna mencari tanda bahwa mereka tidak akan dirugikan." />
+<meta name="theme-color" content="#FAF9F6" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Inter:wght@300;400;500&display=swap" rel="stylesheet" />
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        fontFamily: {
+          serif: ['Fraunces', 'Georgia', 'serif'],
+          sans: ['Inter', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+        },
+        colors: {
+          paper: '#FAF9F6',
+          ink: '#1C1917',
+          muted: '#78716C',
+          line: '#E7E3DC',
+          accent: '#9A7B4F',
+        },
+      },
+    },
+  };
+</script>
+<style>
+  [x-cloak] { display: none !important; }
+  ::selection { background: #E7E3DC; }
+  .article p { margin-top: 1.25rem; }
+  .article p:first-of-type { margin-top: 0; }
+</style>
+<script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.14.1/dist/cdn.min.js"></script>
+</head>
+<body class="bg-paper font-sans text-ink antialiased">
+
+  <!-- Header -->
+  <header class="sticky top-0 z-40 border-b border-line bg-paper/85 backdrop-blur" x-data="{ open: false }">
+    <div class="mx-auto flex h-16 max-w-5xl items-center justify-between px-6">
+      <a href="index.html" class="font-serif text-lg tracking-tight text-ink">Lumica<span class="text-accent">.</span></a>
+
+      <nav class="hidden items-center gap-7 text-sm text-muted md:flex">
+        <a href="pengalaman.html" class="transition hover:text-ink">Pengalaman</a>
+        <a href="proyek.html" class="transition hover:text-ink">Proyek</a>
+        <a href="keahlian.html" class="transition hover:text-ink">Keahlian</a>
+        <a href="blog.html" class="text-ink">Tulisan</a>
+        <a href="index.html#kontak" class="rounded-full border border-line px-4 py-1.5 text-ink transition hover:border-ink">Kontak</a>
+      </nav>
+
+      <button type="button" class="-mr-2 p-2 text-ink md:hidden" @click="open = !open" :aria-expanded="open" aria-label="Menu">
+        <svg x-show="!open" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+          <path stroke-linecap="round" d="M4 7h16M4 12h16M4 17h16" />
+        </svg>
+        <svg x-show="open" x-cloak xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+          <path stroke-linecap="round" d="M6 6l12 12M18 6L6 18" />
+        </svg>
+      </button>
+    </div>
+
+    <div x-show="open" x-cloak class="border-t border-line bg-paper md:hidden">
+      <nav class="mx-auto flex max-w-5xl flex-col px-6 py-1 text-sm text-muted">
+        <a href="pengalaman.html" class="border-b border-line/70 py-3 transition hover:text-ink">Pengalaman</a>
+        <a href="proyek.html" class="border-b border-line/70 py-3 transition hover:text-ink">Proyek</a>
+        <a href="keahlian.html" class="border-b border-line/70 py-3 transition hover:text-ink">Keahlian</a>
+        <a href="blog.html" class="border-b border-line/70 py-3 text-ink">Tulisan</a>
+        <a href="pendidikan.html" class="border-b border-line/70 py-3 transition hover:text-ink">Pendidikan</a>
+        <a href="sertifikasi.html" class="border-b border-line/70 py-3 transition hover:text-ink">Sertifikasi</a>
+        <a href="penghargaan.html" class="border-b border-line/70 py-3 transition hover:text-ink">Penghargaan</a>
+        <a href="index.html#kontak" class="py-3 text-ink">Kontak</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Main -->
+  <main class="mx-auto max-w-5xl px-6 pb-24 pt-12 md:pt-16">
+    <a href="blog.html" class="inline-flex items-center text-sm text-muted transition hover:text-ink">← Kembali ke tulisan</a>
+
+    <!-- Article header -->
+    <article class="mx-auto mt-8 max-w-2xl">
+      <p class="text-xs uppercase tracking-[0.18em] text-muted">Catatan Proses</p>
+
+      <h1 class="mt-4 font-serif text-4xl leading-tight tracking-tight md:text-[2.75rem]">
+        Merancang untuk Kepercayaan: Catatan dari Alur Pembayaran
+      </h1>
+
+      <p class="mt-6 max-w-xl font-serif text-xl leading-relaxed text-muted">
+        Pengguna tidak membaca syarat dan ketentuan — mereka mencari tanda bahwa tidak akan dirugikan.
+        Ini yang saya pelajari setelah tiga iterasi alur pembayaran.
+      </p>
+
+      <div class="mt-8 flex flex-wrap items-center gap-x-3 gap-y-2 border-y border-line py-4 text-sm text-muted">
+        <span>12 Maret 2025</span>
+        <span aria-hidden="true" class="text-line">•</span>
+        <span>6 menit baca</span>
+        <span aria-hidden="true" class="text-line">•</span>
+        <span>Nadia Prameswari</span>
+      </div>
+    </article>
+
+    <!-- Article body -->
+    <div class="article mx-auto mt-12 max-w-2xl text-[16px] leading-[1.8] text-ink/85">
+
+      <p>
+        Ada satu layar yang saya gambar ulang empat kali dalam satu kuartal. Bukan layar yang rumit — hanya
+        satu halaman ringkasan sebelum pengguna menekan tombol bayar. Secara teknis, versi pertama sudah
+        “benar”: semua informasi ada, hierarki rapi, tombol jelas. Tapi di pengujian, peserta berhenti.
+        Mereka menggulir ke atas, membaca ulang, lalu bertanya hal yang sama: “Ini nanti kepotong berapa?”
+      </p>
+
+      <p>
+        Jawabannya sudah tertulis. Tepat di bawah tombol. Kami menyebutnya biaya layanan, dan kami
+        mencetaknya dengan warna abu-abu yang kami anggap “tenang”. Bagi kami itu tenang. Bagi peserta,
+        itu sembunyi-sembunyian.
+      </p>
+
+      <h2 class="mt-12 font-serif text-2xl leading-snug text-ink">Kepercayaan bukan hasil desain yang cantik</h2>
+
+      <p>
+        Setelah iterasi kedua, saya mulai mencatat kapan peserta mengerutkan dahi. Polanya cukup konsisten:
+        mereka ragu bukan ketika informasi kurang, tapi ketika ada jeda antara apa yang mereka lihat dan
+        apa yang mereka bayangkan akan terjadi. Jeda itu kecil — dua detik sebelum menggulir, satu tarikan
+        napas sebelum menekan tombol — tapi di situ semua keputusan dibuat.
+      </p>
+
+      <p>
+        Kami lalu mencoba pendekatan yang lebih membosankan: taruh semua angka di satu tempat, dalam satu
+        format, tanpa satu pun istilah yang perlu diterjemahkan. Tidak ada “biaya layanan”, tidak ada
+        “biaya platform”, tidak ada “estimasi”. Hanya: total yang harus dibayar, dan rinciannya tepat di
+        bawahnya.
+      </p>
+
+      <blockquote class="mt-10 border-l border-accent pl-6 font-serif text-xl leading-relaxed text-ink">
+        Pengguna tidak mencari keindahan di layar pembayaran. Mereka mencari alasan untuk tidak kabur.
+      </blockquote>
+
+      <h2 class="mt-12 font-serif text-2xl leading-snug text-ink">Tiga hal yang benar-benar mengubah perilaku</h2>
+
+      <p>
+        Dari sekian banyak perubahan kecil, hanya tiga yang hasilnya terlihat di data. Ketiganya sama-sama
+        sederhana, dan semuanya soal mengurangi beban kognitif, bukan menambah fitur.
+      </p>
+
+      <ul class="mt-6 space-y-3 pl-5">
+        <li class="list-disc marker:text-accent">
+          <span class="text-ink">Total di awal, bukan di akhir.</span> Pengguna ingin tahu angka akhir sebelum
+          membaca apa pun yang lain. Menaruhnya di bawah membuat mereka menggulir dengan curiga.
+        </li>
+        <li class="list-disc marker:text-accent">
+          <span class="text-ink">Satu format angka untuk semua.</span> Sebelumnya kami menulis “Rp1.500” di satu
+          tempat dan “Rp 1.500,00” di tempat lain. Perbedaan kecil ini membuat orang mengira ada dua biaya berbeda.
+        </li>
+        <li class="list-disc marker:text-accent">
+          <span class="text-ink">Beri tahu kapan uang benar-benar berpindah.</span> Kalimat seperti “Dana akan
+          dipotong setelah kamu menekan Bayar” mengurangi satu pertanyaan yang selalu muncul di wawancara.
+        </li>
+      </ul>
+
+      <h2 class="mt-12 font-serif text-2xl leading-snug text-ink">Yang tidak berhasil</h2>
+
+      <p>
+        Kami sempat mencoba menambahkan lencana “Transaksi Aman” dengan ikon perisai di atas tombol. Tim
+        cukup yakin ini akan menaikkan rasa percaya. Hasilnya nol. Di wawancara, peserta bahkan tidak
+        menyadarinya; ketika ditanya, salah satu dari mereka berkata, “Semua aplikasi juga nulis itu.”
+      </p>
+
+      <p>
+        Pelajaran yang saya ambil: kepercayaan tidak bisa ditempel sebagai stiker. Ia dibangun dari
+        kejelasan yang konsisten, dan kejelasan itu tidak punya ikon.
+      </p>
+
+      <h2 class="mt-12 font-serif text-2xl leading-snug text-ink">Yang saya bawa ke proyek berikutnya</h2>
+
+      <p>
+        Sekarang, sebelum menggambar layar konfirmasi apa pun, saya menulis daftar pertanyaan yang paling
+        mungkin muncul di kepala pengguna. Bukan pertanyaan yang sopan untuk ditanyakan, tapi yang membuat
+        mereka berhenti dan menutup aplikasi. Untuk alur pembayaran, daftarnya selalu mulai dengan tiga hal:
+        berapa totalnya, kapan uangnya keluar, dan apa yang terjadi kalau gagal.
+      </p>
+
+      <p>
+        Kalau ketiga jawaban itu bisa ditemukan dalam lima detik tanpa menggulir, biasanya sisanya berjalan
+        sendiri. Bukan karena layarnya indah — tapi karena tidak ada lagi alasan untuk ragu.
+      </p>
+
+      <p class="mt-10 text-sm text-muted">
+        Catatan ini ditulis berdasarkan proyek pembayaran di sebuah platform e-commerce Indonesia, 2024.
+        Angka spesifik sengaja tidak disertakan.
+      </p>
+    </div>
+
+    <!-- Author card -->
+    <section class="mx-auto mt-16 max-w-2xl border-t border-line pt-8">
+      <div class="flex items-start gap-5">
+        <div class="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-line font-serif text-lg text-ink/60">
+          N
+        </div>
+        <div>
+          <p class="font-serif text-lg text-ink">Nadia Prameswari</p>
+          <p class="mt-1 text-sm leading-relaxed text-muted">
+            Product Designer di Jakarta. Menulis tentang proses, riset, dan hal-hal kecil yang sering
+            dilewatkan saat merancang produk digital.
+          </p>
+          <div class="mt-3 flex gap-4 text-sm">
+            <a href="blog.html" class="text-muted underline decoration-line underline-offset-4 transition hover:text-ink hover:decoration-ink">Semua tulisan</a>
+            <a href="index.html#kontak" class="text-muted underline decoration-line underline-offset-4 transition hover:text-ink hover:decoration-ink">Kontak</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Prev / next -->
+    <nav class="mx-auto mt-14 grid max-w-2xl gap-4 border-t border-line pt-8 sm:grid-cols-2">
+      <a href="blog.html" class="group rounded-2xl border border-line p-5 transition hover:border-ink/30">
+        <p class="text-xs uppercase tracking-[0.18em] text-muted">Sebelumnya</p>
+        <p class="mt-2 font-serif text-lg leading-snug text-ink">
+          Portofolio yang Jujur: Menunjukkan Proses, Bukan Hanya Hasil
+        </p>
+        <p class="mt-1 text-xs text-muted">5 Juni 2024</p>
+      </a>
+      <a href="blog.html" class="group rounded-2xl border border-line p-5 transition hover:border-ink/30 sm:text-right">
+        <p class="text-xs uppercase tracking-[0.18em] text-muted">Selanjutnya</p>
+        <p class="mt-2 font-serif text-lg leading-snug text-ink">
+          Design System Bukan Proyek, Tapi Kebiasaan
+        </p>
+        <p class="mt-1 text-xs text-muted">28 Januari 2025</p>
+      </a>
+    </nav>
+  </main>
+
+  <!-- Footer -->
+  <footer class="border-t border-line">
+    <div class="mx-auto max-w-5xl px-6 py-14">
+      <div class="grid gap-10 md:grid-cols-12">
+        <div class="md:col-span-4">
+          <p class="font-serif text-lg text-ink">Lumica<span class="text-accent">.</span></p>
+          <p class="mt-3 max-w-xs text-sm leading-relaxed text-muted">
+            Portofolio Nadia Prameswari, Product Designer di Jakarta. Ruang kecil untuk proses, catatan, dan karya.
+          </p>
+        </div>
+        <div class="md:col-span-2 md:col-start-6">
+          <p class="text-xs uppercase tracking-[0.18em] text-muted">Halaman</p>
+          <ul class="mt-4 space-y-2 text-sm text-muted">
+            <li><a href="index.html" class="transition hover:text-ink">Beranda</a></li>
+            <li><a href="pengalaman.html" class="transition hover:text-ink">Pengalaman</a></li>
+            <li><a href="proyek.html" class="transition hover:text-ink">Proyek</a></li>
+            <li><a href="keahlian.html" class="transition hover:text-ink">Keahlian</a></li>
+          </ul>
+        </div>
+        <div class="md:col-span-2">
+          <p class="text-xs uppercase tracking-[0.18em] text-muted">Lainnya</p>
+          <ul class="mt-4 space-y-2 text-sm text-muted">
+            <li><a href="pendidikan.html" class="transition hover:text-ink">Pendidikan</a></li>
+            <li><a href="sertifikasi.html" class="transition hover:text-ink">Sertifikasi</a></li>
+            <li><a href="penghargaan.html" class="transition hover:text-ink">Penghargaan</a></li>
+            <li><a href="blog.html" class="transition hover:text-ink">Tulisan</a></li>
+          </ul>
+        </div>
+        <div class="md:col-span-3">
+          <p class="text-xs uppercase tracking-[0.18em] text-muted">Kontak</p>
+          <ul class="mt-4 space-y-2 text-sm text-muted">
+            <li><a href="mailto:nadia@lumica.studio" class="transition hover:text-ink">nadia@lumica.studio</a></li>
+            <li><a href="#" class="transition hover:text-ink">LinkedIn</a></li>
+            <li><a href="#" class="transition hover:text-ink">Dribbble</a></li>
+            <li><a href="#" class="transition hover:text-ink">Instagram</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="mt-12 flex flex-col gap-3 border-t border-line pt-6 text-xs text-muted sm:flex-row sm:items-center sm:justify-between">
+        <p>© 2025 Nadia Prameswari. Dirancang &amp; dibangun di Jakarta.</p>
+        <p>Dibuat dengan Figma, kopi, dan sedikit keras kepala.</p>
+      </div>
+    </div>
+  </footer>
+
+</body>
+</html>

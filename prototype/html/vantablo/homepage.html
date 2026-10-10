@@ -1,0 +1,728 @@
+<!DOCTYPE html>
+<html lang="id" class="scroll-smooth">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Teguh Rijanandi — Fullstack Developer</title>
+<meta name="description" content="Portofolio Teguh Rijanandi, Fullstack Developer asal Yogyakarta. Laravel, PostgreSQL, Docker.">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        colors: {
+          base: '#0A0A0B',
+          surface: '#111113',
+          surface2: '#17171B',
+          line: '#26262C',
+          accent: {
+            DEFAULT: '#7C6CFF',
+            soft: '#A79BFF',
+            dim: '#4B3FBF'
+          },
+          lime: '#C6F24E'
+        },
+        fontFamily: {
+          sans: ['Inter', 'system-ui', '-apple-system', 'sans-serif'],
+          mono: ['"JetBrains Mono"', 'ui-monospace', 'SFMono-Regular', 'monospace']
+        },
+        maxWidth: {
+          content: '1024px'
+        }
+      }
+    }
+  }
+</script>
+
+<style>
+  [x-cloak] { display: none !important; }
+  html { -webkit-tap-highlight-color: transparent; }
+  body {
+    background-image:
+      radial-gradient(circle at 15% -10%, rgba(124,108,255,0.10), transparent 45%),
+      radial-gradient(circle at 90% 5%, rgba(198,242,78,0.05), transparent 40%);
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+  }
+  ::-webkit-scrollbar { width: 10px; height: 10px; }
+  ::-webkit-scrollbar-track { background: #0A0A0B; }
+  ::-webkit-scrollbar-thumb { background: #26262C; border-radius: 999px; }
+  ::-webkit-scrollbar-thumb:hover { background: #35353D; }
+</style>
+
+<script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.14.1/dist/cdn.min.js"></script>
+</head>
+
+<body class="min-h-screen bg-base font-sans text-slate-300 antialiased selection:bg-accent/30 selection:text-white">
+
+<!-- ============ HEADER ============ -->
+<header x-data="{ open: false }" class="sticky top-0 z-50 border-b border-line bg-base/85 backdrop-blur-md">
+  <div class="mx-auto flex h-16 max-w-content items-center justify-between px-5">
+
+    <a href="#beranda" class="group flex items-center gap-3">
+      <span class="grid h-9 w-9 place-items-center rounded-lg bg-gradient-to-br from-accent to-accent-dim font-mono text-sm font-bold text-white shadow-lg shadow-accent/20">TR</span>
+      <span class="font-mono text-sm font-medium tracking-tight text-white">teguh<span class="text-accent-soft">.</span>dev</span>
+    </a>
+
+    <nav class="hidden items-center gap-8 md:flex">
+      <a href="#beranda" class="font-mono text-sm text-slate-400 transition hover:text-white">Beranda</a>
+      <a href="blog.html" class="font-mono text-sm text-slate-400 transition hover:text-white">Blog</a>
+      <a href="#kontak" class="font-mono text-sm text-slate-400 transition hover:text-white">Kontak</a>
+      <a href="#kontak" class="rounded-lg border border-accent/40 bg-accent/10 px-4 py-2 font-mono text-sm text-accent-soft transition hover:bg-accent/20 hover:text-white">Hire Me</a>
+    </nav>
+
+    <button
+      type="button"
+      class="grid h-10 w-10 place-items-center rounded-lg border border-line bg-surface2 text-slate-300 transition hover:border-accent/50 hover:text-white md:hidden"
+      @click="open = !open"
+      :aria-expanded="open"
+      aria-label="Buka menu navigasi">
+      <svg x-show="!open" class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+        <path d="M4 7h16M4 12h16M4 17h16"/>
+      </svg>
+      <svg x-show="open" x-cloak class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+        <path d="M6 6l12 12M18 6L6 18"/>
+      </svg>
+    </button>
+  </div>
+
+  <!-- Mobile nav -->
+  <div x-show="open" x-cloak
+       x-transition:enter="transition ease-out duration-150"
+       x-transition:enter-start="opacity-0 -translate-y-1"
+       x-transition:enter-end="opacity-100 translate-y-0"
+       x-transition:leave="transition ease-in duration-100"
+       x-transition:leave-start="opacity-100"
+       x-transition:leave-end="opacity-0"
+       class="border-t border-line bg-surface md:hidden">
+    <nav class="mx-auto flex max-w-content flex-col px-5 py-3">
+      <a href="#beranda" @click="open = false" class="rounded-lg px-3 py-3 font-mono text-sm text-slate-300 transition hover:bg-surface2 hover:text-white">Beranda</a>
+      <a href="blog.html" @click="open = false" class="rounded-lg px-3 py-3 font-mono text-sm text-slate-300 transition hover:bg-surface2 hover:text-white">Blog</a>
+      <a href="#kontak" @click="open = false" class="rounded-lg px-3 py-3 font-mono text-sm text-slate-300 transition hover:bg-surface2 hover:text-white">Kontak</a>
+    </nav>
+  </div>
+</header>
+
+<!-- ============ MAIN ============ -->
+<main class="mx-auto max-w-content px-5 pb-24">
+
+  <!-- ============ HERO ============ -->
+  <section id="beranda" class="relative scroll-mt-24 pt-12">
+    <div class="pointer-events-none absolute left-1/2 top-4 -z-10 h-72 w-[38rem] max-w-[95%] -translate-x-1/2 rounded-full bg-accent/25 blur-[110px]"></div>
+    <div class="pointer-events-none absolute left-1/4 top-40 -z-10 h-40 w-72 -translate-x-1/2 rounded-full bg-lime/10 blur-[100px]"></div>
+
+    <div class="rounded-2xl border border-line bg-surface/70 p-6 backdrop-blur-sm sm:p-9">
+      <div class="flex flex-col items-center gap-6 sm:flex-row sm:items-center">
+
+        <!-- Avatar -->
+        <div class="relative shrink-0">
+          <div class="h-28 w-28 rounded-full bg-gradient-to-br from-accent via-accent-soft to-lime p-[2px]">
+            <div class="grid h-full w-full place-items-center rounded-full bg-surface2 font-mono text-2xl font-bold tracking-tight text-white">
+              TR
+            </div>
+          </div>
+          <span class="absolute bottom-1.5 right-1.5 h-4 w-4 rounded-full border-[3px] border-surface bg-lime" title="Tersedia untuk kolaborasi"></span>
+        </div>
+
+        <!-- Identity -->
+        <div class="min-w-0 flex-1 text-center sm:text-left">
+          <span class="inline-flex items-center gap-2 rounded-full border border-line bg-surface2 px-3 py-1 font-mono text-[10px] uppercase tracking-[0.18em] text-slate-400">
+            <span class="h-1.5 w-1.5 rounded-full bg-lime"></span>
+            Open to work
+          </span>
+
+          <h1 class="mt-3 font-mono text-3xl font-bold tracking-tight text-white sm:text-4xl">
+            Teguh Rijanandi
+          </h1>
+          <p class="mt-1.5 text-lg font-medium text-accent-soft">Fullstack Developer</p>
+
+          <p class="mt-2.5 flex items-center justify-center gap-2 font-mono text-sm text-slate-400 sm:justify-start">
+            <svg class="h-4 w-4 shrink-0 text-slate-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 21s7-5.6 7-11a7 7 0 1 0-14 0c0 5.4 7 11 7 11z"/>
+              <circle cx="12" cy="10" r="2.5"/>
+            </svg>
+            Yogyakarta, Indonesia
+          </p>
+
+          <!-- Socials -->
+          <div class="mt-5 flex items-center justify-center gap-2.5 sm:justify-start">
+            <a href="https://github.com/teguhrijanandi" target="_blank" rel="noopener" aria-label="GitHub"
+               class="grid h-10 w-10 place-items-center rounded-lg border border-line bg-surface2 text-slate-400 transition duration-200 hover:-translate-y-0.5 hover:border-accent/50 hover:text-white">
+              <svg class="h-[18px] w-[18px]" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M12 .5C5.73.5.5 5.73.5 12a11.5 11.5 0 0 0 7.86 10.92c.58.1.79-.25.79-.56v-2c-3.2.7-3.88-1.37-3.88-1.37-.53-1.34-1.29-1.7-1.29-1.7-1.05-.72.08-.7.08-.7 1.16.08 1.77 1.2 1.77 1.2 1.03 1.77 2.7 1.26 3.36.96.1-.75.4-1.26.73-1.55-2.55-.29-5.24-1.28-5.24-5.7 0-1.26.45-2.29 1.19-3.1-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.18 1.18a11 11 0 0 1 5.79 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.76.12 3.05.74.81 1.18 1.84 1.18 3.1 0 4.43-2.69 5.4-5.25 5.69.41.36.78 1.06.78 2.14v3.17c0 .31.2.67.8.56A11.5 11.5 0 0 0 23.5 12C23.5 5.73 18.27.5 12 .5z"/>
+              </svg>
+            </a>
+            <a href="https://linkedin.com/in/teguhrijanandi" target="_blank" rel="noopener" aria-label="LinkedIn"
+               class="grid h-10 w-10 place-items-center rounded-lg border border-line bg-surface2 text-slate-400 transition duration-200 hover:-translate-y-0.5 hover:border-accent/50 hover:text-white">
+              <svg class="h-[18px] w-[18px]" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M20.45 20.45h-3.56v-5.57c0-1.33-.03-3.04-1.85-3.04-1.85 0-2.14 1.45-2.14 2.94v5.67H9.35V9h3.42v1.56h.05c.47-.9 1.63-1.85 3.36-1.85 3.6 0 4.27 2.37 4.27 5.45v6.29zM5.34 7.43a2.07 2.07 0 1 1 0-4.13 2.07 2.07 0 0 1 0 4.13zM7.12 20.45H3.55V9h3.57v11.45zM22.22 0H1.77C.79 0 0 .77 0 1.73v20.54C0 23.23.79 24 1.77 24h20.45c.98 0 1.78-.77 1.78-1.73V1.73C24 .77 23.2 0 22.22 0z"/>
+              </svg>
+            </a>
+            <a href="mailto:teguh@rizanandi.dev" aria-label="Email"
+               class="grid h-10 w-10 place-items-center rounded-lg border border-line bg-surface2 text-slate-400 transition duration-200 hover:-translate-y-0.5 hover:border-accent/50 hover:text-white">
+              <svg class="h-[18px] w-[18px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="2.5" y="4.5" width="19" height="15" rx="2.5"/>
+                <path d="M3 7l9 6 9-6"/>
+              </svg>
+            </a>
+            <a href="https://teguh.dev" target="_blank" rel="noopener" aria-label="Website"
+               class="grid h-10 w-10 place-items-center rounded-lg border border-line bg-surface2 text-slate-400 transition duration-200 hover:-translate-y-0.5 hover:border-accent/50 hover:text-white">
+              <svg class="h-[18px] w-[18px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="9"/>
+                <path d="M3 12h18M12 3c2.5 2.6 3.8 5.6 3.8 9s-1.3 6.4-3.8 9c-2.5-2.6-3.8-5.6-3.8-9S9.5 5.6 12 3z"/>
+              </svg>
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- CTA -->
+      <div class="mt-7 flex flex-col items-center gap-4 border-t border-line pt-6 sm:flex-row sm:justify-between">
+        <a href="mailto:teguh@rizanandi.dev"
+           class="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-accent px-6 py-3.5 font-mono text-sm font-semibold text-white shadow-lg shadow-accent/25 transition duration-200 hover:-translate-y-0.5 hover:bg-accent-soft hover:shadow-accent/40 sm:w-auto">
+          <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M4 6h16v12H4z"/><path d="M4 7l8 6 8-6"/>
+          </svg>
+          Hubungi Saya
+        </a>
+        <p class="font-mono text-xs text-slate-500">Terbuka untuk proyek freelance &amp; kolaborasi jangka panjang.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ TENTANG ============ -->
+  <section id="tentang" class="scroll-mt-24 pt-16">
+    <h2 class="font-mono text-xl font-bold tracking-tight text-white sm:text-2xl">Tentang</h2>
+    <div class="mt-4 h-px w-full bg-line"></div>
+
+    <div class="mt-6 space-y-4 text-[15px] leading-relaxed text-slate-400">
+      <p>
+        Halo! Saya Teguh, seorang Fullstack Developer yang berbasis di Yogyakarta dengan pengalaman lebih dari sembilan tahun
+        membangun aplikasi web untuk sektor pendidikan, pemerintahan, dan teknologi finansial. Saya menikmati pekerjaan di
+        seluruh lapisan produk — mulai dari merancang skema basis data PostgreSQL yang rapi, menulis kode Laravel yang bersih
+        dan teruji, sampai memoles antarmuka dengan Tailwind CSS agar terasa cepat dan nyaman digunakan. Bagi saya, developer
+        yang baik bukan hanya yang bisa membuat fitur berjalan, tetapi juga yang peduli pada keterbacaan kode, keamanan, dan
+        kemudahan tim lain untuk merawatnya di kemudian hari.
+      </p>
+      <p>
+        Dalam beberapa tahun terakhir saya banyak menangani sistem berskala besar seperti <span class="font-mono text-accent-soft">SIAKAD Universitas</span>
+        yang melayani belasan ribu mahasiswa setiap semester, serta <span class="font-mono text-accent-soft">QRIS Forensic System</span>
+        untuk mengaudit dan merekonsiliasi transaksi pembayaran digital bagi merchant dan penyedia jasa pembayaran. Dari
+        pengalaman itu saya belajar bahwa arsitektur yang baik lahir dari pemahaman domain yang dalam, bukan sekadar mengikuti
+        tren teknologi. Saya juga terbiasa bekerja dengan Docker dan pipeline CI/CD, sehingga proses rilis bisa berjalan
+        konsisten dari laptop lokal sampai server produksi.
+      </p>
+      <p>
+        Di luar pekerjaan, saya aktif menulis catatan teknis di blog pribadi, berkontribusi pada beberapa proyek open source,
+        dan sesekali menjadi mentor di komunitas developer lokal Yogyakarta. Saya senang berbagi topik seputar optimasi query,
+        otomatisasi deployment, pengujian perangkat lunak, dan praktik refactoring kode legacy. Jika Anda sedang mencari
+        developer yang bisa dipercaya untuk membangun produk dari nol maupun merapikan sistem yang sudah ada, silakan sapa
+        saya lewat email atau LinkedIn.
+      </p>
+    </div>
+  </section>
+
+  <!-- ============ RIWAYAT KERJA ============ -->
+  <section id="riwayat-kerja" class="scroll-mt-24 pt-16">
+    <h2 class="font-mono text-xl font-bold tracking-tight text-white sm:text-2xl">Riwayat Kerja</h2>
+    <div class="mt-4 h-px w-full bg-line"></div>
+
+    <div class="mt-6 space-y-4">
+
+      <article class="rounded-xl border border-line bg-surface/60 p-5 transition duration-200 hover:-translate-y-1 hover:border-accent/40 hover:bg-surface2">
+        <div class="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
+          <h3 class="text-base font-semibold text-white">Senior Fullstack Developer</h3>
+          <span class="font-mono text-xs text-slate-500">Jan 2023 – Sekarang</span>
+        </div>
+        <p class="mt-1 font-mono text-sm text-accent-soft">PT Nusantara Digital Solusi · Yogyakarta</p>
+        <p class="mt-2 text-sm leading-relaxed text-slate-400">
+          Memimpin pengembangan platform SIAKAD berbasis Laravel dan PostgreSQL untuk 12 universitas dengan total trafik lebih dari 40 ribu pengguna aktif.
+        </p>
+      </article>
+
+      <article class="rounded-xl border border-line bg-surface/60 p-5 transition duration-200 hover:-translate-y-1 hover:border-accent/40 hover:bg-surface2">
+        <div class="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
+          <h3 class="text-base font-semibold text-white">Fullstack Developer</h3>
+          <span class="font-mono text-xs text-slate-500">Mar 2021 – Des 2022</span>
+        </div>
+        <p class="mt-1 font-mono text-sm text-accent-soft">CV Karya Teknologi Nusantara · Yogyakarta</p>
+        <p class="mt-2 text-sm leading-relaxed text-slate-400">
+          Membangun sistem rekonsiliasi QRIS dan dashboard pemantauan transaksi real-time dengan Laravel, Redis, dan PostgreSQL.
+        </p>
+      </article>
+
+      <article class="rounded-xl border border-line bg-surface/60 p-5 transition duration-200 hover:-translate-y-1 hover:border-accent/40 hover:bg-surface2">
+        <div class="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
+          <h3 class="text-base font-semibold text-white">Backend Developer</h3>
+          <span class="font-mono text-xs text-slate-500">Jun 2019 – Feb 2021</span>
+        </div>
+        <p class="mt-1 font-mono text-sm text-accent-soft">PT Sinar Data Prima · Jakarta (Remote)</p>
+        <p class="mt-2 text-sm leading-relaxed text-slate-400">
+          Merancang REST API internal dan memimpin migrasi basis data dari MySQL ke PostgreSQL tanpa downtime pada jam operasional.
+        </p>
+      </article>
+
+      <article class="rounded-xl border border-line bg-surface/60 p-5 transition duration-200 hover:-translate-y-1 hover:border-accent/40 hover:bg-surface2">
+        <div class="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
+          <h3 class="text-base font-semibold text-white">Web Developer</h3>
+          <span class="font-mono text-xs text-slate-500">Agu 2017 – Mei 2019</span>
+        </div>
+        <p class="mt-1 font-mono text-sm text-accent-soft">Startup EduPintar · Yogyakarta</p>
+        <p class="mt-2 text-sm leading-relaxed text-slate-400">
+          Mengembangkan learning management system internal menggunakan Laravel dan Vue 2 yang dipakai oleh 60+ sekolah mitra.
+        </p>
+      </article>
+
+      <article class="rounded-xl border border-line bg-surface/60 p-5 transition duration-200 hover:-translate-y-1 hover:border-accent/40 hover:bg-surface2">
+        <div class="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
+          <h3 class="text-base font-semibold text-white">Junior Web Developer</h3>
+          <span class="font-mono text-xs text-slate-500">Jul 2016 – Jul 2017</span>
+        </div>
+        <p class="mt-1 font-mono text-sm text-accent-soft">PT Media Kreatif Jogja · Yogyakarta</p>
+        <p class="mt-2 text-sm leading-relaxed text-slate-400">
+          Membuat dan memelihara situs klien korporat berbasis CodeIgniter serta menangani integrasi payment gateway dasar.
+        </p>
+      </article>
+
+    </div>
+
+    <a href="riwayat-kerja.html"
+       class="mt-6 flex w-full items-center justify-center gap-2 rounded-xl border border-line bg-surface2 px-5 py-3.5 font-mono text-sm font-medium text-slate-300 transition duration-200 hover:-translate-y-0.5 hover:border-accent/50 hover:text-white">
+      Lihat selengkapnya
+      <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M5 12h14M13 6l6 6-6 6"/>
+      </svg>
+    </a>
+  </section>
+
+  <!-- ============ PROYEK ============ -->
+  <section id="proyek" class="scroll-mt-24 pt-16">
+    <h2 class="font-mono text-xl font-bold tracking-tight text-white sm:text-2xl">Proyek</h2>
+    <div class="mt-4 h-px w-full bg-line"></div>
+
+    <div class="mt-6 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+
+      <!-- 1 -->
+      <a href="proyek.html" class="group flex flex-col overflow-hidden rounded-xl border border-line bg-surface/60 transition duration-200 hover:-translate-y-1 hover:border-accent/40 hover:bg-surface2">
+        <img src="https://placehold.co/600x400/17171B/7C6CFF?text=SIAKAD+Universitas" alt="Thumbnail SIAKAD Universitas" loading="lazy" class="aspect-video w-full object-cover">
+        <div class="flex flex-1 flex-col p-5">
+          <h3 class="text-base font-semibold text-white group-hover:text-accent-soft">SIAKAD Universitas</h3>
+          <p class="mt-2 flex-1 text-sm leading-relaxed text-slate-400">
+            Sistem informasi akademik terpadu untuk KRS, nilai, absensi, dan wisuda dengan alur persetujuan multi-level.
+          </p>
+          <div class="mt-4 flex flex-wrap gap-2">
+            <span class="rounded-full border border-line bg-base px-2.5 py-1 font-mono text-[11px] text-slate-400">Laravel</span>
+            <span class="rounded-full border border-line bg-base px-2.5 py-1 font-mono text-[11px] text-slate-400">PostgreSQL</span>
+            <span class="rounded-full border border-line bg-base px-2.5 py-1 font-mono text-[11px] text-slate-400">Docker</span>
+          </div>
+        </div>
+      </a>
+
+      <!-- 2 -->
+      <a href="proyek.html" class="group flex flex-col overflow-hidden rounded-xl border border-line bg-surface/60 transition duration-200 hover:-translate-y-1 hover:border-accent/40 hover:bg-surface2">
+        <img src="https://placehold.co/600x400/17171B/C6F24E?text=QRIS+Forensic" alt="Thumbnail QRIS Forensic System" loading="lazy" class="aspect-video w-full object-cover">
+        <div class="flex flex-1 flex-col p-5">
+          <h3 class="text-base font-semibold text-white group-hover:text-accent-soft">QRIS Forensic System</h3>
+          <p class="mt-2 flex-1 text-sm leading-relaxed text-slate-400">
+            Mesin audit transaksi QRIS untuk mendeteksi anomali, duplikasi, dan indikasi fraud pada rekonsiliasi harian.
+          </p>
+          <div class="mt-4 flex flex-wrap gap-2">
+            <span class="rounded-full border border-line bg-base px-2.5 py-1 font-mono text-[11px] text-slate-400">Laravel</span>
+            <span class="rounded-full border border-line bg-base px-2.5 py-1 font-mono text-[11px] text-slate-400">Redis</span>
+            <span class="rounded-full border border-line bg-base px-2.5 py-1 font-mono text-[11px] text-slate-400">MinIO</span>
+          </div>
+        </div>
+      </a>
+
+      <!-- 3 -->
+      <a href="proyek.html" class="group flex flex-col overflow-hidden rounded-xl border border-line bg-surface/60 transition duration-200 hover:-translate-y-1 hover:border-accent/40 hover:bg-surface2">
+        <img src="https://placehold.co/600x400/17171B/A79BFF?text=SIGAP+Desa" alt="Thumbnail SIGAP Desa" loading="lazy" class="aspect-video w-full object-cover">
+        <div class="flex flex-1 flex-col p-5">
+          <h3 class="text-base font-semibold text-white group-hover:text-accent-soft">SIGAP Desa</h3>
+          <p class="mt-2 flex-1 text-sm leading-relaxed text-slate-400">
+            Aplikasi administrasi desa untuk surat menyurat, data penduduk, dan publikasi APBDes secara transparan.
+          </p>
+          <div class="mt-4 flex flex-wrap gap-2">
+            <span class="rounded-full border border-line bg-base px-2.5 py-1 font-mono text-[11px] text-slate-400">Laravel</span>
+            <span class="rounded-full border border-line bg-base px-2.5 py-1 font-mono text-[11px] text-slate-400">MySQL</span>
+            <span class="rounded-full border border-line bg-base px-2.5 py-1 font-mono text-[11px] text-slate-400">Tailwind</span>
+          </div>
+        </div>
+      </a>
+
+      <!-- 4 -->
+      <a href="proyek.html" class="group flex flex-col overflow-hidden rounded-xl border border-line bg-surface/60 transition duration-200 hover:-translate-y-1 hover:border-accent/40 hover:bg-surface2">
+        <img src="https://placehold.co/600x400/17171B/7C6CFF?text=Warung+Analytics" alt="Thumbnail Warung Analytics" loading="lazy" class="aspect-video w-full object-cover">
+        <div class="flex flex-1 flex-col p-5">
+          <h3 class="text-base font-semibold text-white group-hover:text-accent-soft">Warung Analytics</h3>
+          <p class="mt-2 flex-1 text-sm leading-relaxed text-slate-400">
+            Kasir dan analitik penjualan untuk UMKM dengan laporan laba harian serta prediksi stok sederhana.
+          </p>
+          <div class="mt-4 flex flex-wrap gap-2">
+            <span class="rounded-full border border-line bg-base px-2.5 py-1 font-mono text-[11px] text-slate-400">Laravel</span>
+            <span class="rounded-full border border-line bg-base px-2.5 py-1 font-mono text-[11px] text-slate-400">Livewire</span>
+            <span class="rounded-full border border-line bg-base px-2.5 py-1 font-mono text-[11px] text-slate-400">Chart.js</span>
+          </div>
+        </div>
+      </a>
+
+      <!-- 5 -->
+      <a href="proyek.html" class="group flex flex-col overflow-hidden rounded-xl border border-line bg-surface/60 transition duration-200 hover:-translate-y-1 hover:border-accent/40 hover:bg-surface2">
+        <img src="https://placehold.co/600x400/17171B/C6F24E?text=Docker+Starter+Kit" alt="Thumbnail Docker Starter Kit" loading="lazy" class="aspect-video w-full object-cover">
+        <div class="flex flex-1 flex-col p-5">
+          <h3 class="text-base font-semibold text-white group-hover:text-accent-soft">Docker Starter Kit</h3>
+          <p class="mt-2 flex-1 text-sm leading-relaxed text-slate-400">
+            Template deployment Laravel siap pakai: Nginx, PHP-FPM, PostgreSQL, Redis, dan pipeline GitHub Actions.
+          </p>
+          <div class="mt-4 flex flex-wrap gap-2">
+            <span class="rounded-full border border-line bg-base px-2.5 py-1 font-mono text-[11px] text-slate-400">Docker</span>
+            <span class="rounded-full border border-line bg-base px-2.5 py-1 font-mono text-[11px] text-slate-400">Nginx</span>
+            <span class="rounded-full border border-line bg-base px-2.5 py-1 font-mono text-[11px] text-slate-400">CI/CD</span>
+          </div>
+        </div>
+      </a>
+
+      <!-- 6 -->
+      <a href="proyek.html" class="group flex flex-col overflow-hidden rounded-xl border border-line bg-surface/60 transition duration-200 hover:-translate-y-1 hover:border-accent/40 hover:bg-surface2">
+        <img src="https://placehold.co/600x400/17171B/A79BFF?text=OpenPresence" alt="Thumbnail OpenPresence" loading="lazy" class="aspect-video w-full object-cover">
+        <div class="flex flex-1 flex-col p-5">
+          <h3 class="text-base font-semibold text-white group-hover:text-accent-soft">OpenPresence</h3>
+          <p class="mt-2 flex-1 text-sm leading-relaxed text-slate-400">
+            Absensi karyawan berbasis QR dinamis dengan geofencing, rekap otomatis, dan ekspor ke payroll.
+          </p>
+          <div class="mt-4 flex flex-wrap gap-2">
+            <span class="rounded-full border border-line bg-base px-2.5 py-1 font-mono text-[11px] text-slate-400">Laravel</span>
+            <span class="rounded-full border border-line bg-base px-2.5 py-1 font-mono text-[11px] text-slate-400">Alpine.js</span>
+            <span class="rounded-full border border-line bg-base px-2.5 py-1 font-mono text-[11px] text-slate-400">PostgreSQL</span>
+          </div>
+        </div>
+      </a>
+
+    </div>
+
+    <a href="proyek.html"
+       class="mt-6 flex w-full items-center justify-center gap-2 rounded-xl border border-line bg-surface2 px-5 py-3.5 font-mono text-sm font-medium text-slate-300 transition duration-200 hover:-translate-y-0.5 hover:border-accent/50 hover:text-white">
+      Lihat selengkapnya
+      <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M5 12h14M13 6l6 6-6 6"/>
+      </svg>
+    </a>
+  </section>
+
+  <!-- ============ KEAHLIAN ============ -->
+  <section id="keahlian" class="scroll-mt-24 pt-16">
+    <h2 class="font-mono text-xl font-bold tracking-tight text-white sm:text-2xl">Keahlian</h2>
+    <div class="mt-4 h-px w-full bg-line"></div>
+
+    <div class="mt-6 flex flex-wrap gap-3">
+      <span class="rounded-full border border-line bg-surface2 px-4 py-2 font-mono text-sm text-slate-300 transition duration-200 hover:-translate-y-0.5 hover:border-accent/50 hover:text-white">Laravel</span>
+      <span class="rounded-full border border-line bg-surface2 px-4 py-2 font-mono text-sm text-slate-300 transition duration-200 hover:-translate-y-0.5 hover:border-accent/50 hover:text-white">PHP 8</span>
+      <span class="rounded-full border border-line bg-surface2 px-4 py-2 font-mono text-sm text-slate-300 transition duration-200 hover:-translate-y-0.5 hover:border-accent/50 hover:text-white">PostgreSQL</span>
+      <span class="rounded-full border border-line bg-surface2 px-4 py-2 font-mono text-sm text-slate-300 transition duration-200 hover:-translate-y-0.5 hover:border-accent/50 hover:text-white">MySQL</span>
+      <span class="rounded-full border border-line bg-surface2 px-4 py-2 font-mono text-sm text-slate-300 transition duration-200 hover:-translate-y-0.5 hover:border-accent/50 hover:text-white">JavaScript</span>
+      <span class="rounded-full border border-line bg-surface2 px-4 py-2 font-mono text-sm text-slate-300 transition duration-200 hover:-translate-y-0.5 hover:border-accent/50 hover:text-white">Alpine.js</span>
+      <span class="rounded-full border border-line bg-surface2 px-4 py-2 font-mono text-sm text-slate-300 transition duration-200 hover:-translate-y-0.5 hover:border-accent/50 hover:text-white">Vue 3</span>
+      <span class="rounded-full border border-line bg-surface2 px-4 py-2 font-mono text-sm text-slate-300 transition duration-200 hover:-translate-y-0.5 hover:border-accent/50 hover:text-white">Tailwind CSS</span>
+      <span class="rounded-full border border-line bg-surface2 px-4 py-2 font-mono text-sm text-slate-300 transition duration-200 hover:-translate-y-0.5 hover:border-accent/50 hover:text-white">Docker</span>
+      <span class="rounded-full border border-line bg-surface2 px-4 py-2 font-mono text-sm text-slate-300 transition duration-200 hover:-translate-y-0.5 hover:border-accent/50 hover:text-white">Redis</span>
+      <span class="rounded-full border border-line bg-surface2 px-4 py-2 font-mono text-sm text-slate-300 transition duration-200 hover:-translate-y-0.5 hover:border-accent/50 hover:text-white">REST API</span>
+      <span class="rounded-full border border-line bg-surface2 px-4 py-2 font-mono text-sm text-slate-300 transition duration-200 hover:-translate-y-0.5 hover:border-accent/50 hover:text-white">Git &amp; CI/CD</span>
+    </div>
+
+    <a href="keahlian.html"
+       class="mt-6 flex w-full items-center justify-center gap-2 rounded-xl border border-line bg-surface2 px-5 py-3.5 font-mono text-sm font-medium text-slate-300 transition duration-200 hover:-translate-y-0.5 hover:border-accent/50 hover:text-white">
+      Lihat selengkapnya
+      <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M5 12h14M13 6l6 6-6 6"/>
+      </svg>
+    </a>
+  </section>
+
+  <!-- ============ PENDIDIKAN ============ -->
+  <section id="pendidikan" class="scroll-mt-24 pt-16">
+    <h2 class="font-mono text-xl font-bold tracking-tight text-white sm:text-2xl">Pendidikan</h2>
+    <div class="mt-4 h-px w-full bg-line"></div>
+
+    <div class="mt-6 grid gap-5 md:grid-cols-3">
+
+      <article class="rounded-xl border border-line bg-surface/60 p-5 transition duration-200 hover:-translate-y-1 hover:border-accent/40 hover:bg-surface2">
+        <span class="font-mono text-xs text-accent-soft">2012 – 2016</span>
+        <h3 class="mt-2 text-base font-semibold text-white">S1 Teknik Informatika</h3>
+        <p class="mt-1 font-mono text-xs text-slate-500">Universitas Gadjah Mada</p>
+        <p class="mt-3 text-sm leading-relaxed text-slate-400">
+          IPK 3.72. Skripsi tentang optimasi query basis data akademik untuk beban ribuan pengguna bersamaan.
+        </p>
+      </article>
+
+      <article class="rounded-xl border border-line bg-surface/60 p-5 transition duration-200 hover:-translate-y-1 hover:border-accent/40 hover:bg-surface2">
+        <span class="font-mono text-xs text-accent-soft">2009 – 2012</span>
+        <h3 class="mt-2 text-base font-semibold text-white">SMK Rekayasa Perangkat Lunak</h3>
+        <p class="mt-1 font-mono text-xs text-slate-500">SMK Negeri 2 Yogyakarta</p>
+        <p class="mt-3 text-sm leading-relaxed text-slate-400">
+          Mendalami dasar pemrograman web, basis data relasional, dan jaringan komputer. Lulus dengan predikat terbaik.
+        </p>
+      </article>
+
+      <article class="rounded-xl border border-line bg-surface/60 p-5 transition duration-200 hover:-translate-y-1 hover:border-accent/40 hover:bg-surface2">
+        <span class="font-mono text-xs text-accent-soft">2016</span>
+        <h3 class="mt-2 text-base font-semibold text-white">Program Profesional Fullstack Web</h3>
+        <p class="mt-1 font-mono text-xs text-slate-500">Hacktiv8 Indonesia</p>
+        <p class="mt-3 text-sm leading-relaxed text-slate-400">
+          Program intensif 12 minggu berfokus pada JavaScript modern, arsitektur API, dan praktik kolaborasi tim.
+        </p>
+      </article>
+
+    </div>
+
+    <a href="pendidikan.html"
+       class="mt-6 flex w-full items-center justify-center gap-2 rounded-xl border border-line bg-surface2 px-5 py-3.5 font-mono text-sm font-medium text-slate-300 transition duration-200 hover:-translate-y-0.5 hover:border-accent/50 hover:text-white">
+      Lihat selengkapnya
+      <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M5 12h14M13 6l6 6-6 6"/>
+      </svg>
+    </a>
+  </section>
+
+  <!-- ============ SERTIFIKASI ============ -->
+  <section id="sertifikasi" class="scroll-mt-24 pt-16">
+    <h2 class="font-mono text-xl font-bold tracking-tight text-white sm:text-2xl">Sertifikasi</h2>
+    <div class="mt-4 h-px w-full bg-line"></div>
+
+    <div class="mt-6 space-y-3">
+
+      <div class="flex items-center justify-between gap-4 rounded-xl border border-line bg-surface/60 px-5 py-4 transition duration-200 hover:-translate-y-0.5 hover:border-accent/40 hover:bg-surface2">
+        <div class="min-w-0">
+          <h3 class="text-sm font-semibold text-white sm:text-base">AWS Certified Developer – Associate</h3>
+          <p class="mt-0.5 font-mono text-xs text-slate-500">Amazon Web Services</p>
+        </div>
+        <span class="shrink-0 rounded-full border border-line bg-base px-3 py-1 font-mono text-xs text-accent-soft">2024</span>
+      </div>
+
+      <div class="flex items-center justify-between gap-4 rounded-xl border border-line bg-surface/60 px-5 py-4 transition duration-200 hover:-translate-y-0.5 hover:border-accent/40 hover:bg-surface2">
+        <div class="min-w-0">
+          <h3 class="text-sm font-semibold text-white sm:text-base">Docker Certified Associate</h3>
+          <p class="mt-0.5 font-mono text-xs text-slate-500">Docker Inc.</p>
+        </div>
+        <span class="shrink-0 rounded-full border border-line bg-base px-3 py-1 font-mono text-xs text-accent-soft">2023</span>
+      </div>
+
+      <div class="flex items-center justify-between gap-4 rounded-xl border border-line bg-surface/60 px-5 py-4 transition duration-200 hover:-translate-y-0.5 hover:border-accent/40 hover:bg-surface2">
+        <div class="min-w-0">
+          <h3 class="text-sm font-semibold text-white sm:text-base">Laravel Certified Developer</h3>
+          <p class="mt-0.5 font-mono text-xs text-slate-500">Laravel</p>
+        </div>
+        <span class="shrink-0 rounded-full border border-line bg-base px-3 py-1 font-mono text-xs text-accent-soft">2022</span>
+      </div>
+
+      <div class="flex items-center justify-between gap-4 rounded-xl border border-line bg-surface/60 px-5 py-4 transition duration-200 hover:-translate-y-0.5 hover:border-accent/40 hover:bg-surface2">
+        <div class="min-w-0">
+          <h3 class="text-sm font-semibold text-white sm:text-base">PostgreSQL Associate Certification</h3>
+          <p class="mt-0.5 font-mono text-xs text-slate-500">EnterpriseDB</p>
+        </div>
+        <span class="shrink-0 rounded-full border border-line bg-base px-3 py-1 font-mono text-xs text-accent-soft">2021</span>
+      </div>
+
+      <div class="flex items-center justify-between gap-4 rounded-xl border border-line bg-surface/60 px-5 py-4 transition duration-200 hover:-translate-y-0.5 hover:border-accent/40 hover:bg-surface2">
+        <div class="min-w-0">
+          <h3 class="text-sm font-semibold text-white sm:text-base">Google Cloud Associate Cloud Engineer</h3>
+          <p class="mt-0.5 font-mono text-xs text-slate-500">Google Cloud</p>
+        </div>
+        <span class="shrink-0 rounded-full border border-line bg-base px-3 py-1 font-mono text-xs text-accent-soft">2020</span>
+      </div>
+
+    </div>
+
+    <a href="sertifikasi.html"
+       class="mt-6 flex w-full items-center justify-center gap-2 rounded-xl border border-line bg-surface2 px-5 py-3.5 font-mono text-sm font-medium text-slate-300 transition duration-200 hover:-translate-y-0.5 hover:border-accent/50 hover:text-white">
+      Lihat selengkapnya
+      <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M5 12h14M13 6l6 6-6 6"/>
+      </svg>
+    </a>
+  </section>
+
+  <!-- ============ PENGHARGAAN ============ -->
+  <section id="penghargaan" class="scroll-mt-24 pt-16">
+    <h2 class="font-mono text-xl font-bold tracking-tight text-white sm:text-2xl">Penghargaan</h2>
+    <div class="mt-4 h-px w-full bg-line"></div>
+
+    <div class="mt-6 space-y-4">
+
+      <article class="flex gap-4 rounded-xl border border-line bg-surface/60 p-5 transition duration-200 hover:-translate-y-1 hover:border-accent/40 hover:bg-surface2">
+        <span class="grid h-10 w-10 shrink-0 place-items-center rounded-lg border border-accent/30 bg-accent/10 text-accent-soft">
+          <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M8 4h8v5a4 4 0 0 1-8 0V4z"/><path d="M8 5H5v2a3 3 0 0 0 3 3M16 5h3v2a3 3 0 0 1-3 3"/><path d="M12 13v4M9 21h6M10 17h4"/>
+          </svg>
+        </span>
+        <div class="min-w-0">
+          <div class="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
+            <h3 class="text-base font-semibold text-white">Best Innovation Award</h3>
+            <span class="font-mono text-xs text-slate-500">2024</span>
+          </div>
+          <p class="mt-1 font-mono text-xs text-accent-soft">Nusantara Digital Summit</p>
+          <p class="mt-2 text-sm leading-relaxed text-slate-400">
+            Diberikan atas pengembangan modul audit forensik transaksi QRIS yang menurunkan waktu rekonsiliasi hingga 70%.
+          </p>
+        </div>
+      </article>
+
+      <article class="flex gap-4 rounded-xl border border-line bg-surface/60 p-5 transition duration-200 hover:-translate-y-1 hover:border-accent/40 hover:bg-surface2">
+        <span class="grid h-10 w-10 shrink-0 place-items-center rounded-lg border border-accent/30 bg-accent/10 text-accent-soft">
+          <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M8 4h8v5a4 4 0 0 1-8 0V4z"/><path d="M8 5H5v2a3 3 0 0 0 3 3M16 5h3v2a3 3 0 0 1-3 3"/><path d="M12 13v4M9 21h6M10 17h4"/>
+          </svg>
+        </span>
+        <div class="min-w-0">
+          <div class="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
+            <h3 class="text-base font-semibold text-white">Juara 1 Hackathon Jogja Digital Fest</h3>
+            <span class="font-mono text-xs text-slate-500">2022</span>
+          </div>
+          <p class="mt-1 font-mono text-xs text-accent-soft">Pemerintah Kota Yogyakarta</p>
+          <p class="mt-2 text-sm leading-relaxed text-slate-400">
+            Membangun prototipe layanan administrasi desa dalam 36 jam bersama tim berisi empat orang.
+          </p>
+        </div>
+      </article>
+
+      <article class="flex gap-4 rounded-xl border border-line bg-surface/60 p-5 transition duration-200 hover:-translate-y-1 hover:border-accent/40 hover:bg-surface2">
+        <span class="grid h-10 w-10 shrink-0 place-items-center rounded-lg border border-accent/30 bg-accent/10 text-accent-soft">
+          <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M8 4h8v5a4 4 0 0 1-8 0V4z"/><path d="M8 5H5v2a3 3 0 0 0 3 3M16 5h3v2a3 3 0 0 1-3 3"/><path d="M12 13v4M9 21h6M10 17h4"/>
+          </svg>
+        </span>
+        <div class="min-w-0">
+          <div class="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
+            <h3 class="text-base font-semibold text-white">Finalis Kompetisi Inovasi Digital Nasional</h3>
+            <span class="font-mono text-xs text-slate-500">2019</span>
+          </div>
+          <p class="mt-1 font-mono text-xs text-accent-soft">Kementerian Komunikasi dan Informatika</p>
+          <p class="mt-2 text-sm leading-relaxed text-slate-400">
+            Terpilih sebagai salah satu dari sepuluh finalis nasional lewat gagasan platform pembelajaran adaptif.
+          </p>
+        </div>
+      </article>
+
+    </div>
+
+    <a href="penghargaan.html"
+       class="mt-6 flex w-full items-center justify-center gap-2 rounded-xl border border-line bg-surface2 px-5 py-3.5 font-mono text-sm font-medium text-slate-300 transition duration-200 hover:-translate-y-0.5 hover:border-accent/50 hover:text-white">
+      Lihat selengkapnya
+      <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M5 12h14M13 6l6 6-6 6"/>
+      </svg>
+    </a>
+  </section>
+
+  <!-- ============ TULISAN TERBARU ============ -->
+  <section id="tulisan" class="scroll-mt-24 pt-16">
+    <h2 class="font-mono text-xl font-bold tracking-tight text-white sm:text-2xl">Tulisan Terbaru</h2>
+    <div class="mt-4 h-px w-full bg-line"></div>
+
+    <div class="mt-6 grid gap-5 sm:grid-cols-2">
+
+      <a href="blog.html" class="group flex flex-col rounded-xl border border-line bg-surface/60 p-5 transition duration-200 hover:-translate-y-1 hover:border-accent/40 hover:bg-surface2">
+        <p class="font-mono text-xs text-slate-500">12 Sep 2025 · 8 menit baca</p>
+        <h3 class="mt-2 text-base font-semibold text-white group-hover:text-accent-soft">
+          Optimasi Query PostgreSQL untuk Data Akademik Skala Besar
+        </h3>
+        <p class="mt-2 flex-1 text-sm leading-relaxed text-slate-400">
+          Cara memangkas waktu muat halaman KRS dari 4,2 detik menjadi 380 ms lewat index parsial, CTE, dan materialized view.
+        </p>
+      </a>
+
+      <a href="blog.html" class="group flex flex-col rounded-xl border border-line bg-surface/60 p-5 transition duration-200 hover:-translate-y-1 hover:border-accent/40 hover:bg-surface2">
+        <p class="font-mono text-xs text-slate-500">28 Agu 2025 · 6 menit baca</p>
+        <h3 class="mt-2 text-base font-semibold text-white group-hover:text-accent-soft">
+          Docker Compose untuk Deployment Laravel yang Reproducible
+        </h3>
+        <p class="mt-2 flex-1 text-sm leading-relaxed text-slate-400">
+          Menyusun satu berkas compose yang jalan identik di laptop, staging, dan produksi — lengkap dengan health check.
+        </p>
+      </a>
+
+      <a href="blog.html" class="group flex flex-col rounded-xl border border-line bg-surface/60 p-5 transition duration-200 hover:-translate-y-1 hover:border-accent/40 hover:bg-surface2">
+        <p class="font-mono text-xs text-slate-500">15 Jul 2025 · 11 menit baca</p>
+        <h3 class="mt-2 text-base font-semibold text-white group-hover:text-accent-soft">
+          Audit Transaksi QRIS: Pendekatan Forensik Data
+        </h3>
+        <p class="mt-2 flex-1 text-sm leading-relaxed text-slate-400">
+          Membangun aturan deteksi anomali sederhana untuk menemukan transaksi ganda dan pola merchant tidak wajar.
+        </p>
+      </a>
+
+      <a href="blog.html" class="group flex flex-col rounded-xl border border-line bg-surface/60 p-5 transition duration-200 hover:-translate-y-1 hover:border-accent/40 hover:bg-surface2">
+        <p class="font-mono text-xs text-slate-500">02 Jun 2025 · 5 menit baca</p>
+        <h3 class="mt-2 text-base font-semibold text-white group-hover:text-accent-soft">
+          Alpine.js: Interaktivitas Ringan Tanpa Build Tools
+        </h3>
+        <p class="mt-2 flex-1 text-sm leading-relaxed text-slate-400">
+          Kapan sebaiknya memilih Alpine daripada Vue atau React untuk halaman server-rendered berbasis Blade.
+        </p>
+      </a>
+
+    </div>
+
+    <a href="blog.html"
+       class="mt-6 flex w-full items-center justify-center gap-2 rounded-xl border border-line bg-surface2 px-5 py-3.5 font-mono text-sm font-medium text-slate-300 transition duration-200 hover:-translate-y-0.5 hover:border-accent/50 hover:text-white">
+      Lihat selengkapnya
+      <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M5 12h14M13 6l6 6-6 6"/>
+      </svg>
+    </a>
+  </section>
+
+</main>
+
+<!-- ============ FOOTER ============ -->
+<footer id="kontak" class="border-t border-line bg-surface/40">
+  <div class="mx-auto max-w-content px-5 py-10">
+
+    <div class="flex flex-col items-center justify-between gap-6 sm:flex-row">
+      <div class="text-center sm:text-left">
+        <p class="font-mono text-sm font-medium text-white">teguh<span class="text-accent-soft">.</span>dev</p>
+        <p class="mt-1 font-mono text-xs text-slate-500">Yogyakarta, Indonesia · teguh@rizanandi.dev</p>
+      </div>
+
+      <div class="flex items-center gap-2.5">
+        <a href="https://github.com/teguhrijanandi" target="_blank" rel="noopener" aria-label="GitHub"
+           class="grid h-10 w-10 place-items-center rounded-lg border border-line bg-surface2 text-slate-400 transition duration-200 hover:-translate-y-0.5 hover:border-accent/50 hover:text-white">
+          <svg class="h-[18px] w-[18px]" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M12 .5C5.73.5.5 5.73.5 12a11.5 11.5 0 0 0 7.86 10.92c.58.1.79-.25.79-.56v-2c-3.2.7-3.88-1.37-3.88-1.37-.53-1.34-1.29-1.7-1.29-1.7-1.05-.72.08-.7.08-.7 1.16.08 1.77 1.2 1.77 1.2 1.03 1.77 2.7 1.26 3.36.96.1-.75.4-1.26.73-1.55-2.55-.29-5.24-1.28-5.24-5.7 0-1.26.45-2.29 1.19-3.1-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.18 1.18a11 11 0 0 1 5.79 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.76.12 3.05.74.81 1.18 1.84 1.18 3.1 0 4.43-2.69 5.4-5.25 5.69.41.36.78 1.06.78 2.14v3.17c0 .31.2.67.8.56A11.5 11.5 0 0 0 23.5 12C23.5 5.73 18.27.5 12 .5z"/>
+          </svg>
+        </a>
+        <a href="https://linkedin.com/in/teguhrijanandi" target="_blank" rel="noopener" aria-label="LinkedIn"
+           class="grid h-10 w-10 place-items-center rounded-lg border border-line bg-surface2 text-slate-400 transition duration-200 hover:-translate-y-0.5 hover:border-accent/50 hover:text-white">
+          <svg class="h-[18px] w-[18px]" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M20.45 20.45h-3.56v-5.57c0-1.33-.03-3.04-1.85-3.04-1.85 0-2.14 1.45-2.14 2.94v5.67H9.35V9h3.42v1.56h.05c.47-.9 1.63-1.85 3.36-1.85 3.6 0 4.27 2.37 4.27 5.45v6.29zM5.34 7.43a2.07 2.07 0 1 1 0-4.13 2.07 2.07 0 0 1 0 4.13zM7.12 20.45H3.55V9h3.57v11.45zM22.22 0H1.77C.79 0 0 .77 0 1.73v20.54C0 23.23.79 24 1.77 24h20.45c.98 0 1.78-.77 1.78-1.73V1.73C24 .77 23.2 0 22.22 0z"/>
+          </svg>
+        </a>
+        <a href="mailto:teguh@rizanandi.dev" aria-label="Email"
+           class="grid h-10 w-10 place-items-center rounded-lg border border-line bg-surface2 text-slate-400 transition duration-200 hover:-translate-y-0.5 hover:border-accent/50 hover:text-white">
+          <svg class="h-[18px] w-[18px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="2.5" y="4.5" width="19" height="15" rx="2.5"/>
+            <path d="M3 7l9 6 9-6"/>
+          </svg>
+        </a>
+        <a href="https://teguh.dev" target="_blank" rel="noopener" aria-label="Website"
+           class="grid h-10 w-10 place-items-center rounded-lg border border-line bg-surface2 text-slate-400 transition duration-200 hover:-translate-y-0.5 hover:border-accent/50 hover:text-white">
+          <svg class="h-[18px] w-[18px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="9"/>
+            <path d="M3 12h18M12 3c2.5 2.6 3.8 5.6 3.8 9s-1.3 6.4-3.8 9c-2.5-2.6-3.8-5.6-3.8-9S9.5 5.6 12 3z"/>
+          </svg>
+        </a>
+      </div>
+    </div>
+
+    <div class="mt-8 border-t border-line pt-6 text-center">
+      <p class="font-mono text-xs text-slate-500">© 2025 Teguh Rijanandi. Dibangun dengan Tailwind CSS &amp; Alpine.js.</p>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

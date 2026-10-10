@@ -1,0 +1,599 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Nadia Prameswari — Product Designer | Lumica</title>
+<meta name="description" content="Portofolio Nadia Prameswari, Product Designer asal Bandung, Indonesia. Design system, aplikasi mobile, dan produk digital." />
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        colors: {
+          paper: '#FAF8F4',
+          paper2: '#F3EFE7',
+          ink: '#211D18',
+          muted: '#6E665C',
+          line: '#E5DFD4',
+          clay: '#B4653F',
+          sage: '#8A9A7B'
+        },
+        fontFamily: {
+          serif: ['Fraunces', 'Georgia', 'serif'],
+          sans: ['Inter', 'system-ui', 'sans-serif']
+        },
+        maxWidth: {
+          content: '1024px'
+        }
+      }
+    }
+  }
+</script>
+
+<style>
+  [x-cloak] { display: none !important; }
+  html { scroll-behavior: smooth; }
+  body { -webkit-font-smoothing: antialiased; }
+</style>
+
+<script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+</head>
+
+<body class="bg-paper font-sans text-ink antialiased">
+
+  <!-- ============ HEADER ============ -->
+  <header x-data="{ open: false }" class="sticky top-0 z-50 border-b border-line bg-paper/85 backdrop-blur-md">
+    <div class="mx-auto max-w-content px-6">
+      <div class="flex h-16 items-center justify-between">
+        <a href="#beranda" class="font-serif text-xl tracking-tight text-ink hover:text-clay transition-colors">Lumica</a>
+
+        <nav class="hidden items-center gap-9 text-sm text-muted md:flex">
+          <a href="#beranda" class="hover:text-clay transition-colors">Beranda</a>
+          <a href="blog.html" class="hover:text-clay transition-colors">Blog</a>
+          <a href="#kontak" class="hover:text-clay transition-colors">Kontak</a>
+        </nav>
+
+        <button
+          type="button"
+          class="inline-flex h-10 w-10 items-center justify-center rounded-md text-muted hover:text-clay transition-colors md:hidden"
+          @click="open = !open"
+          :aria-expanded="open.toString()"
+          aria-label="Buka menu navigasi">
+          <svg x-show="!open" class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+            <path stroke-linecap="round" d="M3.75 6.75h16.5M3.75 12h16.5M3.75 17.25h16.5" />
+          </svg>
+          <svg x-show="open" x-cloak class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+            <path stroke-linecap="round" d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- Mobile nav -->
+    <div x-show="open" x-cloak class="border-t border-line bg-paper/95 backdrop-blur-md md:hidden">
+      <nav class="mx-auto flex max-w-content flex-col px-6 py-3 text-sm">
+        <a href="#beranda" @click="open = false" class="py-3 text-muted hover:text-clay transition-colors">Beranda</a>
+        <a href="blog.html" class="py-3 text-muted hover:text-clay transition-colors">Blog</a>
+        <a href="#kontak" @click="open = false" class="py-3 text-muted hover:text-clay transition-colors">Kontak</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+
+    <!-- ============ HERO ============ -->
+    <section id="beranda" class="border-b border-line">
+      <div class="mx-auto max-w-content px-6 pb-20 pt-20 text-center md:pt-28">
+        <div class="mx-auto flex h-32 w-32 items-center justify-center rounded-full bg-gradient-to-br from-[#F0E7DA] via-[#E7D8C6] to-[#D9C3AC] ring-1 ring-line md:h-36 md:w-36">
+          <span class="font-serif text-3xl text-clay md:text-4xl">NP</span>
+        </div>
+
+        <h1 class="mt-8 font-serif text-4xl tracking-tight text-ink md:text-5xl">Nadia Prameswari</h1>
+        <p class="mt-3 text-base text-muted md:text-lg">Product Designer</p>
+        <p class="mt-1 text-sm text-muted">Bandung, Indonesia</p>
+
+        <div class="mt-8 flex flex-wrap items-center justify-center gap-x-7 gap-y-3 text-sm">
+          <a href="https://dribbble.com" class="text-muted hover:text-clay transition-colors">Dribbble</a>
+          <span class="hidden h-3 w-px bg-line sm:block"></span>
+          <a href="https://linkedin.com" class="text-muted hover:text-clay transition-colors">LinkedIn</a>
+          <span class="hidden h-3 w-px bg-line sm:block"></span>
+          <a href="mailto:nadia@lumica.id" class="text-muted hover:text-clay transition-colors">Email</a>
+          <span class="hidden h-3 w-px bg-line sm:block"></span>
+          <a href="https://nadiaprameswari.id" class="text-muted hover:text-clay transition-colors">Portfolio</a>
+        </div>
+
+        <div class="mt-10">
+          <a href="mailto:nadia@lumica.id"
+             class="inline-flex items-center rounded-full border border-line bg-white/70 px-7 py-2.5 text-sm text-ink transition-colors hover:border-clay hover:text-clay">
+            Hubungi Saya
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ TENTANG ============ -->
+    <section id="tentang" class="py-16 md:py-20">
+      <div class="mx-auto max-w-content px-6">
+        <h2 class="font-serif text-2xl tracking-tight text-ink md:text-3xl">Tentang</h2>
+        <div class="mt-6 border-t border-line"></div>
+
+        <div class="mt-8 max-w-3xl space-y-5 text-[15px] leading-relaxed text-muted">
+          <p>
+            Saya Nadia, seorang product designer yang berbasis di Bandung dengan pengalaman lebih dari delapan tahun
+            merancang produk digital untuk industri fintech, e-commerce, dan layanan konsumen. Saya percaya desain yang
+            baik lahir dari pemahaman yang tenang: mendengarkan masalah nyata pengguna, menyusunnya kembali menjadi alur
+            yang sederhana, lalu mengeksekusinya dengan detail visual yang rapi dan konsisten.
+          </p>
+          <p>
+            Sehari-hari saya banyak bekerja di persimpangan antara riset, sistem, dan eksekusi. Saya membangun design
+            system lintas platform, memimpin riset kualitatif bersama tim produk, serta mendampingi engineer untuk
+            memastikan apa yang dirancang benar-benar sampai ke tangan pengguna tanpa kehilangan niat awalnya. Saya juga
+            senang menulis dan berbagi proses — mulai dari cara menyusun design token, hingga bagaimana mengajak
+            stakeholder mengambil keputusan berbasis data.
+          </p>
+          <p>
+            Di luar pekerjaan, saya mengajar sebagai mentor lepas untuk desainer pemula, mengoleksi buku tipografi,
+            dan sesekali berjalan pagi di sekitar Dago sambil memotret papan nama toko lama. Saya terbuka untuk
+            kolaborasi jangka panjang, konsultasi design system, maupun proyek perancangan produk dari nol.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ PENGALAMAN ============ -->
+    <section id="pengalaman" class="py-16 md:py-20">
+      <div class="mx-auto max-w-content px-6">
+        <h2 class="font-serif text-2xl tracking-tight text-ink md:text-3xl">Pengalaman</h2>
+        <div class="mt-6 border-t border-line"></div>
+
+        <div class="divide-y divide-line">
+          <article class="py-6">
+            <div class="flex flex-col gap-1 md:flex-row md:items-baseline md:justify-between">
+              <h3 class="text-base text-ink">
+                <span class="font-medium">Senior Product Designer</span>
+                <span class="text-muted"> · Tokopedia, Jakarta</span>
+              </h3>
+              <p class="shrink-0 text-sm text-muted">Jan 2023 — Sekarang</p>
+            </div>
+            <p class="mt-2 max-w-2xl text-sm leading-relaxed text-muted">
+              Memimpin perancangan design system lintas platform untuk aplikasi dengan 40+ juta pengguna aktif dan
+              membimbing tiga desainer junior di tim Marketplace.
+            </p>
+          </article>
+
+          <article class="py-6">
+            <div class="flex flex-col gap-1 md:flex-row md:items-baseline md:justify-between">
+              <h3 class="text-base text-ink">
+                <span class="font-medium">Product Designer</span>
+                <span class="text-muted"> · Bank Jago, Jakarta</span>
+              </h3>
+              <p class="shrink-0 text-sm text-muted">Mar 2021 — Des 2022</p>
+            </div>
+            <p class="mt-2 max-w-2xl text-sm leading-relaxed text-muted">
+              Merancang ulang alur onboarding dan verifikasi KYC yang menurunkan drop-off pendaftaran sebesar 27%
+              dalam dua kuartal.
+            </p>
+          </article>
+
+          <article class="py-6">
+            <div class="flex flex-col gap-1 md:flex-row md:items-baseline md:justify-between">
+              <h3 class="text-base text-ink">
+                <span class="font-medium">UI/UX Designer</span>
+                <span class="text-muted"> · Sirclo, Bandung</span>
+              </h3>
+              <p class="shrink-0 text-sm text-muted">Jun 2019 — Feb 2021</p>
+            </div>
+            <p class="mt-2 max-w-2xl text-sm leading-relaxed text-muted">
+              Membangun pustaka komponen UI untuk dashboard merchant dan toko online yang dipakai lebih dari 12.000
+              penjual di seluruh Indonesia.
+            </p>
+          </article>
+
+          <article class="py-6">
+            <div class="flex flex-col gap-1 md:flex-row md:items-baseline md:justify-between">
+              <h3 class="text-base text-ink">
+                <span class="font-medium">Visual Designer</span>
+                <span class="text-muted"> · Bubu Studio, Bandung</span>
+              </h3>
+              <p class="shrink-0 text-sm text-muted">Agu 2018 — Mei 2019</p>
+            </div>
+            <p class="mt-2 max-w-2xl text-sm leading-relaxed text-muted">
+              Mengerjakan identitas visual dan materi kampanye digital untuk brand ritel, kafe, serta label fesyen
+              lokal.
+            </p>
+          </article>
+
+          <article class="py-6">
+            <div class="flex flex-col gap-1 md:flex-row md:items-baseline md:justify-between">
+              <h3 class="text-base text-ink">
+                <span class="font-medium">Junior Designer</span>
+                <span class="text-muted"> · Kreatifita, Bandung</span>
+              </h3>
+              <p class="shrink-0 text-sm text-muted">Jan 2017 — Jul 2018</p>
+            </div>
+            <p class="mt-2 max-w-2xl text-sm leading-relaxed text-muted">
+              Memproduksi aset desain untuk kampanye digital klien UMKM dan institusi pendidikan bersama tim kreatif
+              berisi empat orang.
+            </p>
+          </article>
+        </div>
+
+        <div class="mt-8">
+          <a href="pengalaman.html" class="text-sm text-clay transition-colors hover:text-ink">Lihat selengkapnya →</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ PROYEK ============ -->
+    <section id="proyek" class="py-16 md:py-20">
+      <div class="mx-auto max-w-content px-6">
+        <h2 class="font-serif text-2xl tracking-tight text-ink md:text-3xl">Proyek</h2>
+        <div class="mt-6 border-t border-line"></div>
+
+        <div class="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+
+          <article class="rounded-xl border border-line bg-white/50 p-6 transition-colors hover:border-clay/50">
+            <img src="https://placehold.co/96x96/EFE6DA/B4653F?text=SK" alt="Thumbnail proyek Saku"
+                 class="h-12 w-12 rounded-lg bg-paper2 object-cover" loading="lazy" />
+            <h3 class="mt-5 font-serif text-lg text-ink">Saku — Aplikasi Keuangan Pribadi</h3>
+            <p class="mt-2 text-sm leading-relaxed text-muted">
+              Perancangan ulang alur transaksi, budgeting, dan laporan bulanan untuk aplikasi fintech dengan 1,2 juta
+              pengguna.
+            </p>
+            <div class="mt-4 flex flex-wrap gap-2 text-xs text-muted">
+              <span class="rounded-full border border-line px-3 py-1">Figma</span>
+              <span class="rounded-full border border-line px-3 py-1">Framer</span>
+              <span class="rounded-full border border-line px-3 py-1">Maze</span>
+            </div>
+          </article>
+
+          <article class="rounded-xl border border-line bg-white/50 p-6 transition-colors hover:border-clay/50">
+            <img src="https://placehold.co/96x96/E7EDE2/8A9A7B?text=DS" alt="Thumbnail proyek Toko Design System"
+                 class="h-12 w-12 rounded-lg bg-paper2 object-cover" loading="lazy" />
+            <h3 class="mt-5 font-serif text-lg text-ink">Toko Design System</h3>
+            <p class="mt-2 text-sm leading-relaxed text-muted">
+              Design system lintas platform berisi 180+ komponen dan design token untuk seluruh tim produk
+              e-commerce.
+            </p>
+            <div class="mt-4 flex flex-wrap gap-2 text-xs text-muted">
+              <span class="rounded-full border border-line px-3 py-1">Figma</span>
+              <span class="rounded-full border border-line px-3 py-1">Tokens Studio</span>
+              <span class="rounded-full border border-line px-3 py-1">Storybook</span>
+            </div>
+          </article>
+
+          <article class="rounded-xl border border-line bg-white/50 p-6 transition-colors hover:border-clay/50">
+            <img src="https://placehold.co/96x96/EFE6DA/B4653F?text=KR" alt="Thumbnail proyek Kirim"
+                 class="h-12 w-12 rounded-lg bg-paper2 object-cover" loading="lazy" />
+            <h3 class="mt-5 font-serif text-lg text-ink">Kirim — Dashboard Logistik</h3>
+            <p class="mt-2 text-sm leading-relaxed text-muted">
+              Dashboard operasional untuk memantau pengiriman kurir secara real-time di lebih dari 30 kota.
+            </p>
+            <div class="mt-4 flex flex-wrap gap-2 text-xs text-muted">
+              <span class="rounded-full border border-line px-3 py-1">Figma</span>
+              <span class="rounded-full border border-line px-3 py-1">FigJam</span>
+            </div>
+          </article>
+
+          <article class="rounded-xl border border-line bg-white/50 p-6 transition-colors hover:border-clay/50">
+            <img src="https://placehold.co/96x96/E7EDE2/8A9A7B?text=RB" alt="Thumbnail proyek Ruang Belajar"
+                 class="h-12 w-12 rounded-lg bg-paper2 object-cover" loading="lazy" />
+            <h3 class="mt-5 font-serif text-lg text-ink">Ruang Belajar — Platform Kursus</h3>
+            <p class="mt-2 text-sm leading-relaxed text-muted">
+              Pengalaman belajar adaptif dengan progres tersimpan, catatan, dan rekomendasi kelas lanjutan.
+            </p>
+            <div class="mt-4 flex flex-wrap gap-2 text-xs text-muted">
+              <span class="rounded-full border border-line px-3 py-1">Figma</span>
+              <span class="rounded-full border border-line px-3 py-1">Framer</span>
+            </div>
+          </article>
+
+          <article class="rounded-xl border border-line bg-white/50 p-6 transition-colors hover:border-clay/50">
+            <img src="https://placehold.co/96x96/EFE6DA/B4653F?text=TH" alt="Thumbnail proyek TaniHub Merchant App"
+                 class="h-12 w-12 rounded-lg bg-paper2 object-cover" loading="lazy" />
+            <h3 class="mt-5 font-serif text-lg text-ink">TaniHub Merchant App</h3>
+            <p class="mt-2 text-sm leading-relaxed text-muted">
+              Aplikasi mobile untuk petani dan pemasok dalam memantau pesanan, stok, serta status pembayaran.
+            </p>
+            <div class="mt-4 flex flex-wrap gap-2 text-xs text-muted">
+              <span class="rounded-full border border-line px-3 py-1">Figma</span>
+              <span class="rounded-full border border-line px-3 py-1">Maze</span>
+            </div>
+          </article>
+
+          <article class="rounded-xl border border-line bg-white/50 p-6 transition-colors hover:border-clay/50">
+            <img src="https://placehold.co/96x96/E7EDE2/8A9A7B?text=KA" alt="Thumbnail proyek Kopi Arah"
+                 class="h-12 w-12 rounded-lg bg-paper2 object-cover" loading="lazy" />
+            <h3 class="mt-5 font-serif text-lg text-ink">Kopi Arah — Rebranding</h3>
+            <p class="mt-2 text-sm leading-relaxed text-muted">
+              Identitas visual, kemasan, dan situs profil untuk brand kopi spesialti asal Bandung.
+            </p>
+            <div class="mt-4 flex flex-wrap gap-2 text-xs text-muted">
+              <span class="rounded-full border border-line px-3 py-1">Figma</span>
+              <span class="rounded-full border border-line px-3 py-1">Webflow</span>
+            </div>
+          </article>
+
+        </div>
+
+        <div class="mt-8">
+          <a href="proyek.html" class="text-sm text-clay transition-colors hover:text-ink">Lihat selengkapnya →</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ KEAHLIAN ============ -->
+    <section id="keahlian" class="py-16 md:py-20">
+      <div class="mx-auto max-w-content px-6">
+        <h2 class="font-serif text-2xl tracking-tight text-ink md:text-3xl">Keahlian</h2>
+        <div class="mt-6 border-t border-line"></div>
+
+        <div class="mt-8 flex flex-wrap gap-2.5">
+          <span class="rounded-full border border-line px-4 py-1.5 text-sm text-muted transition-colors hover:border-clay/50 hover:text-clay">Design System</span>
+          <span class="rounded-full border border-line px-4 py-1.5 text-sm text-muted transition-colors hover:border-clay/50 hover:text-clay">UI Design</span>
+          <span class="rounded-full border border-line px-4 py-1.5 text-sm text-muted transition-colors hover:border-clay/50 hover:text-clay">UX Research</span>
+          <span class="rounded-full border border-line px-4 py-1.5 text-sm text-muted transition-colors hover:border-clay/50 hover:text-clay">Prototyping</span>
+          <span class="rounded-full border border-line px-4 py-1.5 text-sm text-muted transition-colors hover:border-clay/50 hover:text-clay">Wireframing</span>
+          <span class="rounded-full border border-line px-4 py-1.5 text-sm text-muted transition-colors hover:border-clay/50 hover:text-clay">Interaction Design</span>
+          <span class="rounded-full border border-line px-4 py-1.5 text-sm text-muted transition-colors hover:border-clay/50 hover:text-clay">Design Tokens</span>
+          <span class="rounded-full border border-line px-4 py-1.5 text-sm text-muted transition-colors hover:border-clay/50 hover:text-clay">Usability Testing</span>
+          <span class="rounded-full border border-line px-4 py-1.5 text-sm text-muted transition-colors hover:border-clay/50 hover:text-clay">Accessibility (WCAG)</span>
+          <span class="rounded-full border border-line px-4 py-1.5 text-sm text-muted transition-colors hover:border-clay/50 hover:text-clay">Design Ops</span>
+          <span class="rounded-full border border-line px-4 py-1.5 text-sm text-muted transition-colors hover:border-clay/50 hover:text-clay">Figma</span>
+          <span class="rounded-full border border-line px-4 py-1.5 text-sm text-muted transition-colors hover:border-clay/50 hover:text-clay">Framer</span>
+        </div>
+
+        <div class="mt-8">
+          <a href="keahlian.html" class="text-sm text-clay transition-colors hover:text-ink">Lihat selengkapnya →</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ PENDIDIKAN ============ -->
+    <section id="pendidikan" class="py-16 md:py-20">
+      <div class="mx-auto max-w-content px-6">
+        <h2 class="font-serif text-2xl tracking-tight text-ink md:text-3xl">Pendidikan</h2>
+        <div class="mt-6 border-t border-line"></div>
+
+        <div class="divide-y divide-line">
+          <article class="py-6">
+            <div class="flex flex-col gap-1 md:flex-row md:items-baseline md:justify-between">
+              <h3 class="text-base text-ink">
+                <span class="font-medium">S1 Desain Komunikasi Visual</span>
+                <span class="text-muted"> · Institut Teknologi Bandung</span>
+              </h3>
+              <p class="shrink-0 text-sm text-muted">2013 — 2017</p>
+            </div>
+            <p class="mt-2 max-w-2xl text-sm leading-relaxed text-muted">
+              Fokus pada desain antarmuka digital dan tipografi. Tugas akhir merancang sistem navigasi untuk aplikasi
+              transportasi publik kota.
+            </p>
+          </article>
+
+          <article class="py-6">
+            <div class="flex flex-col gap-1 md:flex-row md:items-baseline md:justify-between">
+              <h3 class="text-base text-ink">
+                <span class="font-medium">Program Pertukaran Pelajar — Visual Communication</span>
+                <span class="text-muted"> · Nanyang Polytechnic, Singapura</span>
+              </h3>
+              <p class="shrink-0 text-sm text-muted">2016 (satu semester)</p>
+            </div>
+            <p class="mt-2 max-w-2xl text-sm leading-relaxed text-muted">
+              Mendalami metodologi desain berbasis riset dan praktik studio kolaboratif bersama mahasiswa lintas
+              negara.
+            </p>
+          </article>
+
+          <article class="py-6">
+            <div class="flex flex-col gap-1 md:flex-row md:items-baseline md:justify-between">
+              <h3 class="text-base text-ink">
+                <span class="font-medium">SMA Negeri 5 Bandung — Ilmu Pengetahuan Sosial</span>
+              </h3>
+              <p class="shrink-0 text-sm text-muted">2010 — 2013</p>
+            </div>
+            <p class="mt-2 max-w-2xl text-sm leading-relaxed text-muted">
+              Aktif di majalah sekolah sebagai penata letak dan mulai mengenal desain grafis secara otodidak.
+            </p>
+          </article>
+        </div>
+
+        <div class="mt-8">
+          <a href="pendidikan.html" class="text-sm text-clay transition-colors hover:text-ink">Lihat selengkapnya →</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ SERTIFIKASI ============ -->
+    <section id="sertifikasi" class="py-16 md:py-20">
+      <div class="mx-auto max-w-content px-6">
+        <h2 class="font-serif text-2xl tracking-tight text-ink md:text-3xl">Sertifikasi</h2>
+        <div class="mt-6 border-t border-line"></div>
+
+        <div class="divide-y divide-line">
+          <article class="flex flex-col gap-1 py-5 md:flex-row md:items-baseline md:justify-between">
+            <h3 class="text-base text-ink">
+              <span class="font-medium">Google UX Design Professional Certificate</span>
+              <span class="text-muted"> · Coursera</span>
+            </h3>
+            <p class="shrink-0 text-sm text-muted">2022</p>
+          </article>
+
+          <article class="flex flex-col gap-1 py-5 md:flex-row md:items-baseline md:justify-between">
+            <h3 class="text-base text-ink">
+              <span class="font-medium">NN/g UX Certification</span>
+              <span class="text-muted"> · Nielsen Norman Group</span>
+            </h3>
+            <p class="shrink-0 text-sm text-muted">2023</p>
+          </article>
+
+          <article class="flex flex-col gap-1 py-5 md:flex-row md:items-baseline md:justify-between">
+            <h3 class="text-base text-ink">
+              <span class="font-medium">Design Systems with Figma</span>
+              <span class="text-muted"> · Designlab</span>
+            </h3>
+            <p class="shrink-0 text-sm text-muted">2021</p>
+          </article>
+
+          <article class="flex flex-col gap-1 py-5 md:flex-row md:items-baseline md:justify-between">
+            <h3 class="text-base text-ink">
+              <span class="font-medium">Human-Centered Design</span>
+              <span class="text-muted"> · IDEO U</span>
+            </h3>
+            <p class="shrink-0 text-sm text-muted">2021</p>
+          </article>
+
+          <article class="flex flex-col gap-1 py-5 md:flex-row md:items-baseline md:justify-between">
+            <h3 class="text-base text-ink">
+              <span class="font-medium">Accessibility: How to Design for All</span>
+              <span class="text-muted"> · Interaction Design Foundation</span>
+            </h3>
+            <p class="shrink-0 text-sm text-muted">2020</p>
+          </article>
+        </div>
+
+        <div class="mt-8">
+          <a href="sertifikasi.html" class="text-sm text-clay transition-colors hover:text-ink">Lihat selengkapnya →</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ PENGHARGAAN ============ -->
+    <section id="penghargaan" class="py-16 md:py-20">
+      <div class="mx-auto max-w-content px-6">
+        <h2 class="font-serif text-2xl tracking-tight text-ink md:text-3xl">Penghargaan</h2>
+        <div class="mt-6 border-t border-line"></div>
+
+        <div class="divide-y divide-line">
+          <article class="py-6">
+            <div class="flex flex-col gap-1 md:flex-row md:items-baseline md:justify-between">
+              <h3 class="text-base text-ink">
+                <span class="font-medium">Juara 1 — Indonesia Design Award</span>
+                <span class="text-muted"> · Kategori Digital Product</span>
+              </h3>
+              <p class="shrink-0 text-sm text-muted">2023</p>
+            </div>
+            <p class="mt-2 max-w-2xl text-sm leading-relaxed text-muted">
+              Diberikan atas perancangan ulang pengalaman onboarding aplikasi keuangan Saku.
+            </p>
+          </article>
+
+          <article class="py-6">
+            <div class="flex flex-col gap-1 md:flex-row md:items-baseline md:justify-between">
+              <h3 class="text-base text-ink">
+                <span class="font-medium">Best Design System Implementation</span>
+                <span class="text-muted"> · Tokopedia Internal Award</span>
+              </h3>
+              <p class="shrink-0 text-sm text-muted">2022</p>
+            </div>
+            <p class="mt-2 max-w-2xl text-sm leading-relaxed text-muted">
+              Mengapresiasi adopsi design system lintas tim yang memangkas waktu handoff hingga 40%.
+            </p>
+          </article>
+
+          <article class="py-6">
+            <div class="flex flex-col gap-1 md:flex-row md:items-baseline md:justify-between">
+              <h3 class="text-base text-ink">
+                <span class="font-medium">Finalis — Awwwards Site of the Day</span>
+                <span class="text-muted"> · Awwwards</span>
+              </h3>
+              <p class="shrink-0 text-sm text-muted">2021</p>
+            </div>
+            <p class="mt-2 max-w-2xl text-sm leading-relaxed text-muted">
+              Masuk daftar finalis harian untuk situs profil studio desain lokal yang dirancang bersama tim kecil.
+            </p>
+          </article>
+        </div>
+
+        <div class="mt-8">
+          <a href="penghargaan.html" class="text-sm text-clay transition-colors hover:text-ink">Lihat selengkapnya →</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ TULISAN TERBARU ============ -->
+    <section id="tulisan" class="py-16 md:py-20">
+      <div class="mx-auto max-w-content px-6">
+        <h2 class="font-serif text-2xl tracking-tight text-ink md:text-3xl">Tulisan Terbaru</h2>
+        <div class="mt-6 border-t border-line"></div>
+
+        <div class="mt-8 grid gap-6 sm:grid-cols-2">
+          <article class="rounded-xl border border-line bg-white/50 p-6 transition-colors hover:border-clay/50">
+            <p class="text-xs uppercase tracking-wide text-muted">12 Februari 2025</p>
+            <h3 class="mt-3 font-serif text-lg leading-snug text-ink">
+              <a href="blog.html" class="transition-colors hover:text-clay">Membangun Design System yang Benar-Benar Dipakai Tim</a>
+            </h3>
+            <p class="mt-3 text-sm leading-relaxed text-muted">
+              Banyak design system mati di tahap dokumentasi. Ini pendekatan yang saya pakai agar komponen benar-benar
+              hidup di kode dan di kebiasaan tim.
+            </p>
+          </article>
+
+          <article class="rounded-xl border border-line bg-white/50 p-6 transition-colors hover:border-clay/50">
+            <p class="text-xs uppercase tracking-wide text-muted">28 Januari 2025</p>
+            <h3 class="mt-3 font-serif text-lg leading-snug text-ink">
+              <a href="blog.html" class="transition-colors hover:text-clay">Riset Pengguna dengan Anggaran Terbatas</a>
+            </h3>
+            <p class="mt-3 text-sm leading-relaxed text-muted">
+              Lima wawancara yang tepat sering kali lebih berguna daripada survei besar tanpa konteks. Panduan praktis
+              untuk tim kecil.
+            </p>
+          </article>
+
+          <article class="rounded-xl border border-line bg-white/50 p-6 transition-colors hover:border-clay/50">
+            <p class="text-xs uppercase tracking-wide text-muted">9 Desember 2024</p>
+            <h3 class="mt-3 font-serif text-lg leading-snug text-ink">
+              <a href="blog.html" class="transition-colors hover:text-clay">Kenapa Handoff Bukan Akhir dari Pekerjaan Desainer</a>
+            </h3>
+            <p class="mt-3 text-sm leading-relaxed text-muted">
+              Desain baru selesai ketika ia berjalan di tangan pengguna. Catatan tentang kolaborasi desainer dan
+              engineer.
+            </p>
+          </article>
+
+          <article class="rounded-xl border border-line bg-white/50 p-6 transition-colors hover:border-clay/50">
+            <p class="text-xs uppercase tracking-wide text-muted">21 November 2024</p>
+            <h3 class="mt-3 font-serif text-lg leading-snug text-ink">
+              <a href="blog.html" class="transition-colors hover:text-clay">Merancang untuk Aksesibilitas Sejak Hari Pertama</a>
+            </h3>
+            <p class="mt-3 text-sm leading-relaxed text-muted">
+              Kontras warna, urutan fokus, dan label yang jelas bukan tambahan di akhir — semuanya bagian dari
+              keputusan awal.
+            </p>
+          </article>
+        </div>
+
+        <div class="mt-8">
+          <a href="blog.html" class="text-sm text-clay transition-colors hover:text-ink">Lihat selengkapnya →</a>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ============ FOOTER ============ -->
+  <footer id="kontak" class="border-t border-line bg-paper2/60">
+    <div class="mx-auto max-w-content px-6 py-12">
+      <div class="flex flex-col items-center gap-6 text-center md:flex-row md:justify-between md:text-left">
+        <div>
+          <p class="font-serif text-lg text-ink">Lumica</p>
+          <p class="mt-1 text-sm text-muted">© 2025 Nadia Prameswari. Seluruh hak cipta dilindungi.</p>
+        </div>
+
+        <div class="flex flex-wrap items-center justify-center gap-x-7 gap-y-3 text-sm">
+          <a href="https://dribbble.com" class="text-muted transition-colors hover:text-clay">Dribbble</a>
+          <a href="https://linkedin.com" class="text-muted transition-colors hover:text-clay">LinkedIn</a>
+          <a href="mailto:nadia@lumica.id" class="text-muted transition-colors hover:text-clay">Email</a>
+          <a href="https://nadiaprameswari.id" class="text-muted transition-colors hover:text-clay">Portfolio</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+</body>
+</html>

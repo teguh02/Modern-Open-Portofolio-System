@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="id" class="scroll-smooth">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Tulisan — Nadia Prameswari</title>
+<meta name="description" content="Catatan dan tulisan Nadia Prameswari tentang desain produk, riset, dan proses kerja." />
+<meta name="theme-color" content="#FAF9F6" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Inter:wght@300;400;500&display=swap" rel="stylesheet" />
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        fontFamily: {
+          serif: ['Fraunces', 'Georgia', 'serif'],
+          sans: ['Inter', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+        },
+        colors: {
+          paper: '#FAF9F6',
+          ink: '#1C1917',
+          muted: '#78716C',
+          line: '#E7E3DC',
+          accent: '#9A7B4F',
+        },
+      },
+    },
+  };
+</script>
+<style>
+  [x-cloak] { display: none !important; }
+  ::selection { background: #E7E3DC; }
+</style>
+<script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.14.1/dist/cdn.min.js"></script>
+</head>
+<body class="bg-paper font-sans text-ink antialiased">
+
+  <!-- Header -->
+  <header class="sticky top-0 z-40 border-b border-line bg-paper/85 backdrop-blur" x-data="{ open: false }">
+    <div class="mx-auto flex h-16 max-w-5xl items-center justify-between px-6">
+      <a href="index.html" class="font-serif text-lg tracking-tight text-ink">Lumica<span class="text-accent">.</span></a>
+
+      <nav class="hidden items-center gap-7 text-sm text-muted md:flex">
+        <a href="pengalaman.html" class="transition hover:text-ink">Pengalaman</a>
+        <a href="proyek.html" class="transition hover:text-ink">Proyek</a>
+        <a href="keahlian.html" class="transition hover:text-ink">Keahlian</a>
+        <a href="blog.html" class="text-ink">Tulisan</a>
+        <a href="index.html#kontak" class="rounded-full border border-line px-4 py-1.5 text-ink transition hover:border-ink">Kontak</a>
+      </nav>
+
+      <button type="button" class="-mr-2 p-2 text-ink md:hidden" @click="open = !open" :aria-expanded="open" aria-label="Menu">
+        <svg x-show="!open" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+          <path stroke-linecap="round" d="M4 7h16M4 12h16M4 17h16" />
+        </svg>
+        <svg x-show="open" x-cloak xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+          <path stroke-linecap="round" d="M6 6l12 12M18 6L6 18" />
+        </svg>
+      </button>
+    </div>
+
+    <div x-show="open" x-cloak class="border-t border-line bg-paper md:hidden">
+      <nav class="mx-auto flex max-w-5xl flex-col px-6 py-1 text-sm text-muted">
+        <a href="pengalaman.html" class="border-b border-line/70 py-3 transition hover:text-ink">Pengalaman</a>
+        <a href="proyek.html" class="border-b border-line/70 py-3 transition hover:text-ink">Proyek</a>
+        <a href="keahlian.html" class="border-b border-line/70 py-3 transition hover:text-ink">Keahlian</a>
+        <a href="blog.html" class="border-b border-line/70 py-3 text-ink">Tulisan</a>
+        <a href="pendidikan.html" class="border-b border-line/70 py-3 transition hover:text-ink">Pendidikan</a>
+        <a href="sertifikasi.html" class="border-b border-line/70 py-3 transition hover:text-ink">Sertifikasi</a>
+        <a href="penghargaan.html" class="border-b border-line/70 py-3 transition hover:text-ink">Penghargaan</a>
+        <a href="index.html#kontak" class="py-3 text-ink">Kontak</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Main -->
+  <main class="mx-auto max-w-5xl px-6 pb-24 pt-12 md:pt-16">
+    <a href="index.html" class="inline-flex items-center text-sm text-muted transition hover:text-ink">← Kembali ke beranda</a>
+
+    <h1 class="mt-8 font-serif text-4xl leading-tight tracking-tight md:text-5xl">Tulisan</h1>
+    <p class="mt-5 max-w-2xl text-[15px] leading-relaxed text-muted">
+      Catatan lepas tentang proses kerja, kegagalan kecil, dan hal-hal yang saya pelajari ulang setiap
+      kali mengerjakan sebuah produk.
+    </p>
+
+    <section class="mt-14 border-t border-line">
+
+      <article class="grid gap-3 border-b border-line py-9 md:grid-cols-12 md:gap-8">
+        <div class="md:col-span-3">
+          <p class="text-sm text-muted">12 Maret 2025</p>
+          <p class="mt-1 text-xs text-muted/80">6 menit baca</p>
+        </div>
+        <div class="md:col-span-9">
+          <h2 class="font-serif text-xl leading-snug">
+            <a href="#" class="transition hover:text-accent">Merancang untuk Kepercayaan: Catatan dari Alur Pembayaran</a>
+          </h2>
+          <p class="mt-3 text-[15px] leading-relaxed text-muted">
+            Pengguna tidak membaca syarat dan ketentuan — mereka mencari tanda bahwa tidak akan dirugikan.
+            Ini yang saya pelajari setelah tiga iterasi alur pembayaran.
+          </p>
+          <a href="#" class="mt-4 inline-flex items-center gap-1.5 text-sm text-ink underline decoration-line underline-offset-4 transition hover:decoration-ink">
+            Baca <span aria-hidden="true">→</span>
+          </a>
+        </div>
+      </article>
+
+      <article class="grid gap-3 border-b border-line py-9 md:grid-cols-12 md:gap-8">
+        <div class="md:col-span-3">
+          <p class="text-sm text-muted">28 Januari 2025</p>
+          <p class="mt-1 text-xs text-muted/80">5 menit baca</p>
+        </div>
+        <div class="md:col-span-9">
+          <h2 class="font-serif text-xl leading-snug">
+            <a href="#" class="transition hover:text-accent">Design System Bukan Proyek, Tapi Kebiasaan</a>
+          </h2>
+          <p class="mt-3 text-[15px] leading-relaxed text-muted">
+            Sistem yang mati biasanya bukan yang jelek secara teknis, tapi yang tidak pernah masuk ke
+            rutinitas tim. Beberapa cara agar sistem tetap hidup setelah peluncuran.
+          </p>
+          <a href="#" class="mt-4 inline-flex items-center gap-1.5 text-sm text-ink underline decoration-line underline-offset-4 transition hover:decoration-ink">
+            Baca <span aria-hidden="true">→</span>
+          </a>
+        </div>
+      </article>
+
+      <article class="grid gap-3 border-b border-line py-9 md:grid-cols-12 md:gap-8">
+        <div class="md:col-span-3">
+          <p class="text-sm text-muted">9 Desember 2024</p>
+          <p class="mt-1 text-xs text-muted/80">7 menit baca</p>
+        </div>
+        <div class="md:col-span-9">
+          <h2 class="font-serif text-xl leading-snug">
+            <a href="#" class="transition hover:text-accent">Cara Saya Menyiapkan Wawancara Pengguna dalam 3 Hari</a>
+          </h2>
+          <p class="mt-3 text-[15px] leading-relaxed text-muted">
+            Rekrutmen peserta sering jadi hambatan terbesar. Panduan ringkas tentang siapa yang perlu
+            dihubungi lebih dulu, dan berapa banyak pertanyaan yang cukup.
+          </p>
+          <a href="#" class="mt-4 inline-flex items-center gap-1.5 text-sm text-ink underline decoration-line underline-offset-4 transition hover:decoration-ink">
+            Baca <span aria-hidden="true">→</span>
+          </a>
+        </div>
+      </article>
+
+      <article class="grid gap-3 border-b border-line py-9 md:grid-cols-12 md:gap-8">
+        <div class="md:col-span-3">
+          <p class="text-sm text-muted">14 Oktober 2024</p>
+          <p class="mt-1 text-xs text-muted/80">4 menit baca</p>
+        </div>
+        <div class="md:col-span-9">
+          <h2 class="font-serif text-xl leading-snug">
+            <a href="#" class="transition hover:text-accent">Kenapa Saya Berhenti Mengejar “Pixel Perfect”</a>
+          </h2>
+          <p class="mt-3 text-[15px] leading-relaxed text-muted">
+            Presisi tanpa konteks hanya menghabiskan waktu. Yang lebih penting: apakah layar ini menjawab
+            pertanyaan pengguna pada detik pertama.
+          </p>
+          <a href="#" class="mt-4 inline-flex items-center gap-1.5 text-sm text-ink underline decoration-line underline-offset-4 transition hover:decoration-ink">
+            Baca <span aria-hidden="true">→</span>
+          </a>
+        </div>
+      </article>
+
+      <article class="grid gap-3 border-b border-line py-9 md:grid-cols-12 md:gap-8">
+        <div class="md:col-span-3">
+          <p class="text-sm text-muted">2 September 2024</p>
+          <p class="mt-1 text-xs text-muted/80">5 menit baca</p>
+        </div>
+        <div class="md:col-span-9">
+          <h2 class="font-serif text-xl leading-snug">
+            <a href="#" class="transition hover:text-accent">Menulis Microcopy yang Tidak Menghakimi Pengguna</a>
+          </h2>
+          <p class="mt-3 text-[15px] leading-relaxed text-muted">
+            Pesan galat adalah momen paling sensitif dalam sebuah produk. Cara memilih kata saat pengguna
+            melakukan kesalahan — atau saat kita yang salah.
+          </p>
+          <a href="#" class="mt-4 inline-flex items-center gap-1.5 text-sm text-ink underline decoration-line underline-offset-4 transition hover:decoration-ink">
+            Baca <span aria-hidden="true">→</span>
+          </a>
+        </div>
+      </article>
+
+      <article class="grid gap-3 border-b border-line py-9 md:grid-cols-12 md:gap-8">
+        <div class="md:col-span-3">
+          <p class="text-sm text-muted">21 Juli 2024</p>
+          <p class="mt-1 text-xs text-muted/80">4 menit baca</p>
+        </div>
+        <div class="md:col-span-9">
+          <h2 class="font-serif text-xl leading-snug">
+            <a href="#" class="transition hover:text-accent">Riset Cepat: 5 Pengguna, 5 Pertanyaan</a>
+          </h2>
+          <p class="mt-3 text-[15px] leading-relaxed text-muted">
+            Ketika tenggat hanya memberi ruang dua hari, ini kerangka minimal yang tetap saya pakai untuk
+            mendapatkan sinyal yang bisa dipercaya.
+          </p>
+          <a href="#" class="mt-4 inline-flex items-center gap-1.5 text-sm text-ink underline decoration-line underline-offset-4 transition hover:decoration-ink">
+            Baca <span aria-hidden="true">→</span>
+          </a>
+        </div>
+      </article>
+
+      <article class="grid gap-3 border-b border-line py-9 md:grid-cols-12 md:gap-8">
+        <div class="md:col-span-3">
+          <p class="text-sm text-muted">5 Juni 2024</p>
+          <p class="mt-1 text-xs text-muted/80">6 menit baca</p>
+        </div>
+        <div class="md:col-span-9">
+          <h2 class="font-serif text-xl leading-snug">
+            <a href="#" class="transition hover:text-accent">Portofolio yang Jujur: Menunjukkan Proses, Bukan Hanya Hasil</a>
+          </h2>
+          <p class="mt-3 text-[15px] leading-relaxed text-muted">
+            Rekruter tidak bisa menilai keputusan dari satu mockup cantik. Struktur studi kasus yang saya
+            pakai sekarang setelah bertahun-tahun salah menulis.
+          </p>
+          <a href="#" class="mt-4 inline-flex items-center gap-1.5 text-sm text-ink underline decoration-line underline-offset-4 transition hover:decoration-ink">
+            Baca <span aria-hidden="true">→</span>
+          </a>
+        </div>
+      </article>
+
+      <article class="grid gap-3 border-b border-line py-9 md:grid-cols-12 md:gap-8">
+        <div class="md:col-span-3">
+          <p class="text-sm text-muted">18 April 2024</p>
+          <p class="mt-1 text-xs text-muted/80">5 menit baca</p>
+        </div>
+        <div class="md:col-span-9">
+          <h2 class="font-serif text-xl leading-snug">
+            <a href="#" class="transition hover:text-accent">Belajar dari Kegagalan Fitur yang Kami Hentikan</a>
+          </h2>
+          <p class="mt-3 text-[15px] leading-relaxed text-muted">
+            Fitur yang diluncurkan dengan bangga, lalu ditutup enam bulan kemudian. Apa yang salah dalam
+            asumsi kami sejak awal.
+          </p>
+          <a href="#" class="mt-4 inline-flex items-center gap-1.5 text-sm text-ink underline decoration-line underline-offset-4 transition hover:decoration-ink">
+            Baca <span aria-hidden="true">→</span>
+          </a>
+        </div>
+      </article>
+
+      <article class="grid gap-3 border-b border-line py-9 md:grid-cols-12 md:gap-8">
+        <div class="md:col-span-3">
+          <p class="text-sm text-muted">27 Februari 2024</p>
+          <p class="mt-1 text-xs text-muted/80">3 menit baca</p>
+        </div>
+        <div class="md:col-span-9">
+          <h2 class="font-serif text-xl leading-snug">
+            <a href="#" class="transition hover:text-accent">Aksesibilitas Itu Bukan Fitur Tambahan</a>
+          </h2>
+          <p class="mt-3 text-[15px] leading-relaxed text-muted">
+            Kontras warna, urutan fokus, dan ukuran area sentuh — tiga hal yang bisa diperbaiki hari ini
+            tanpa menunggu siklus rilis berikutnya.
+          </p>
+          <a href="#" class="mt-4 inline-flex items-center gap-1.5 text-sm text-ink underline decoration-line underline-offset-4 transition hover:decoration-ink">
+            Baca <span aria-hidden="true">→</span>
+          </a>
+        </div>
+      </article>
+
+      <article class="grid gap-3 border-b border-line py-9 md:grid-cols-12 md:gap-8">
+        <div class="md:col-span-3">
+          <p class="text-sm text-muted">11 Januari 2024</p>
+          <p class="mt-1 text-xs text-muted/80">6 menit baca</p>
+        </div>
+        <div class="md:col-span-9">
+          <h2 class="font-serif text-xl leading-snug">
+            <a href="#" class="transition hover:text-accent">Panduan Praktis Handoff ke Engineer</a>
+          </h2>
+          <p class="mt-3 text-[15px] leading-relaxed text-muted">
+            Handoff bukan acara satu kali di akhir proyek. Daftar periksa kecil yang membuat file Figma
+            lebih mudah dibaca dan memotong banyak pertanyaan di Slack.
+          </p>
+          <a href="#" class="mt-4 inline-flex items-center gap-1.5 text-sm text-ink underline decoration-line underline-offset-4 transition hover:decoration-ink">
+            Baca <span aria-hidden="true">→</span>
+          </a>
+        </div>
+      </article>
+
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <footer class="border-t border-line">
+    <div class="mx-auto max-w-5xl px-6 py-14">
+      <div class="grid gap-10 md:grid-cols-12">
+        <div class="md:col-span-4">
+          <p class="font-serif text-lg text-ink">Lumica<span class="text-accent">.</span></p>
+          <p class="mt-3 max-w-xs text-sm leading-relaxed text-muted">
+            Portofolio Nadia Prameswari, Product Designer di Jakarta. Ruang kecil untuk proses, catatan, dan karya.
+          </p>
+        </div>
+        <div class="md:col-span-2 md:col-start-6">
+          <p class="text-xs uppercase tracking-[0.18em] text-muted">Halaman</p>
+          <ul class="mt-4 space-y-2 text-sm text-muted">
+            <li><a href="index.html" class="transition hover:text-ink">Beranda</a></li>
+            <li><a href="pengalaman.html" class="transition hover:text-ink">Pengalaman</a></li>
+            <li><a href="proyek.html" class="transition hover:text-ink">Proyek</a></li>
+            <li><a href="keahlian.html" class="transition hover:text-ink">Keahlian</a></li>
+          </ul>
+        </div>
+        <div class="md:col-span-2">
+          <p class="text-xs uppercase tracking-[0.18em] text-muted">Lainnya</p>
+          <ul class="mt-4 space-y-2 text-sm text-muted">
+            <li><a href="pendidikan.html" class="transition hover:text-ink">Pendidikan</a></li>
+            <li><a href="sertifikasi.html" class="transition hover:text-ink">Sertifikasi</a></li>
+            <li><a href="penghargaan.html" class="transition hover:text-ink">Penghargaan</a></li>
+            <li><a href="blog.html" class="transition hover:text-ink">Tulisan</a></li>
+          </ul>
+        </div>
+        <div class="md:col-span-3">
+          <p class="text-xs uppercase tracking-[0.18em] text-muted">Kontak</p>
+          <ul class="mt-4 space-y-2 text-sm text-muted">
+            <li><a href="mailto:nadia@lumica.studio" class="transition hover:text-ink">nadia@lumica.studio</a></li>
+            <li><a href="#" class="transition hover:text-ink">LinkedIn</a></li>
+            <li><a href="#" class="transition hover:text-ink">Dribbble</a></li>
+            <li><a href="#" class="transition hover:text-ink">Instagram</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="mt-12 flex flex-col gap-3 border-t border-line pt-6 text-xs text-muted sm:flex-row sm:items-center sm:justify-between">
+        <p>© 2025 Nadia Prameswari. Dirancang &amp; dibangun di Jakarta.</p>
+        <p>Dibuat dengan Figma, kopi, dan sedikit keras kepala.</p>
+      </div>
+    </div>
+  </footer>
+
+</body>
+</html>

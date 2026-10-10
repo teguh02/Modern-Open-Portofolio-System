@@ -1,0 +1,641 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Dashboard — MOPS Admin</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        fontFamily: {
+          sans: ['Inter', 'ui-sans-serif', 'system-ui', 'sans-serif']
+        },
+        colors: {
+          brand: {
+            50: '#eef2ff',
+            100: '#e0e7ff',
+            200: '#c7d2fe',
+            500: '#6366f1',
+            600: '#4f46e5',
+            700: '#4338ca'
+          }
+        },
+        boxShadow: {
+          card: '0 2px 4px rgba(15, 23, 42, 0.06)',
+          panel: '0 4px 12px rgba(15, 23, 42, 0.10)',
+          sidebar: '2px 0 4px rgba(15, 23, 42, 0.04)'
+        }
+      }
+    }
+  };
+</script>
+
+<script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.14.1/dist/cdn.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
+
+<style>
+  [x-cloak] { display: none !important; }
+  html { scroll-behavior: smooth; }
+  ::-webkit-scrollbar { width: 8px; height: 8px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: #dbe1ea; border-radius: 8px; }
+  ::-webkit-scrollbar-thumb:hover { background: #c3cbd8; }
+</style>
+</head>
+
+<body class="bg-[#f5f5f5] font-sans text-slate-700 antialiased">
+
+<div x-data="{ sidebarOpen: false, userMenuOpen: false }">
+
+  <!-- ================= MOBILE OVERLAY ================= -->
+  <div
+    x-show="sidebarOpen"
+    x-cloak
+    x-transition.opacity
+    @click="sidebarOpen = false"
+    class="fixed inset-0 z-40 bg-slate-900/40 lg:hidden">
+  </div>
+
+  <!-- ================= SIDEBAR ================= -->
+  <aside
+    class="fixed inset-y-0 left-0 z-50 flex w-[260px] flex-col bg-white shadow-sidebar transition-transform duration-200 ease-in-out lg:translate-x-0"
+    :class="sidebarOpen ? 'translate-x-0' : '-translate-x-full'">
+
+    <!-- Logo -->
+    <div class="flex h-16 shrink-0 items-center gap-3 px-5">
+      <span class="flex h-9 w-9 items-center justify-center rounded-lg bg-brand-600 text-sm font-bold text-white">M</span>
+      <span class="text-[17px] font-semibold tracking-tight text-slate-800">MOPS Admin</span>
+    </div>
+
+    <!-- Nav -->
+    <nav class="flex-1 overflow-y-auto px-3 pb-4">
+
+      <!-- OVERVIEW -->
+      <p class="px-3 pb-2 pt-4 text-[11px] font-semibold uppercase tracking-wider text-slate-400">Overview</p>
+      <div class="space-y-1">
+        <a href="#" @click="sidebarOpen = false"
+           class="flex items-center gap-3 rounded-lg bg-brand-600 px-3 py-2.5 text-sm font-medium text-white">
+          <svg class="h-5 w-5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3.5" y="3.5" width="7" height="7" rx="1.5" />
+            <rect x="13.5" y="3.5" width="7" height="7" rx="1.5" />
+            <rect x="3.5" y="13.5" width="7" height="7" rx="1.5" />
+            <rect x="13.5" y="13.5" width="7" height="7" rx="1.5" />
+          </svg>
+          Dashboard
+        </a>
+
+        <a href="#" @click="sidebarOpen = false"
+           class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-slate-500 transition-colors hover:bg-slate-100 hover:text-slate-700">
+          <svg class="h-5 w-5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M4 20h16" />
+            <path d="M7 16v-4" />
+            <path d="M12 16V8" />
+            <path d="M17 16v-6" />
+          </svg>
+          Analytics
+        </a>
+      </div>
+
+      <!-- CONTENT -->
+      <p class="px-3 pb-2 pt-6 text-[11px] font-semibold uppercase tracking-wider text-slate-400">Content</p>
+      <div class="space-y-1">
+        <a href="#" @click="sidebarOpen = false"
+           class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-slate-500 transition-colors hover:bg-slate-100 hover:text-slate-700">
+          <svg class="h-5 w-5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="8" r="3.5" />
+            <path d="M5 20a7 7 0 0 1 14 0" />
+          </svg>
+          Profile
+        </a>
+
+        <a href="#" @click="sidebarOpen = false"
+           class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-slate-500 transition-colors hover:bg-slate-100 hover:text-slate-700">
+          <svg class="h-5 w-5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M4 7.5A1.5 1.5 0 0 1 5.5 6h3.4a1.5 1.5 0 0 1 1.2.6l.9 1.2a1.5 1.5 0 0 0 1.2.6h6.3A1.5 1.5 0 0 1 20 9.9v7.6a1.5 1.5 0 0 1-1.5 1.5h-13A1.5 1.5 0 0 1 4 17.5v-10Z" />
+          </svg>
+          Projects
+        </a>
+
+        <a href="#" @click="sidebarOpen = false"
+           class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-slate-500 transition-colors hover:bg-slate-100 hover:text-slate-700">
+          <svg class="h-5 w-5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M8 3h6l4 4v13a1 1 0 0 1-1 1H8a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1Z" />
+            <path d="M14 3v4h4" />
+            <path d="M9.5 12.5h5" />
+            <path d="M9.5 16h3" />
+          </svg>
+          Blog
+        </a>
+
+        <a href="#" @click="sidebarOpen = false"
+           class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-slate-500 transition-colors hover:bg-slate-100 hover:text-slate-700">
+          <svg class="h-5 w-5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3.5" y="4.5" width="17" height="15" rx="2" />
+            <circle cx="9" cy="10" r="1.5" />
+            <path d="m4.5 17.5 4.2-4.2a1.5 1.5 0 0 1 2.1 0l5.2 5.2" />
+            <path d="m14.5 15.2 1.6-1.6a1.5 1.5 0 0 1 2.1 0l1.3 1.3" />
+          </svg>
+          Media
+        </a>
+      </div>
+
+      <!-- SYSTEM -->
+      <p class="px-3 pb-2 pt-6 text-[11px] font-semibold uppercase tracking-wider text-slate-400">System</p>
+      <div class="space-y-1">
+        <a href="#" @click="sidebarOpen = false"
+           class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-slate-500 transition-colors hover:bg-slate-100 hover:text-slate-700">
+          <svg class="h-5 w-5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M13 2.5 4.5 14H11l-1 7.5L18.5 10H12l1-7.5Z" />
+          </svg>
+          Plugins
+        </a>
+
+        <a href="#" @click="sidebarOpen = false"
+           class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-slate-500 transition-colors hover:bg-slate-100 hover:text-slate-700">
+          <svg class="h-5 w-5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 3.5c3 3.5 6 6.7 6 9.8a6 6 0 1 1-12 0c0-3.1 3-6.3 6-9.8Z" />
+          </svg>
+          Themes
+        </a>
+
+        <a href="#" @click="sidebarOpen = false"
+           class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-slate-500 transition-colors hover:bg-slate-100 hover:text-slate-700">
+          <svg class="h-5 w-5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="3" />
+            <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.6h.09A1.65 1.65 0 0 0 10 3.09V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1Z" />
+          </svg>
+          Settings
+        </a>
+      </div>
+    </nav>
+
+    <!-- User block -->
+    <div class="mt-auto shrink-0 border-t border-slate-100 p-3">
+      <div class="flex items-center gap-3 rounded-lg px-2 py-2 transition-colors hover:bg-slate-50">
+        <span class="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-brand-600 text-xs font-semibold text-white">AM</span>
+        <div class="min-w-0 flex-1">
+          <p class="truncate text-sm font-medium text-slate-700">Alex Morgan</p>
+          <p class="truncate text-xs text-slate-400">Administrator</p>
+        </div>
+        <button type="button" title="Sign out"
+                class="rounded-lg p-1.5 text-slate-400 transition-colors hover:bg-slate-100 hover:text-slate-600">
+          <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M15 17l5-5-5-5" />
+            <path d="M20 12H9" />
+            <path d="M12 20H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h6" />
+          </svg>
+        </button>
+      </div>
+    </div>
+  </aside>
+
+  <!-- ================= CONTENT WRAPPER ================= -->
+  <div class="flex min-h-screen flex-col lg:pl-[260px]">
+
+    <!-- ---------- TOP BAR ---------- -->
+    <header class="sticky top-0 z-30 flex h-16 shrink-0 items-center gap-3 bg-white px-4 shadow-card sm:px-6">
+
+      <button type="button" @click="sidebarOpen = true"
+              class="-ml-2 rounded-lg p-2 text-slate-500 transition-colors hover:bg-slate-100 hover:text-slate-700 lg:hidden">
+        <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M4 7h16" />
+          <path d="M4 12h16" />
+          <path d="M4 17h16" />
+        </svg>
+      </button>
+
+      <nav class="hidden items-center gap-2 text-sm sm:flex">
+        <span class="text-slate-400">Home</span>
+        <svg class="h-3.5 w-3.5 text-slate-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="m9 6 6 6-6 6" />
+        </svg>
+        <span class="font-medium text-slate-700">Dashboard</span>
+      </nav>
+
+      <span class="text-sm font-semibold text-slate-700 sm:hidden">Dashboard</span>
+
+      <div class="ml-auto flex items-center gap-2 sm:gap-3">
+
+        <!-- Search -->
+        <div class="relative hidden md:block">
+          <svg class="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="11" cy="11" r="7" />
+            <path d="m20 20-3.5-3.5" />
+          </svg>
+          <input type="search" placeholder="Search..."
+                 class="h-10 w-52 rounded-lg bg-slate-100 pl-9 pr-3 text-sm text-slate-700 placeholder-slate-400 outline-none transition focus:ring-2 focus:ring-brand-500/40 lg:w-64" />
+        </div>
+
+        <!-- Notifications -->
+        <button type="button"
+                class="relative rounded-lg p-2 text-slate-500 transition-colors hover:bg-slate-100 hover:text-slate-700">
+          <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M18 8a6 6 0 1 0-12 0c0 6-2 7-2 7h16s-2-1-2-7Z" />
+            <path d="M10.3 20a2 2 0 0 0 3.4 0" />
+          </svg>
+          <span class="absolute right-1 top-1 flex h-4 min-w-[16px] items-center justify-center rounded-full bg-red-500 px-1 text-[10px] font-semibold leading-none text-white">3</span>
+        </button>
+
+        <!-- Avatar dropdown -->
+        <div class="relative" @click.outside="userMenuOpen = false">
+          <button type="button" @click="userMenuOpen = !userMenuOpen"
+                  class="flex items-center gap-2 rounded-lg p-1 transition-colors hover:bg-slate-100">
+            <span class="flex h-9 w-9 items-center justify-center rounded-full bg-brand-600 text-xs font-semibold text-white">AM</span>
+            <svg class="hidden h-4 w-4 text-slate-400 sm:block" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="m6 9 6 6 6-6" />
+            </svg>
+          </button>
+
+          <div x-show="userMenuOpen" x-cloak
+               x-transition:enter="transition ease-out duration-100"
+               x-transition:enter-start="opacity-0 scale-95"
+               x-transition:enter-end="opacity-100 scale-100"
+               x-transition:leave="transition ease-in duration-75"
+               x-transition:leave-start="opacity-100 scale-100"
+               x-transition:leave-end="opacity-0 scale-95"
+               class="absolute right-0 mt-2 w-48 origin-top-right rounded-lg bg-white py-1 shadow-panel">
+            <div class="px-4 py-2">
+              <p class="text-sm font-medium text-slate-700">Alex Morgan</p>
+              <p class="truncate text-xs text-slate-400">alex@mopsadmin.com</p>
+            </div>
+            <div class="my-1 h-px bg-slate-100"></div>
+            <a href="#" class="block px-4 py-2 text-sm text-slate-600 transition-colors hover:bg-slate-50">Your Profile</a>
+            <a href="#" class="block px-4 py-2 text-sm text-slate-600 transition-colors hover:bg-slate-50">Account Settings</a>
+            <div class="my-1 h-px bg-slate-100"></div>
+            <a href="#" class="block px-4 py-2 text-sm text-red-600 transition-colors hover:bg-red-50">Sign out</a>
+          </div>
+        </div>
+
+      </div>
+    </header>
+
+    <!-- ---------- MAIN ---------- -->
+    <main class="flex-1 space-y-5 p-4 sm:p-6">
+
+      <!-- ===== STAT CARDS ===== -->
+      <section class="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
+
+        <!-- Total Projects -->
+        <div class="rounded-lg bg-white p-5 shadow-card">
+          <div class="flex items-start justify-between gap-4">
+            <div class="min-w-0">
+              <p class="text-sm font-medium text-slate-500">Total Projects</p>
+              <p class="mt-2 text-2xl font-semibold tracking-tight text-slate-800">24</p>
+            </div>
+            <span class="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg bg-brand-600 text-white">
+              <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M4 7.5A1.5 1.5 0 0 1 5.5 6h3.4a1.5 1.5 0 0 1 1.2.6l.9 1.2a1.5 1.5 0 0 0 1.2.6h6.3A1.5 1.5 0 0 1 20 9.9v7.6a1.5 1.5 0 0 1-1.5 1.5h-13A1.5 1.5 0 0 1 4 17.5v-10Z" />
+              </svg>
+            </span>
+          </div>
+          <div class="mt-3 flex items-center gap-1.5 text-xs font-medium text-green-600">
+            <svg class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 19V5" /><path d="m5 12 7-7 7 7" />
+            </svg>
+            12.5%
+            <span class="font-normal text-slate-400">vs last week</span>
+          </div>
+        </div>
+
+        <!-- Blog Posts -->
+        <div class="rounded-lg bg-white p-5 shadow-card">
+          <div class="flex items-start justify-between gap-4">
+            <div class="min-w-0">
+              <p class="text-sm font-medium text-slate-500">Blog Posts</p>
+              <p class="mt-2 text-2xl font-semibold tracking-tight text-slate-800">18</p>
+            </div>
+            <span class="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg bg-green-500 text-white">
+              <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M8 3h6l4 4v13a1 1 0 0 1-1 1H8a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1Z" />
+                <path d="M14 3v4h4" />
+                <path d="M9.5 12.5h5" />
+                <path d="M9.5 16h3" />
+              </svg>
+            </span>
+          </div>
+          <div class="mt-3 flex items-center gap-1.5 text-xs font-medium text-green-600">
+            <svg class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 19V5" /><path d="m5 12 7-7 7 7" />
+            </svg>
+            8.2%
+            <span class="font-normal text-slate-400">vs last week</span>
+          </div>
+        </div>
+
+        <!-- Media Files -->
+        <div class="rounded-lg bg-white p-5 shadow-card">
+          <div class="flex items-start justify-between gap-4">
+            <div class="min-w-0">
+              <p class="text-sm font-medium text-slate-500">Media Files</p>
+              <p class="mt-2 text-2xl font-semibold tracking-tight text-slate-800">132</p>
+            </div>
+            <span class="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg bg-amber-500 text-white">
+              <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="3.5" y="4.5" width="17" height="15" rx="2" />
+                <circle cx="9" cy="10" r="1.5" />
+                <path d="m4.5 17.5 4.2-4.2a1.5 1.5 0 0 1 2.1 0l5.2 5.2" />
+                <path d="m14.5 15.2 1.6-1.6a1.5 1.5 0 0 1 2.1 0l1.3 1.3" />
+              </svg>
+            </span>
+          </div>
+          <div class="mt-3 flex items-center gap-1.5 text-xs font-medium text-red-600">
+            <svg class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 5v14" /><path d="m19 12-7 7-7-7" />
+            </svg>
+            3.1%
+            <span class="font-normal text-slate-400">vs last week</span>
+          </div>
+        </div>
+
+        <!-- Page Views -->
+        <div class="rounded-lg bg-white p-5 shadow-card">
+          <div class="flex items-start justify-between gap-4">
+            <div class="min-w-0">
+              <p class="text-sm font-medium text-slate-500">Page Views</p>
+              <p class="mt-2 text-2xl font-semibold tracking-tight text-slate-800">8,450</p>
+            </div>
+            <span class="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg bg-blue-500 text-white">
+              <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M2.5 12S6 5.5 12 5.5 21.5 12 21.5 12 18 18.5 12 18.5 2.5 12 2.5 12Z" />
+                <circle cx="12" cy="12" r="3" />
+              </svg>
+            </span>
+          </div>
+          <div class="mt-3 flex items-center gap-1.5 text-xs font-medium text-green-600">
+            <svg class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 19V5" /><path d="m5 12 7-7 7 7" />
+            </svg>
+            24.7%
+            <span class="font-normal text-slate-400">vs last week</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===== CHARTS ROW ===== -->
+      <section class="grid grid-cols-1 gap-5 lg:grid-cols-3">
+
+        <!-- Line chart -->
+        <div class="rounded-lg bg-white p-5 shadow-card lg:col-span-2">
+          <div class="flex items-start justify-between gap-4">
+            <div>
+              <h2 class="text-base font-semibold text-slate-800">Views — Last 30 Days</h2>
+              <p class="mt-0.5 text-xs text-slate-400">Daily page views across all sections</p>
+            </div>
+            <span class="shrink-0 rounded-full bg-brand-50 px-2.5 py-1 text-xs font-medium text-brand-600">30 days</span>
+          </div>
+          <div class="mt-4 h-64 sm:h-72">
+            <canvas id="viewsChart"></canvas>
+          </div>
+        </div>
+
+        <!-- Doughnut chart -->
+        <div class="rounded-lg bg-white p-5 shadow-card">
+          <div class="flex items-start justify-between gap-4">
+            <div>
+              <h2 class="text-base font-semibold text-slate-800">Traffic Sources</h2>
+              <p class="mt-0.5 text-xs text-slate-400">Where visitors come from</p>
+            </div>
+          </div>
+          <div class="mt-4 h-64 sm:h-72">
+            <canvas id="trafficChart"></canvas>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===== RECENT ACTIVITY ===== -->
+      <section class="rounded-lg bg-white shadow-card">
+        <div class="flex items-center justify-between gap-4 px-5 py-4">
+          <h2 class="text-base font-semibold text-slate-800">Recent Activity</h2>
+          <a href="#" class="text-sm font-medium text-brand-600 transition-colors hover:text-brand-700">View all</a>
+        </div>
+
+        <div class="overflow-x-auto">
+          <table class="w-full min-w-[680px] text-left text-sm">
+            <thead>
+              <tr class="bg-slate-50 text-[11px] font-semibold uppercase tracking-wider text-slate-400">
+                <th class="px-5 py-3 font-semibold">User action</th>
+                <th class="px-5 py-3 font-semibold">Section</th>
+                <th class="px-5 py-3 font-semibold">Date</th>
+                <th class="px-5 py-3 font-semibold">Status</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-100">
+              <tr class="transition-colors hover:bg-slate-50/70">
+                <td class="px-5 py-3.5 text-slate-600">
+                  <span class="font-medium text-slate-700">Sarah Mitchell</span> updated “Homepage hero”
+                </td>
+                <td class="px-5 py-3.5 text-slate-500">Pages</td>
+                <td class="px-5 py-3.5 text-slate-400">Oct 12, 2026</td>
+                <td class="px-5 py-3.5">
+                  <span class="inline-flex rounded-full bg-green-100 px-2.5 py-1 text-xs font-medium text-green-700">Published</span>
+                </td>
+              </tr>
+              <tr class="transition-colors hover:bg-slate-50/70">
+                <td class="px-5 py-3.5 text-slate-600">
+                  <span class="font-medium text-slate-700">James Carter</span> uploaded 12 new images
+                </td>
+                <td class="px-5 py-3.5 text-slate-500">Media</td>
+                <td class="px-5 py-3.5 text-slate-400">Oct 12, 2026</td>
+                <td class="px-5 py-3.5">
+                  <span class="inline-flex rounded-full bg-green-100 px-2.5 py-1 text-xs font-medium text-green-700">Published</span>
+                </td>
+              </tr>
+              <tr class="transition-colors hover:bg-slate-50/70">
+                <td class="px-5 py-3.5 text-slate-600">
+                  <span class="font-medium text-slate-700">Elena Rossi</span> created a new project
+                </td>
+                <td class="px-5 py-3.5 text-slate-500">Projects</td>
+                <td class="px-5 py-3.5 text-slate-400">Oct 11, 2026</td>
+                <td class="px-5 py-3.5">
+                  <span class="inline-flex rounded-full bg-slate-100 px-2.5 py-1 text-xs font-medium text-slate-600">Draft</span>
+                </td>
+              </tr>
+              <tr class="transition-colors hover:bg-slate-50/70">
+                <td class="px-5 py-3.5 text-slate-600">
+                  <span class="font-medium text-slate-700">Michael Chen</span> edited the “About us” page
+                </td>
+                <td class="px-5 py-3.5 text-slate-500">Pages</td>
+                <td class="px-5 py-3.5 text-slate-400">Oct 11, 2026</td>
+                <td class="px-5 py-3.5">
+                  <span class="inline-flex rounded-full bg-green-100 px-2.5 py-1 text-xs font-medium text-green-700">Published</span>
+                </td>
+              </tr>
+              <tr class="transition-colors hover:bg-slate-50/70">
+                <td class="px-5 py-3.5 text-slate-600">
+                  <span class="font-medium text-slate-700">Priya Nair</span> scheduled a blog post
+                </td>
+                <td class="px-5 py-3.5 text-slate-500">Blog</td>
+                <td class="px-5 py-3.5 text-slate-400">Oct 10, 2026</td>
+                <td class="px-5 py-3.5">
+                  <span class="inline-flex rounded-full bg-blue-100 px-2.5 py-1 text-xs font-medium text-blue-700">Scheduled</span>
+                </td>
+              </tr>
+              <tr class="transition-colors hover:bg-slate-50/70">
+                <td class="px-5 py-3.5 text-slate-600">
+                  <span class="font-medium text-slate-700">Tom Becker</span> removed a media file
+                </td>
+                <td class="px-5 py-3.5 text-slate-500">Media</td>
+                <td class="px-5 py-3.5 text-slate-400">Oct 09, 2026</td>
+                <td class="px-5 py-3.5">
+                  <span class="inline-flex rounded-full bg-slate-100 px-2.5 py-1 text-xs font-medium text-slate-600">Draft</span>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+    </main>
+
+    <!-- ---------- FOOTER ---------- -->
+    <footer class="mt-auto px-4 py-5 text-center text-xs text-slate-400 sm:px-6 sm:text-left">
+      © 2026 MOPS Admin. All rights reserved.
+    </footer>
+
+  </div>
+</div>
+
+<!-- ================= CHARTS ================= -->
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    if (typeof Chart === 'undefined') return;
+
+    Chart.defaults.font.family = "'Inter', ui-sans-serif, system-ui, sans-serif";
+    Chart.defaults.font.size = 11;
+    Chart.defaults.color = '#94a3b8';
+
+    /* ---------- Line chart: Views — Last 30 Days ---------- */
+    const labels = [];
+    const today = new Date();
+    for (let i = 29; i >= 0; i--) {
+      const d = new Date(today);
+      d.setDate(today.getDate() - i);
+      labels.push(d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }));
+    }
+
+    const viewsData = [
+      220, 265, 240, 310, 290, 340, 380, 360, 410, 395,
+      430, 470, 450, 500, 520, 480, 540, 570, 560, 610,
+      590, 640, 680, 660, 720, 700, 760, 790, 820, 845
+    ];
+
+    const lineCtx = document.getElementById('viewsChart');
+    if (lineCtx) {
+      new Chart(lineCtx, {
+        type: 'line',
+        data: {
+          labels: labels,
+          datasets: [{
+            label: 'Views',
+            data: viewsData,
+            borderColor: '#4f46e5',
+            backgroundColor: 'rgba(79, 70, 229, 0.10)',
+            borderWidth: 2.5,
+            fill: true,
+            tension: 0.35,
+            pointRadius: 0,
+            pointHoverRadius: 4,
+            pointHoverBackgroundColor: '#4f46e5',
+            pointHoverBorderColor: '#ffffff',
+            pointHoverBorderWidth: 2
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          interaction: { mode: 'index', intersect: false },
+          plugins: {
+            legend: { display: false },
+            tooltip: {
+              backgroundColor: '#1e293b',
+              titleColor: '#e2e8f0',
+              bodyColor: '#e2e8f0',
+              padding: 10,
+              cornerRadius: 6,
+              displayColors: false,
+              titleFont: { weight: '600' },
+              callbacks: {
+                label: function (ctx) {
+                  return ctx.parsed.y.toLocaleString() + ' views';
+                }
+              }
+            }
+          },
+          scales: {
+            x: {
+              grid: { display: false },
+              border: { display: false },
+              ticks: { maxTicksLimit: 8, padding: 8 }
+            },
+            y: {
+              beginAtZero: true,
+              grid: { color: '#f1f5f9' },
+              border: { display: false },
+              ticks: { maxTicksLimit: 5, padding: 8 }
+            }
+          }
+        }
+      });
+    }
+
+    /* ---------- Doughnut chart: Traffic Sources ---------- */
+    const trafficCtx = document.getElementById('trafficChart');
+    if (trafficCtx) {
+      new Chart(trafficCtx, {
+        type: 'doughnut',
+        data: {
+          labels: ['Search', 'Direct', 'Social'],
+          datasets: [{
+            data: [55, 25, 20],
+            backgroundColor: ['#4f46e5', '#22c55e', '#f59e0b'],
+            hoverBackgroundColor: ['#4338ca', '#16a34a', '#d97706'],
+            borderWidth: 0,
+            hoverOffset: 4
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          cutout: '62%',
+          plugins: {
+            legend: {
+              position: 'bottom',
+              labels: {
+                usePointStyle: true,
+                pointStyle: 'circle',
+                boxWidth: 8,
+                boxHeight: 8,
+                padding: 16,
+                color: '#475569',
+                font: { size: 12, family: "'Inter', sans-serif" }
+              }
+            },
+            tooltip: {
+              backgroundColor: '#1e293b',
+              titleColor: '#e2e8f0',
+              bodyColor: '#e2e8f0',
+              padding: 10,
+              cornerRadius: 6,
+              displayColors: false,
+              callbacks: {
+                label: function (ctx) {
+                  return ctx.label + ': ' + ctx.parsed + '%';
+                }
+              }
+            }
+          }
+        }
+      });
+    }
+  });
+</script>
+
+</body>
+</html>

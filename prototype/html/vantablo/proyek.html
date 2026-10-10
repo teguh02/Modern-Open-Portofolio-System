@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="id" class="scroll-smooth">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Proyek — Teguh Rijanandi</title>
+<meta name="description" content="Kumpulan proyek Teguh Rijanandi, Fullstack Developer." />
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        colors: {
+          ink: { 950: '#08080a', 900: '#0f0f12', 850: '#141418', 800: '#1a1a1f', 700: '#242429' },
+          accent: { DEFAULT: '#a3e635', 200: '#d9f99d', 300: '#bef264', 400: '#a3e635', 500: '#84cc16' }
+        },
+        fontFamily: {
+          sans: ['Inter', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+          mono: ['"JetBrains Mono"', 'ui-monospace', 'SFMono-Regular', 'monospace']
+        }
+      }
+    }
+  }
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+<script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.14.1/dist/cdn.min.js"></script>
+<style>
+  [x-cloak] { display: none !important; }
+  ::selection { background: #a3e635; color: #08080a; }
+  html { -webkit-tap-highlight-color: transparent; }
+  ::-webkit-scrollbar { width: 10px; height: 10px; }
+  ::-webkit-scrollbar-track { background: #0f0f12; }
+  ::-webkit-scrollbar-thumb { background: #242429; border-radius: 9999px; }
+  ::-webkit-scrollbar-thumb:hover { background: #33333a; }
+</style>
+</head>
+<body class="flex min-h-screen flex-col bg-ink-950 font-sans text-zinc-300 antialiased">
+
+  <header x-data="{ open: false }" class="sticky top-0 z-50 border-b border-white/5 bg-ink-950/80 backdrop-blur">
+    <div class="mx-auto flex max-w-4xl items-center justify-between px-6 py-4">
+      <a href="index.html" class="flex items-center gap-2">
+        <span class="grid h-8 w-8 place-items-center rounded-lg bg-accent font-mono text-sm font-bold text-ink-950">V</span>
+        <span class="font-mono text-sm font-semibold tracking-tight text-zinc-100">vantablo<span class="text-accent">.</span>dev</span>
+      </a>
+      <nav class="hidden items-center gap-1 md:flex">
+        <a href="index.html" class="rounded-md px-3 py-2 text-sm text-zinc-400 transition hover:bg-white/5 hover:text-zinc-100">Beranda</a>
+        <a href="proyek.html" class="rounded-md px-3 py-2 text-sm text-zinc-400 transition hover:bg-white/5 hover:text-zinc-100">Proyek</a>
+        <a href="keahlian.html" class="rounded-md px-3 py-2 text-sm text-zinc-400 transition hover:bg-white/5 hover:text-zinc-100">Keahlian</a>
+        <a href="blog.html" class="rounded-md px-3 py-2 text-sm text-zinc-400 transition hover:bg-white/5 hover:text-zinc-100">Blog</a>
+        <a href="index.html#kontak" class="ml-2 rounded-md bg-accent px-3.5 py-2 text-sm font-semibold text-ink-950 transition hover:bg-accent-300">Kontak</a>
+      </nav>
+      <button @click="open = !open" class="grid h-9 w-9 place-items-center rounded-md border border-white/10 text-zinc-300 transition hover:border-accent/40 hover:text-accent md:hidden" aria-label="Buka menu navigasi">
+        <svg x-show="!open" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor" class="h-5 w-5">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5M3.75 17.25h16.5" />
+        </svg>
+        <svg x-show="open" x-cloak xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor" class="h-5 w-5">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
+        </svg>
+      </button>
+    </div>
+    <div x-show="open" x-cloak x-transition.opacity.duration.150ms class="border-t border-white/5 bg-ink-950/95 px-6 pb-5 pt-2 md:hidden">
+      <nav class="flex flex-col gap-1">
+        <a href="index.html" class="rounded-md px-3 py-2.5 text-sm text-zinc-400 transition hover:bg-white/5 hover:text-zinc-100">Beranda</a>
+        <a href="proyek.html" class="rounded-md px-3 py-2.5 text-sm text-zinc-400 transition hover:bg-white/5 hover:text-zinc-100">Proyek</a>
+        <a href="keahlian.html" class="rounded-md px-3 py-2.5 text-sm text-zinc-400 transition hover:bg-white/5 hover:text-zinc-100">Keahlian</a>
+        <a href="blog.html" class="rounded-md px-3 py-2.5 text-sm text-zinc-400 transition hover:bg-white/5 hover:text-zinc-100">Blog</a>
+        <a href="index.html#kontak" class="mt-1 rounded-md bg-accent px-3 py-2.5 text-center text-sm font-semibold text-ink-950 transition hover:bg-accent-300">Kontak</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="flex-1">
+    <div class="mx-auto max-w-4xl px-6 pb-16 pt-10 sm:pt-14">
+
+      <a href="index.html" class="inline-flex items-center gap-2 font-mono text-xs text-zinc-500 transition hover:text-accent">← Kembali ke beranda</a>
+
+      <div class="mt-8 border-b border-white/5 pb-8">
+        <p class="font-mono text-xs uppercase tracking-[0.2em] text-accent">// proyek</p>
+        <h1 class="mt-3 text-3xl font-bold tracking-tight text-zinc-100 sm:text-4xl">Proyek</h1>
+        <p class="mt-3 max-w-2xl text-sm leading-relaxed text-zinc-400">
+          Semua proyek yang pernah saya bangun — dari aplikasi internal, produk klien, sampai
+          eksperimen sampingan. Sebagian besar open source dan bisa dicoba langsung.
+        </p>
+      </div>
+
+      <section class="mt-10 grid gap-5 sm:grid-cols-2">
+
+        <article class="group flex flex-col overflow-hidden rounded-xl border border-white/5 bg-ink-900 transition hover:border-accent/30">
+          <div class="relative aspect-video overflow-hidden border-b border-white/5 bg-gradient-to-br from-accent/15 via-ink-850 to-ink-900">
+            <div class="absolute inset-0 grid place-items-center">
+              <span class="font-mono text-3xl font-semibold text-accent/30">VP</span>
+            </div>
+            <span class="absolute left-3 top-3 rounded-full border border-white/10 bg-ink-950/70 px-2.5 py-1 font-mono text-[10px] uppercase tracking-wider text-zinc-400">Web App</span>
+          </div>
+          <div class="flex flex-1 flex-col p-5">
+            <h2 class="text-base font-semibold text-zinc-100">Vantablo POS</h2>
+            <p class="mt-2 flex-1 text-sm leading-relaxed text-zinc-400">Aplikasi kasir multi-outlet dengan manajemen stok real-time, laporan penjualan, dan mode offline-first yang tetap jalan saat internet mati.</p>
+            <div class="mt-4 flex flex-wrap gap-1.5">
+              <span class="rounded-md border border-white/5 bg-white/5 px-2 py-1 font-mono text-[10px] text-zinc-400">Laravel</span>
+              <span class="rounded-md border border-white/5 bg-white/5 px-2 py-1 font-mono text-[10px] text-zinc-400">Vue 3</span>
+              <span class="rounded-md border border-white/5 bg-white/5 px-2 py-1 font-mono text-[10px] text-zinc-400">PostgreSQL</span>
+              <span class="rounded-md border border-white/5 bg-white/5 px-2 py-1 font-mono text-[10px] text-zinc-400">Redis</span>
+            </div>
+            <div class="mt-5 flex gap-4 border-t border-white/5 pt-4 font-mono text-xs">
+              <a href="#" class="text-accent transition hover:underline">Demo ↗</a>
+              <a href="#" class="text-zinc-400 transition hover:text-zinc-100">Repository ↗</a>
+            </div>
+          </div>
+        </article>
+
+        <article class="group flex flex-col overflow-hidden rounded-xl border border-white/5 bg-ink-900 transition hover:border-accent/30">
+          <div class="relative aspect-video overflow-hidden border-b border-white/5 bg-gradient-to-br from-accent/15 via-ink-850 to-ink-900">
+            <div class="absolute inset-0 grid place-items-center">
+              <span class="font-mono text-3xl font-semibold text-accent/30">SA</span>
+            </div>
+            <span class="absolute left-3 top-3 rounded-full border border-white/10 bg-ink-950/70 px-2.5 py-1 font-mono text-[10px] uppercase tracking-wider text-zinc-400">Gov Tech</span>
+          </div>
+          <div class="flex flex-1 flex-col p-5">
+            <h2 class="text-base font-semibold text-zinc-100">SiAdu</h2>
+            <p class="mt-2 flex-1 text-sm leading-relaxed text-zinc-400">Sistem pengaduan masyarakat berbasis peta untuk pemerintah daerah. Warga melapor dengan foto, lokasi otomatis, lalu melacak status penanganannya.</p>
+            <div class="mt-4 flex flex-wrap gap-1.5">
+              <span class="rounded-md border border-white/5 bg-white/5 px-2 py-1 font-mono text-[10px] text-zinc-400">Next.js</span>
+              <span class="rounded-md border border-white/5 bg-white/5 px-2 py-1 font-mono text-[10px] text-zinc-400">NestJS</span>
+              <span class="rounded-md border border-white/5 bg-white/5 px-2 py-1 font-mono text-[10px] text-zinc-400">PostgreSQL</span>
+              <span class="rounded-md border border-white/5 bg-white/5 px-2 py-1 font-mono text-[10px] text-zinc-400">Leaflet</span>
+            </div>
+            <div class="mt-5 flex gap-4 border-t border-white/5 pt-4 font-mono text-xs">
+              <a href="#" class="text-accent transition hover:underline">Demo ↗</a>
+              <a href="#" class="text-zinc-400 transition hover:text-zinc-100">Repository ↗</a>
+            </div>
+          </div>
+        </article>
+
+        <article class="group flex flex-col overflow-hidden rounded-xl border border-white/5 bg-ink-900 transition hover:border-accent/30">
+          <div class="relative aspect-video overflow-hidden border-b border-white/5 bg-gradient-to-br from-accent/15 via-ink-850 to-ink-900">
+            <div class="absolute inset-0 grid place-items-center">
+              <span class="font-mono text-3xl font-semibold text-accent/30">WK</span>
+            </div>
+            <span class="absolute left-3 top-3 rounded-full border border-white/10 bg-ink-950/70 px-2.5 py-1 font-mono text-[10px] uppercase tracking-wider text-zinc-400">PWA</span>
+          </div>
+          <div class="flex flex-1 flex-col p-5">
+            <h2 class="text-base font-semibold text-zinc-100">Warungku</h2>
+            <p class="mt-2 flex-1 text-sm leading-relaxed text-zinc-400">PWA katalog dan pemesanan untuk UMKM kuliner. Bisa dipakai tanpa instal aplikasi dan tetap menampilkan menu saat sinyal jelek.</p>
+            <div class="mt-4 flex flex-wrap gap-1.5">
+              <span class="rounded-md border border-white/5 bg-white/5 px-2 py-1 font-mono text-[10px] text-zinc-400">React</span>
+              <span class="rounded-md border border-white/5 bg-white/5 px-2 py-1 font-mono text-[10px] text-zinc-400">Vite</span>
+              <span class="rounded-md border border-white/5 bg-white/5 px-2 py-1 font-mono text-[10px] text-zinc-400">Supabase</span>
+              <span class="rounded-md border border-white/5 bg-white/5 px-2 py-1 font-mono text-[10px] text-zinc-400">Tailwind</span>
+            </div>
+            <div class="mt-5 flex gap-4 border-t border-white/5 pt-4 font-mono text-xs">
+              <a href="#" class="text-accent transition hover:underline">Demo ↗</a>
+              <a href="#" class="text-zinc-400 transition hover:text-zinc-100">Repository ↗</a>
+            </div>
+          </div>
+        </article>
+
+        <article class="group flex flex-col overflow-hidden rounded-xl border border-white/5 bg-ink-900 transition hover:border-accent/30">
+          <div class="relative aspect-video overflow-hidden border-b border-white/5 bg-gradient-to-br from-accent/15 via-ink-850 to-ink-900">
+            <div class="absolute inset-0 grid place-items-center">
+              <span class="font-mono text-3xl font-semibold text-accent/30">DP</span>
+            </div>
+            <span class="absolute left-3 top-3 rounded-full border border-white/10 bg-ink-950/70 px-2.5 py-1 font-mono text-[10px] uppercase tracking-wider text-zinc-400">Dashboard</span>
+          </div>
+          <div class="flex flex-1 flex-col p-5">
+            <h2 class="text-base font-semibold text-zinc-100">DataPulse</h2>
+            <p class="mt-2 flex-1 text-sm leading-relaxed text-zinc-400">Dashboard analitik internal dengan visualisasi metrik produk, ekspor laporan PDF/CSV, dan role-based access untuk tiap divisi.</p>
+            <div class="mt-4 flex flex-wrap gap-1.5">
+              <span class="rounded-md border border-white/5 bg-white/5 px-2 py-1 font-mono text-[10px] text-zinc-400">Vue 3</span>
+              <span class="rounded-md border border-white/5 bg-white/5 px-2 py-1 font-mono text-[10px] text-zinc-400">FastAPI</span>
+              <span class="rounded-md border border-white/5 bg-white/5 px-2 py-1 font-mono text-[10px] text-zinc-400">ClickHouse</span>
+              <span class="rounded-md border border-white/5 bg-white/5 px-2 py-1 font-mono text-[10px] text-zinc-400">ECharts</span>
+            </div>
+            <div class="mt-5 flex gap-4 border-t border-white/5 pt-4 font-mono text-xs">
+              <a href="#" class="text-accent transition hover:underline">Demo ↗</a>
+              <a href="#" class="text-zinc-400 transition hover:text-zinc-100">Repository ↗</a>
+            </div>
+          </div>
+        </article>
+
+        <article class="group flex flex-col overflow-hidden rounded-xl border border-white/5 bg-ink-900 transition hover:border-accent/30">
+          <div class="relative aspect-video overflow-hidden border-b border-white/5 bg-gradient-to-br from-accent/15 via-ink-850 to-ink-900">
+            <div class="absolute inset-0 grid place-items-center">
+              <span class="font-mono text-3xl font-semibold text-accent/30">JK</span>
+            </div>
+            <span class="absolute left-3 top-3 rounded-full border border-white/10 bg-ink-950/70 px-2.5 py-1 font-mono text-[10px] uppercase tracking-wider text-zinc-400">Side Project</span>
+          </div>
+          <div class="flex flex-1 flex-col p-5">
+            <h2 class="text-base font-semibold text-zinc-100">JejakKarbon</h2>
+            <p class="mt-2 flex-1 text-sm leading-relaxed text-zinc-400">Kalkulator jejak karbon harian dengan rekomendasi aksi nyata dan grafik tren mingguan. Dibuat untuk kampanye lingkungan kampus.</p>
+            <div class="mt-4 flex flex-wrap gap-1.5">
+              <span class="rounded-md border border-white/5 bg-white/5 px-2 py-1 font-mono text-[10px] text-zinc-400">SvelteKit</span>
+              <span class="rounded-md border border-white/5 bg-white/5 px-2 py-1 font-mono text-[10px] text-zinc-400">Tailwind</span>
+              <span class="rounded-md border border-white/5 bg-white/5 px-2 py-1 font-mono text-[10px] text-zinc-400">Chart.js</span>
+            </div>
+            <div class="mt-5 flex gap-4 border-t border-white/5 pt-4 font-mono text-xs">
+              <a href="#" class="text-accent transition hover:underline">Demo ↗</a>
+              <a href="#" class="text-zinc-400 transition hover:text-zinc-100">Repository ↗</a>
+            </div>
+          </div>
+        </article>
+
+        <article class="group flex flex-col overflow-hidden rounded-xl border border-white/5 bg-ink-900 transition hover:border-accent/30">
+          <div class="relative aspect-video overflow-hidden border-b border-white/5 bg-gradient-to-br from-accent/15 via-ink-850 to-ink-900">
+            <div class="absolute inset-0 grid place-items-center">
+              <span class="font-mono text-3xl font-semibold text-accent/30">AB</span>
+            </div>
+            <span class="absolute left-3 top-3 rounded-full border border-white/10 bg-ink-950/70 px-2.5 py-1 font-mono text-[10px] uppercase tracking-wider text-zinc-400">Internal</span>
+          </div>
+          <div class="flex flex-1 flex-col p-5">
+            <h2 class="text-base font-semibold text-zinc-100">Absen.in</h2>
+            <p class="mt-2 flex-1 text-sm leading-relaxed text-zinc-400">Absensi karyawan berbasis QR dan geofencing, terintegrasi dengan perhitungan payroll sederhana dan rekap bulanan otomatis.</p>
+            <div class="mt-4 flex flex-wrap gap-1.5">
+              <span class="rounded-md border border-white/5 bg-white/5 px-2 py-1 font-mono text-[10px] text-zinc-400">Laravel</span>
+              <span class="rounded-md border border-white/5 bg-white/5 px-2 py-1 font-mono text-[10px] text-zinc-400">Alpine.js</span>
+              <span class="rounded-md border border-white/5 bg-white/5 px-2 py-1 font-mono text-[10px] text-zinc-400">MySQL</span>
+            </div>
+            <div class="mt-5 flex gap-4 border-t border-white/5 pt-4 font-mono text-xs">
+              <a href="#" class="text-accent transition hover:underline">Demo ↗</a>
+              <a href="#" class="text-zinc-400 transition hover:text-zinc-100">Repository ↗</a>
+            </div>
+          </div>
+        </article>
+
+        <article class="group flex flex-col overflow-hidden rounded-xl border border-white/5 bg-ink-900 transition hover:border-accent/30">
+          <div class="relative aspect-video overflow-hidden border-b border-white/5 bg-gradient-to-br from-accent/15 via-ink-850 to-ink-900">
+            <div class="absolute inset-0 grid place-items-center">
+              <span class="font-mono text-3xl font-semibold text-accent/30">TB</span>
+            </div>
+            <span class="absolute left-3 top-3 rounded-full border border-white/10 bg-ink-950/70 px-2.5 py-1 font-mono text-[10px] uppercase tracking-wider text-zinc-400">API</span>
+          </div>
+          <div class="flex flex-1 flex-col p-5">
+            <h2 class="text-base font-semibold text-zinc-100">TokoBuku API</h2>
+            <p class="mt-2 flex-1 text-sm leading-relaxed text-zinc-400">REST API katalog buku dengan pencarian full-text, autentikasi JWT, rate limiting, dan dokumentasi OpenAPI yang bisa langsung dicoba.</p>
+            <div class="mt-4 flex flex-wrap gap-1.5">
+              <span class="rounded-md border border-white/5 bg-white/5 px-2 py-1 font-mono text-[10px] text-zinc-400">Node.js</span>
+              <span class="rounded-md border border-white/5 bg-white/5 px-2 py-1 font-mono text-[10px] text-zinc-400">Express</span>
+              <span class="rounded-md border border-white/5 bg-white/5 px-2 py-1 font-mono text-[10px] text-zinc-400">MongoDB</span>
+            </div>
+            <div class="mt-5 flex gap-4 border-t border-white/5 pt-4 font-mono text-xs">
+              <a href="#" class="text-accent transition hover:underline">Demo ↗</a>
+              <a href="#" class="text-zinc-400 transition hover:text-zinc-100">Repository ↗</a>
+            </div>
+          </div>
+        </article>
+
+        <article class="group flex flex-col overflow-hidden rounded-xl border border-white/5 bg-ink-900 transition hover:border-accent/30">
+          <div class="relative aspect-video overflow-hidden border-b border-white/5 bg-gradient-to-br from-accent/15 via-ink-850 to-ink-900">
+            <div class="absolute inset-0 grid place-items-center">
+              <span class="font-mono text-3xl font-semibold text-accent/30">NG</span>
+            </div>
+            <span class="absolute left-3 top-3 rounded-full border border-white/10 bg-ink-950/70 px-2.5 py-1 font-mono text-[10px] uppercase tracking-wider text-zinc-400">Open Source</span>
+          </div>
+          <div class="flex flex-1 flex-col p-5">
+            <h2 class="text-base font-semibold text-zinc-100">Ngopi.dev</h2>
+            <p class="mt-2 flex-1 text-sm leading-relaxed text-zinc-400">Blog engine markdown-first dengan komentar, RSS, dan build statis yang super cepat. Dipakai untuk blog pribadi saya sendiri.</p>
+            <div class="mt-4 flex flex-wrap gap-1.5">
+              <span class="rounded-md border border-white/5 bg-white/5 px-2 py-1 font-mono text-[10px] text-zinc-400">Astro</span>
+              <span class="rounded-md border border-white/5 bg-white/5 px-2 py-1 font-mono text-[10px] text-zinc-400">MDX</span>
+              <span class="rounded-md border border-white/5 bg-white/5 px-2 py-1 font-mono text-[10px] text-zinc-400">SQLite</span>
+            </div>
+            <div class="mt-5 flex gap-4 border-t border-white/5 pt-4 font-mono text-xs">
+              <a href="#" class="text-accent transition hover:underline">Demo ↗</a>
+              <a href="#" class="text-zinc-400 transition hover:text-zinc-100">Repository ↗</a>
+            </div>
+          </div>
+        </article>
+
+        <article class="group flex flex-col overflow-hidden rounded-xl border border-white/5 bg-ink-900 transition hover:border-accent/30">
+          <div class="relative aspect-video overflow-hidden border-b border-white/5 bg-gradient-to-br from-accent/15 via-ink-850 to-ink-900">
+            <div class="absolute inset-0 grid place-items-center">
+              <span class="font-mono text-3xl font-semibold text-accent/30">KA</span>
+            </div>
+            <span class="absolute left-3 top-3 rounded-full border border-white/10 bg-ink-950/70 px-2.5 py-1 font-mono text-[10px] uppercase tracking-wider text-zinc-400">Landing</span>
+          </div>
+          <div class="flex flex-1 flex-col p-5">
+            <h2 class="text-base font-semibold text-zinc-100">KirimAja</h2>
+            <p class="mt-2 flex-1 text-sm leading-relaxed text-zinc-400">Landing page dan dashboard pelacakan pengiriman untuk jasa logistik lokal, lengkap dengan halaman kurir dan estimasi tarif.</p>
+            <div class="mt-4 flex flex-wrap gap-1.5">
+              <span class="rounded-md border border-white/5 bg-white/5 px-2 py-1 font-mono text-[10px] text-zinc-400">Next.js</span>
+              <span class="rounded-md border border-white/5 bg-white/5 px-2 py-1 font-mono text-[10px] text-zinc-400">Tailwind</span>
+              <span class="rounded-md border border-white/5 bg-white/5 px-2 py-1 font-mono text-[10px] text-zinc-400">Prisma</span>
+            </div>
+            <div class="mt-5 flex gap-4 border-t border-white/5 pt-4 font-mono text-xs">
+              <a href="#" class="text-accent transition hover:underline">Demo ↗</a>
+              <a href="#" class="text-zinc-400 transition hover:text-zinc-100">Repository ↗</a>
+            </div>
+          </div>
+        </article>
+
+        <article class="group flex flex-col overflow-hidden rounded-xl border border-white/5 bg-ink-900 transition hover:border-accent/30">
+          <div class="relative aspect-video overflow-hidden border-b border-white/5 bg-gradient-to-br from-accent/15 via-ink-850 to-ink-900">
+            <div class="absolute inset-0 grid place-items-center">
+              <span class="font-mono text-3xl font-semibold text-accent/30">SK</span>
+            </div>
+            <span class="absolute left-3 top-3 rounded-full border border-white/10 bg-ink-950/70 px-2.5 py-1 font-mono text-[10px] uppercase tracking-wider text-zinc-400">Mobile Web</span>
+          </div>
+          <div class="flex flex-1 flex-col p-5">
+            <h2 class="text-base font-semibold text-zinc-100">Saku</h2>
+            <p class="mt-2 flex-1 text-sm leading-relaxed text-zinc-400">Aplikasi pencatatan keuangan pribadi dengan kategori kustom, anggaran bulanan, dan ringkasan pengeluaran yang mudah dibaca.</p>
+            <div class="mt-4 flex flex-wrap gap-1.5">
+              <span class="rounded-md border border-white/5 bg-white/5 px-2 py-1 font-mono text-[10px] text-zinc-400">Vue 3</span>
+              <span class="rounded-md border border-white/5 bg-white/5 px-2 py-1 font-mono text-[10px] text-zinc-400">Pinia</span>
+              <span class="rounded-md border border-white/5 bg-white/5 px-2 py-1 font-mono text-[10px] text-zinc-400">IndexedDB</span>
+            </div>
+            <div class="mt-5 flex gap-4 border-t border-white/5 pt-4 font-mono text-xs">
+              <a href="#" class="text-accent transition hover:underline">Demo ↗</a>
+              <a href="#" class="text-zinc-400 transition hover:text-zinc-100">Repository ↗</a>
+            </div>
+          </div>
+        </article>
+
+      </section>
+    </div>
+  </main>
+
+  <footer class="border-t border-white/5">
+    <div class="mx-auto flex max-w-4xl flex-col gap-4 px-6 py-10 sm:flex-row sm:items-center sm:justify-between">
+      <p class="font-mono text-xs text-zinc-500">© 2025 Teguh Rijanandi · Vantablo</p>
+      <nav class="flex flex-wrap gap-x-5 gap-y-2 font-mono text-xs text-zinc-500">
+        <a href="riwayat-kerja.html" class="transition hover:text-accent">Riwayat Kerja</a>
+        <a href="proyek.html" class="transition hover:text-accent">Proyek</a>
+        <a href="keahlian.html" class="transition hover:text-accent">Keahlian</a>
+        <a href="blog.html" class="transition hover:text-accent">Blog</a>
+        <a href="index.html#kontak" class="transition hover:text-accent">Kontak</a>
+      </nav>
+    </div>
+  </footer>
+
+</body>
+</html>

@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="id" class="scroll-smooth">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Keahlian — Nadia Prameswari</title>
+<meta name="description" content="Keahlian Nadia Prameswari: riset, desain antarmuka, prototiping, dan perkakas pendukung." />
+<meta name="theme-color" content="#FAF9F6" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Inter:wght@300;400;500&display=swap" rel="stylesheet" />
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        fontFamily: {
+          serif: ['Fraunces', 'Georgia', 'serif'],
+          sans: ['Inter', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+        },
+        colors: {
+          paper: '#FAF9F6',
+          ink: '#1C1917',
+          muted: '#78716C',
+          line: '#E7E3DC',
+          accent: '#9A7B4F',
+        },
+      },
+    },
+  };
+</script>
+<style>
+  [x-cloak] { display: none !important; }
+  ::selection { background: #E7E3DC; }
+</style>
+<script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.14.1/dist/cdn.min.js"></script>
+</head>
+<body class="bg-paper font-sans text-ink antialiased">
+
+  <!-- Header -->
+  <header class="sticky top-0 z-40 border-b border-line bg-paper/85 backdrop-blur" x-data="{ open: false }">
+    <div class="mx-auto flex h-16 max-w-5xl items-center justify-between px-6">
+      <a href="index.html" class="font-serif text-lg tracking-tight text-ink">Lumica<span class="text-accent">.</span></a>
+
+      <nav class="hidden items-center gap-7 text-sm text-muted md:flex">
+        <a href="pengalaman.html" class="transition hover:text-ink">Pengalaman</a>
+        <a href="proyek.html" class="transition hover:text-ink">Proyek</a>
+        <a href="keahlian.html" class="text-ink">Keahlian</a>
+        <a href="blog.html" class="transition hover:text-ink">Tulisan</a>
+        <a href="index.html#kontak" class="rounded-full border border-line px-4 py-1.5 text-ink transition hover:border-ink">Kontak</a>
+      </nav>
+
+      <button type="button" class="-mr-2 p-2 text-ink md:hidden" @click="open = !open" :aria-expanded="open" aria-label="Menu">
+        <svg x-show="!open" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+          <path stroke-linecap="round" d="M4 7h16M4 12h16M4 17h16" />
+        </svg>
+        <svg x-show="open" x-cloak xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+          <path stroke-linecap="round" d="M6 6l12 12M18 6L6 18" />
+        </svg>
+      </button>
+    </div>
+
+    <div x-show="open" x-cloak class="border-t border-line bg-paper md:hidden">
+      <nav class="mx-auto flex max-w-5xl flex-col px-6 py-1 text-sm text-muted">
+        <a href="pengalaman.html" class="border-b border-line/70 py-3 transition hover:text-ink">Pengalaman</a>
+        <a href="proyek.html" class="border-b border-line/70 py-3 transition hover:text-ink">Proyek</a>
+        <a href="keahlian.html" class="border-b border-line/70 py-3 text-ink">Keahlian</a>
+        <a href="blog.html" class="border-b border-line/70 py-3 transition hover:text-ink">Tulisan</a>
+        <a href="pendidikan.html" class="border-b border-line/70 py-3 transition hover:text-ink">Pendidikan</a>
+        <a href="sertifikasi.html" class="border-b border-line/70 py-3 transition hover:text-ink">Sertifikasi</a>
+        <a href="penghargaan.html" class="border-b border-line/70 py-3 transition hover:text-ink">Penghargaan</a>
+        <a href="index.html#kontak" class="py-3 text-ink">Kontak</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Main -->
+  <main class="mx-auto max-w-5xl px-6 pb-24 pt-12 md:pt-16">
+    <a href="index.html" class="inline-flex items-center text-sm text-muted transition hover:text-ink">← Kembali ke beranda</a>
+
+    <h1 class="mt-8 font-serif text-4xl leading-tight tracking-tight md:text-5xl">Keahlian</h1>
+    <p class="mt-5 max-w-2xl text-[15px] leading-relaxed text-muted">
+      Perangkat yang saya pakai sehari-hari, dikelompokkan berdasarkan tahap kerja. Tidak semuanya dikuasai
+      sampai level ahli — daftar ini jujur menggambarkan mana yang saya gunakan rutin dan mana yang masih berkembang.
+    </p>
+
+    <!-- Riset -->
+    <section class="mt-14 border-t border-line pt-9">
+      <div class="grid gap-3 md:grid-cols-12 md:gap-8">
+        <div class="md:col-span-3">
+          <h2 class="font-serif text-xl">Riset</h2>
+          <p class="mt-1 text-xs uppercase tracking-[0.18em] text-muted">Memahami masalah</p>
+        </div>
+        <div class="md:col-span-9">
+          <p class="text-[15px] leading-relaxed text-muted">
+            Merancang pertanyaan, mengumpulkan bukti, dan menerjemahkannya menjadi keputusan desain yang bisa dipertanggungjawabkan.
+          </p>
+          <ul class="mt-6 flex flex-wrap gap-2 text-sm text-ink/80">
+            <li class="rounded-full border border-line bg-white/60 px-3.5 py-1.5">Wawancara pengguna</li>
+            <li class="rounded-full border border-line bg-white/60 px-3.5 py-1.5">Usability testing</li>
+            <li class="rounded-full border border-line bg-white/60 px-3.5 py-1.5">Survei &amp; kuesioner</li>
+            <li class="rounded-full border border-line bg-white/60 px-3.5 py-1.5">Riset kontekstual</li>
+            <li class="rounded-full border border-line bg-white/60 px-3.5 py-1.5">Persona</li>
+            <li class="rounded-full border border-line bg-white/60 px-3.5 py-1.5">Journey mapping</li>
+            <li class="rounded-full border border-line bg-white/60 px-3.5 py-1.5">Card sorting</li>
+            <li class="rounded-full border border-line bg-white/60 px-3.5 py-1.5">Analisis kompetitor</li>
+            <li class="rounded-full border border-line bg-white/60 px-3.5 py-1.5">A/B testing</li>
+            <li class="rounded-full border border-line bg-white/60 px-3.5 py-1.5">Jobs to be Done</li>
+            <li class="rounded-full border border-line bg-white/60 px-3.5 py-1.5">Analisis data produk</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- UI -->
+    <section class="mt-12 border-t border-line pt-9">
+      <div class="grid gap-3 md:grid-cols-12 md:gap-8">
+        <div class="md:col-span-3">
+          <h2 class="font-serif text-xl">UI</h2>
+          <p class="mt-1 text-xs uppercase tracking-[0.18em] text-muted">Merancang antarmuka</p>
+        </div>
+        <div class="md:col-span-9">
+          <p class="text-[15px] leading-relaxed text-muted">
+            Menyusun hierarki, tipografi, dan sistem komponen yang konsisten — dengan aksesibilitas sebagai syarat, bukan tambahan.
+          </p>
+          <ul class="mt-6 flex flex-wrap gap-2 text-sm text-ink/80">
+            <li class="rounded-full border border-line bg-white/60 px-3.5 py-1.5">Design system</li>
+            <li class="rounded-full border border-line bg-white/60 px-3.5 py-1.5">Design token</li>
+            <li class="rounded-full border border-line bg-white/60 px-3.5 py-1.5">Wireframing</li>
+            <li class="rounded-full border border-line bg-white/60 px-3.5 py-1.5">Tipografi</li>
+            <li class="rounded-full border border-line bg-white/60 px-3.5 py-1.5">Layout &amp; grid</li>
+            <li class="rounded-full border border-line bg-white/60 px-3.5 py-1.5">Ikonografi</li>
+            <li class="rounded-full border border-line bg-white/60 px-3.5 py-1.5">Ilustrasi vektor</li>
+            <li class="rounded-full border border-line bg-white/60 px-3.5 py-1.5">Aksesibilitas WCAG</li>
+            <li class="rounded-full border border-line bg-white/60 px-3.5 py-1.5">Responsive design</li>
+            <li class="rounded-full border border-line bg-white/60 px-3.5 py-1.5">Mikrointeraksi</li>
+            <li class="rounded-full border border-line bg-white/60 px-3.5 py-1.5">Microcopy</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- Prototiping -->
+    <section class="mt-12 border-t border-line pt-9">
+      <div class="grid gap-3 md:grid-cols-12 md:gap-8">
+        <div class="md:col-span-3">
+          <h2 class="font-serif text-xl">Prototiping</h2>
+          <p class="mt-1 text-xs uppercase tracking-[0.18em] text-muted">Menguji sebelum dibangun</p>
+        </div>
+        <div class="md:col-span-9">
+          <p class="text-[15px] leading-relaxed text-muted">
+            Membuat prototipe secukupnya untuk menjawab satu pertanyaan spesifik, lalu mengujinya secepat mungkin.
+          </p>
+          <ul class="mt-6 flex flex-wrap gap-2 text-sm text-ink/80">
+            <li class="rounded-full border border-line bg-white/60 px-3.5 py-1.5">Figma</li>
+            <li class="rounded-full border border-line bg-white/60 px-3.5 py-1.5">Auto Layout &amp; Variants</li>
+            <li class="rounded-full border border-line bg-white/60 px-3.5 py-1.5">Protopie</li>
+            <li class="rounded-full border border-line bg-white/60 px-3.5 py-1.5">Framer</li>
+            <li class="rounded-full border border-line bg-white/60 px-3.5 py-1.5">Prototipe interaktif</li>
+            <li class="rounded-full border border-line bg-white/60 px-3.5 py-1.5">Skenario pengujian</li>
+            <li class="rounded-full border border-line bg-white/60 px-3.5 py-1.5">Maze</li>
+            <li class="rounded-full border border-line bg-white/60 px-3.5 py-1.5">Useberry</li>
+            <li class="rounded-full border border-line bg-white/60 px-3.5 py-1.5">Handoff ke engineering</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- Lainnya -->
+    <section class="mt-12 border-t border-line pt-9">
+      <div class="grid gap-3 md:grid-cols-12 md:gap-8">
+        <div class="md:col-span-3">
+          <h2 class="font-serif text-xl">Lainnya</h2>
+          <p class="mt-1 text-xs uppercase tracking-[0.18em] text-muted">Perkakas &amp; cara kerja</p>
+        </div>
+        <div class="md:col-span-9">
+          <p class="text-[15px] leading-relaxed text-muted">
+            Hal-hal pendukung yang membuat kerja desain berjalan lancar bersama tim produk dan engineering.
+          </p>
+          <ul class="mt-6 flex flex-wrap gap-2 text-sm text-ink/80">
+            <li class="rounded-full border border-line bg-white/60 px-3.5 py-1.5">HTML &amp; CSS dasar</li>
+            <li class="rounded-full border border-line bg-white/60 px-3.5 py-1.5">Tailwind CSS</li>
+            <li class="rounded-full border border-line bg-white/60 px-3.5 py-1.5">Git &amp; GitHub</li>
+            <li class="rounded-full border border-line bg-white/60 px-3.5 py-1.5">Storybook dasar</li>
+            <li class="rounded-full border border-line bg-white/60 px-3.5 py-1.5">Notion</li>
+            <li class="rounded-full border border-line bg-white/60 px-3.5 py-1.5">Jira</li>
+            <li class="rounded-full border border-line bg-white/60 px-3.5 py-1.5">Miro</li>
+            <li class="rounded-full border border-line bg-white/60 px-3.5 py-1.5">Fasilitasi workshop</li>
+            <li class="rounded-full border border-line bg-white/60 px-3.5 py-1.5">Design critique</li>
+            <li class="rounded-full border border-line bg-white/60 px-3.5 py-1.5">Mentoring</li>
+            <li class="rounded-full border border-line bg-white/60 px-3.5 py-1.5">Penulisan UX</li>
+            <li class="rounded-full border border-line bg-white/60 px-3.5 py-1.5">Bahasa Inggris profesional</li>
+            <li class="rounded-full border border-line bg-white/60 px-3.5 py-1.5">Bahasa Indonesia (asli)</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <footer class="border-t border-line">
+    <div class="mx-auto max-w-5xl px-6 py-14">
+      <div class="grid gap-10 md:grid-cols-12">
+        <div class="md:col-span-4">
+          <p class="font-serif text-lg text-ink">Lumica<span class="text-accent">.</span></p>
+          <p class="mt-3 max-w-xs text-sm leading-relaxed text-muted">
+            Portofolio Nadia Prameswari, Product Designer di Jakarta. Ruang kecil untuk proses, catatan, dan karya.
+          </p>
+        </div>
+        <div class="md:col-span-2 md:col-start-6">
+          <p class="text-xs uppercase tracking-[0.18em] text-muted">Halaman</p>
+          <ul class="mt-4 space-y-2 text-sm text-muted">
+            <li><a href="index.html" class="transition hover:text-ink">Beranda</a></li>
+            <li><a href="pengalaman.html" class="transition hover:text-ink">Pengalaman</a></li>
+            <li><a href="proyek.html" class="transition hover:text-ink">Proyek</a></li>
+            <li><a href="keahlian.html" class="transition hover:text-ink">Keahlian</a></li>
+          </ul>
+        </div>
+        <div class="md:col-span-2">
+          <p class="text-xs uppercase tracking-[0.18em] text-muted">Lainnya</p>
+          <ul class="mt-4 space-y-2 text-sm text-muted">
+            <li><a href="pendidikan.html" class="transition hover:text-ink">Pendidikan</a></li>
+            <li><a href="sertifikasi.html" class="transition hover:text-ink">Sertifikasi</a></li>
+            <li><a href="penghargaan.html" class="transition hover:text-ink">Penghargaan</a></li>
+            <li><a href="blog.html" class="transition hover:text-ink">Tulisan</a></li>
+          </ul>
+        </div>
+        <div class="md:col-span-3">
+          <p class="text-xs uppercase tracking-[0.18em] text-muted">Kontak</p>
+          <ul class="mt-4 space-y-2 text-sm text-muted">
+            <li><a href="mailto:nadia@lumica.studio" class="transition hover:text-ink">nadia@lumica.studio</a></li>
+            <li><a href="#" class="transition hover:text-ink">LinkedIn</a></li>
+            <li><a href="#" class="transition hover:text-ink">Dribbble</a></li>
+            <li><a href="#" class="transition hover:text-ink">Instagram</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="mt-12 flex flex-col gap-3 border-t border-line pt-6 text-xs text-muted sm:flex-row sm:items-center sm:justify-between">
+        <p>© 2025 Nadia Prameswari. Dirancang &amp; dibangun di Jakarta.</p>
+        <p>Dibuat dengan Figma, kopi, dan sedikit keras kepala.</p>
+      </div>
+    </div>
+  </footer>
+
+</body>
+</html>

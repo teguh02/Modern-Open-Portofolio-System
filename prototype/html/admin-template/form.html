@@ -1,0 +1,1003 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>New Project — MOPS Admin</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        fontFamily: {
+          sans: ['Inter', 'ui-sans-serif', 'system-ui', 'sans-serif']
+        },
+        colors: {
+          brand: {
+            50: '#eef2ff',
+            100: '#e0e7ff',
+            200: '#c7d2fe',
+            500: '#6366f1',
+            600: '#4f46e5',
+            700: '#4338ca'
+          }
+        },
+        boxShadow: {
+          card: '0 2px 4px rgba(15, 23, 42, 0.06)',
+          panel: '0 4px 12px rgba(15, 23, 42, 0.10)',
+          sidebar: '2px 0 4px rgba(15, 23, 42, 0.04)'
+        }
+      }
+    }
+  };
+</script>
+
+<script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.14.1/dist/cdn.min.js"></script>
+
+<style>
+  [x-cloak] { display: none !important; }
+  html { scroll-behavior: smooth; }
+  ::-webkit-scrollbar { width: 8px; height: 8px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: #dbe1ea; border-radius: 8px; }
+  ::-webkit-scrollbar-thumb:hover { background: #c3cbd8; }
+
+  /* Flat, solid range slider (indigo accent) */
+  input[type="range"].flat-range {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 100%;
+    height: 6px;
+    border-radius: 9999px;
+    background: #e2e8f0;
+    outline: none;
+    cursor: pointer;
+  }
+  input[type="range"].flat-range::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 18px;
+    height: 18px;
+    border-radius: 9999px;
+    background: #4f46e5;
+    border: 3px solid #ffffff;
+    box-shadow: 0 1px 3px rgba(15, 23, 42, 0.25);
+    cursor: pointer;
+  }
+  input[type="range"].flat-range::-moz-range-thumb {
+    width: 18px;
+    height: 18px;
+    border-radius: 9999px;
+    background: #4f46e5;
+    border: 3px solid #ffffff;
+    box-shadow: 0 1px 3px rgba(15, 23, 42, 0.25);
+    cursor: pointer;
+  }
+  input[type="range"].flat-range::-moz-range-track {
+    height: 6px;
+    border-radius: 9999px;
+    background: #e2e8f0;
+  }
+
+  /* Consistent native date/time picker indicator color */
+  input[type="date"]::-webkit-calendar-picker-indicator,
+  input[type="time"]::-webkit-calendar-picker-indicator {
+    cursor: pointer;
+    opacity: 0.55;
+  }
+
+  /* Remove number input spinners (we use a custom stepper) */
+  input[type="number"].no-spin::-webkit-outer-spin-button,
+  input[type="number"].no-spin::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+  input[type="number"].no-spin {
+    -moz-appearance: textfield;
+  }
+</style>
+</head>
+
+<body class="bg-[#f5f5f5] font-sans text-slate-700 antialiased">
+
+<div x-data="{ sidebarOpen: false, userMenuOpen: false, modalOpen: false }">
+
+  <!-- ================= MOBILE OVERLAY ================= -->
+  <div
+    x-show="sidebarOpen"
+    x-cloak
+    x-transition.opacity
+    @click="sidebarOpen = false"
+    class="fixed inset-0 z-40 bg-slate-900/40 lg:hidden">
+  </div>
+
+  <!-- ================= SIDEBAR ================= -->
+  <aside
+    class="fixed inset-y-0 left-0 z-50 flex w-[260px] flex-col bg-white shadow-sidebar transition-transform duration-200 ease-in-out lg:translate-x-0"
+    :class="sidebarOpen ? 'translate-x-0' : '-translate-x-full'">
+
+    <!-- Logo -->
+    <div class="flex h-16 shrink-0 items-center gap-3 px-5">
+      <span class="flex h-9 w-9 items-center justify-center rounded-lg bg-brand-600 text-sm font-bold text-white">M</span>
+      <span class="text-[17px] font-semibold tracking-tight text-slate-800">MOPS Admin</span>
+    </div>
+
+    <!-- Nav -->
+    <nav class="flex-1 overflow-y-auto px-3 pb-4">
+
+      <!-- OVERVIEW -->
+      <p class="px-3 pb-2 pt-4 text-[11px] font-semibold uppercase tracking-wider text-slate-400">Overview</p>
+      <div class="space-y-1">
+        <a href="#" @click="sidebarOpen = false"
+           class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-slate-500 transition-colors hover:bg-slate-100 hover:text-slate-700">
+          <svg class="h-5 w-5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3.5" y="3.5" width="7" height="7" rx="1.5" />
+            <rect x="13.5" y="3.5" width="7" height="7" rx="1.5" />
+            <rect x="3.5" y="13.5" width="7" height="7" rx="1.5" />
+            <rect x="13.5" y="13.5" width="7" height="7" rx="1.5" />
+          </svg>
+          Dashboard
+        </a>
+
+        <a href="#" @click="sidebarOpen = false"
+           class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-slate-500 transition-colors hover:bg-slate-100 hover:text-slate-700">
+          <svg class="h-5 w-5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M4 20h16" />
+            <path d="M7 16v-4" />
+            <path d="M12 16V8" />
+            <path d="M17 16v-6" />
+          </svg>
+          Analytics
+        </a>
+      </div>
+
+      <!-- CONTENT -->
+      <p class="px-3 pb-2 pt-6 text-[11px] font-semibold uppercase tracking-wider text-slate-400">Content</p>
+      <div class="space-y-1">
+        <a href="#" @click="sidebarOpen = false"
+           class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-slate-500 transition-colors hover:bg-slate-100 hover:text-slate-700">
+          <svg class="h-5 w-5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="8" r="3.5" />
+            <path d="M5 20a7 7 0 0 1 14 0" />
+          </svg>
+          Profile
+        </a>
+
+        <a href="#" @click="sidebarOpen = false"
+           class="flex items-center gap-3 rounded-lg bg-brand-600 px-3 py-2.5 text-sm font-medium text-white">
+          <svg class="h-5 w-5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M4 7.5A1.5 1.5 0 0 1 5.5 6h3.4a1.5 1.5 0 0 1 1.2.6l.9 1.2a1.5 1.5 0 0 0 1.2.6h6.3A1.5 1.5 0 0 1 20 9.9v7.6a1.5 1.5 0 0 1-1.5 1.5h-13A1.5 1.5 0 0 1 4 17.5v-10Z" />
+          </svg>
+          Projects
+        </a>
+
+        <a href="#" @click="sidebarOpen = false"
+           class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-slate-500 transition-colors hover:bg-slate-100 hover:text-slate-700">
+          <svg class="h-5 w-5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M8 3h6l4 4v13a1 1 0 0 1-1 1H8a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1Z" />
+            <path d="M14 3v4h4" />
+            <path d="M9.5 12.5h5" />
+            <path d="M9.5 16h3" />
+          </svg>
+          Blog
+        </a>
+
+        <a href="#" @click="sidebarOpen = false"
+           class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-slate-500 transition-colors hover:bg-slate-100 hover:text-slate-700">
+          <svg class="h-5 w-5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3.5" y="4.5" width="17" height="15" rx="2" />
+            <circle cx="9" cy="10" r="1.5" />
+            <path d="m4.5 17.5 4.2-4.2a1.5 1.5 0 0 1 2.1 0l5.2 5.2" />
+            <path d="m14.5 15.2 1.6-1.6a1.5 1.5 0 0 1 2.1 0l1.3 1.3" />
+          </svg>
+          Media
+        </a>
+      </div>
+
+      <!-- SYSTEM -->
+      <p class="px-3 pb-2 pt-6 text-[11px] font-semibold uppercase tracking-wider text-slate-400">System</p>
+      <div class="space-y-1">
+        <a href="#" @click="sidebarOpen = false"
+           class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-slate-500 transition-colors hover:bg-slate-100 hover:text-slate-700">
+          <svg class="h-5 w-5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M13 2.5 4.5 14H11l-1 7.5L18.5 10H12l1-7.5Z" />
+          </svg>
+          Plugins
+        </a>
+
+        <a href="#" @click="sidebarOpen = false"
+           class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-slate-500 transition-colors hover:bg-slate-100 hover:text-slate-700">
+          <svg class="h-5 w-5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 3.5c3 3.5 6 6.7 6 9.8a6 6 0 1 1-12 0c0-3.1 3-6.3 6-9.8Z" />
+          </svg>
+          Themes
+        </a>
+
+        <a href="#" @click="sidebarOpen = false"
+           class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-slate-500 transition-colors hover:bg-slate-100 hover:text-slate-700">
+          <svg class="h-5 w-5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="3" />
+            <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.6h.09A1.65 1.65 0 0 0 10 3.09V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1Z" />
+          </svg>
+          Settings
+        </a>
+      </div>
+    </nav>
+
+    <!-- User block -->
+    <div class="mt-auto shrink-0 border-t border-slate-100 p-3">
+      <div class="flex items-center gap-3 rounded-lg px-2 py-2 transition-colors hover:bg-slate-50">
+        <span class="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-brand-600 text-xs font-semibold text-white">AM</span>
+        <div class="min-w-0 flex-1">
+          <p class="truncate text-sm font-medium text-slate-700">Alex Morgan</p>
+          <p class="truncate text-xs text-slate-400">Administrator</p>
+        </div>
+        <button type="button" title="Sign out"
+                class="rounded-lg p-1.5 text-slate-400 transition-colors hover:bg-slate-100 hover:text-slate-600">
+          <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M15 17l5-5-5-5" />
+            <path d="M20 12H9" />
+            <path d="M12 20H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h6" />
+          </svg>
+        </button>
+      </div>
+    </div>
+  </aside>
+
+  <!-- ================= CONTENT WRAPPER ================= -->
+  <div class="flex min-h-screen flex-col lg:pl-[260px]">
+
+    <!-- ---------- TOP BAR ---------- -->
+    <header class="sticky top-0 z-30 flex h-16 shrink-0 items-center gap-3 bg-white px-4 shadow-card sm:px-6">
+
+      <button type="button" @click="sidebarOpen = true"
+              class="-ml-2 rounded-lg p-2 text-slate-500 transition-colors hover:bg-slate-100 hover:text-slate-700 lg:hidden">
+        <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M4 7h16" />
+          <path d="M4 12h16" />
+          <path d="M4 17h16" />
+        </svg>
+      </button>
+
+      <nav class="hidden items-center gap-2 text-sm sm:flex">
+        <span class="text-slate-400">Content</span>
+        <svg class="h-3.5 w-3.5 text-slate-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="m9 6 6 6-6 6" />
+        </svg>
+        <span class="font-medium text-slate-700">New Project</span>
+      </nav>
+
+      <span class="text-sm font-semibold text-slate-700 sm:hidden">New Project</span>
+
+      <div class="ml-auto flex items-center gap-2 sm:gap-3">
+
+        <!-- Search -->
+        <div class="relative hidden md:block">
+          <svg class="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="11" cy="11" r="7" />
+            <path d="m20 20-3.5-3.5" />
+          </svg>
+          <input type="search" placeholder="Search..."
+                 class="h-10 w-52 rounded-lg bg-slate-100 pl-9 pr-3 text-sm text-slate-700 placeholder-slate-400 outline-none transition focus:ring-2 focus:ring-brand-500/40 lg:w-64" />
+        </div>
+
+        <!-- Notifications -->
+        <button type="button"
+                class="relative rounded-lg p-2 text-slate-500 transition-colors hover:bg-slate-100 hover:text-slate-700">
+          <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M18 8a6 6 0 1 0-12 0c0 6-2 7-2 7h16s-2-1-2-7Z" />
+            <path d="M10.3 20a2 2 0 0 0 3.4 0" />
+          </svg>
+          <span class="absolute right-1 top-1 flex h-4 min-w-[16px] items-center justify-center rounded-full bg-red-500 px-1 text-[10px] font-semibold leading-none text-white">3</span>
+        </button>
+
+        <!-- Avatar dropdown -->
+        <div class="relative" @click.outside="userMenuOpen = false">
+          <button type="button" @click="userMenuOpen = !userMenuOpen"
+                  class="flex items-center gap-2 rounded-lg p-1 transition-colors hover:bg-slate-100">
+            <span class="flex h-9 w-9 items-center justify-center rounded-full bg-brand-600 text-xs font-semibold text-white">AM</span>
+            <svg class="hidden h-4 w-4 text-slate-400 sm:block" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="m6 9 6 6 6-6" />
+            </svg>
+          </button>
+
+          <div x-show="userMenuOpen" x-cloak
+               x-transition:enter="transition ease-out duration-100"
+               x-transition:enter-start="opacity-0 scale-95"
+               x-transition:enter-end="opacity-100 scale-100"
+               x-transition:leave="transition ease-in duration-75"
+               x-transition:leave-start="opacity-100 scale-100"
+               x-transition:leave-end="opacity-0 scale-95"
+               class="absolute right-0 mt-2 w-48 origin-top-right rounded-lg bg-white py-1 shadow-panel">
+            <div class="px-4 py-2">
+              <p class="text-sm font-medium text-slate-700">Alex Morgan</p>
+              <p class="truncate text-xs text-slate-400">alex@mopsadmin.com</p>
+            </div>
+            <div class="my-1 h-px bg-slate-100"></div>
+            <a href="#" class="block px-4 py-2 text-sm text-slate-600 transition-colors hover:bg-slate-50">Your Profile</a>
+            <a href="#" class="block px-4 py-2 text-sm text-slate-600 transition-colors hover:bg-slate-50">Account Settings</a>
+            <div class="my-1 h-px bg-slate-100"></div>
+            <a href="#" class="block px-4 py-2 text-sm text-red-600 transition-colors hover:bg-red-50">Sign out</a>
+          </div>
+        </div>
+
+      </div>
+    </header>
+
+    <!-- ---------- MAIN ---------- -->
+    <main class="flex-1 space-y-5 p-4 sm:p-6">
+
+      <!-- ===== PAGE HEADER ===== -->
+      <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+        <div>
+          <h1 class="text-xl font-semibold tracking-tight text-slate-800 sm:text-2xl">New Project</h1>
+          <p class="mt-1 text-sm text-slate-500">Create a new portfolio project and configure its details</p>
+        </div>
+
+        <div class="flex flex-wrap items-center gap-2">
+          <button type="button" @click="modalOpen = true"
+                  class="inline-flex items-center justify-center gap-2 rounded-lg border border-slate-200 bg-white px-4 py-2.5 text-sm font-medium text-slate-600 shadow-card transition-colors hover:border-brand-500 hover:text-brand-600">
+            <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="3.5" y="4.5" width="17" height="15" rx="2" />
+              <path d="M3.5 9.5h17" />
+            </svg>
+            Show modal
+          </button>
+        </div>
+      </div>
+
+      <!-- ===== ALERT BANNER ===== -->
+      <div x-data="{ showAlert: true }" x-show="showAlert" x-cloak
+           class="flex items-start gap-3 rounded-lg bg-amber-100 px-4 py-3 shadow-card">
+        <svg class="mt-0.5 h-5 w-5 shrink-0 text-amber-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 9v4" />
+          <path d="M12 17h.01" />
+          <path d="M10.3 3.9 2.4 17.5A2 2 0 0 0 4.1 20.5h15.8a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0Z" />
+        </svg>
+        <p class="flex-1 text-sm text-amber-800">
+          <span class="font-semibold">Heads up!</span> Your project is not published yet. Fill in the required fields and hit Publish when you are ready.
+        </p>
+        <button type="button" @click="showAlert = false" title="Dismiss"
+                class="rounded-lg p-1 text-amber-600 transition-colors hover:bg-amber-200/60 hover:text-amber-800">
+          <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M6 6l12 12" />
+            <path d="M18 6 6 18" />
+          </svg>
+        </button>
+      </div>
+
+      <!-- ===== TWO COLUMN LAYOUT ===== -->
+      <div class="grid grid-cols-1 gap-5 lg:grid-cols-3">
+
+        <!-- ================= LEFT / WIDER COLUMN ================= -->
+        <div class="space-y-5 lg:col-span-2">
+
+          <!-- ---------- PROJECT DETAILS ---------- -->
+          <section class="rounded-lg bg-white p-5 shadow-card sm:p-6">
+            <header class="mb-5">
+              <h2 class="text-base font-semibold text-slate-800">Project Details</h2>
+              <p class="mt-0.5 text-xs text-slate-400">All form controls used across the MOPS admin UI</p>
+            </header>
+
+            <div class="space-y-5">
+
+              <!-- Text input -->
+              <div>
+                <label for="projectName" class="mb-1.5 block text-sm font-medium text-slate-700">Project name</label>
+                <input id="projectName" type="text" placeholder="e.g. Nebula SaaS Dashboard"
+                       class="h-11 w-full rounded-lg border border-slate-200 bg-white px-3.5 text-sm text-slate-700 placeholder-slate-400 outline-none transition focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20" />
+                <p class="mt-1.5 text-xs text-slate-400">Use a short, descriptive name for your project.</p>
+              </div>
+
+              <!-- Input with left icon -->
+              <div>
+                <label for="slug" class="mb-1.5 block text-sm font-medium text-slate-700">Slug</label>
+                <div class="relative">
+                  <svg class="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M10 13a5 5 0 0 0 7.5.5l3-3a5 5 0 0 0-7-7l-1.5 1.5" />
+                    <path d="M14 11a5 5 0 0 0-7.5-.5l-3 3a5 5 0 0 0 7 7L12 19" />
+                  </svg>
+                  <input id="slug" type="text" placeholder="nebula-saas-dashboard"
+                         class="h-11 w-full rounded-lg border border-slate-200 bg-white pl-10 pr-3.5 text-sm text-slate-700 placeholder-slate-400 outline-none transition focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20" />
+                </div>
+                <p class="mt-1.5 text-xs text-slate-400">Left icon input — used for prefixed or tagged fields.</p>
+              </div>
+
+              <!-- Input with right icon -->
+              <div>
+                <label for="clientEmail" class="mb-1.5 block text-sm font-medium text-slate-700">Client email</label>
+                <div class="relative">
+                  <input id="clientEmail" type="email" placeholder="client@company.com"
+                         class="h-11 w-full rounded-lg border border-slate-200 bg-white pl-3.5 pr-10 text-sm text-slate-700 placeholder-slate-400 outline-none transition focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20" />
+                  <svg class="pointer-events-none absolute right-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="3.5" y="5.5" width="17" height="13" rx="2" />
+                    <path d="m4 7 8 6 8-6" />
+                  </svg>
+                </div>
+                <p class="mt-1.5 text-xs text-slate-400">Right icon input — used for verified or status indicators.</p>
+              </div>
+
+              <!-- Disabled input -->
+              <div>
+                <label for="projectId" class="mb-1.5 block text-sm font-medium text-slate-700">Project ID</label>
+                <input id="projectId" type="text" value="PRJ-2026-0042" disabled
+                       class="h-11 w-full cursor-not-allowed rounded-lg border border-slate-200 bg-slate-100 px-3.5 text-sm text-slate-400 outline-none" />
+                <p class="mt-1.5 text-xs text-slate-400">Disabled — generated automatically by the system.</p>
+              </div>
+
+              <!-- Error + success states (side by side on sm+) -->
+              <div class="grid grid-cols-1 gap-5 sm:grid-cols-2">
+                <!-- Error -->
+                <div>
+                  <label for="errorField" class="mb-1.5 block text-sm font-medium text-slate-700">Project code</label>
+                  <input id="errorField" type="text" value="abc" aria-invalid="true"
+                         class="h-11 w-full rounded-lg border border-red-400 bg-white px-3.5 text-sm text-slate-700 outline-none transition focus:border-red-500 focus:ring-2 focus:ring-red-500/20" />
+                  <p class="mt-1.5 flex items-center gap-1.5 text-xs font-medium text-red-600">
+                    <svg class="h-3.5 w-3.5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                      <circle cx="12" cy="12" r="9" />
+                      <path d="M12 8v4" />
+                      <path d="M12 16h.01" />
+                    </svg>
+                    Code must be at least 4 characters.
+                  </p>
+                </div>
+
+                <!-- Success -->
+                <div>
+                  <label for="successField" class="mb-1.5 block text-sm font-medium text-slate-700">Client reference</label>
+                  <input id="successField" type="text" value="ACME-9042"
+                         class="h-11 w-full rounded-lg border border-green-400 bg-white px-3.5 text-sm text-slate-700 outline-none transition focus:border-green-500 focus:ring-2 focus:ring-green-500/20" />
+                  <p class="mt-1.5 flex items-center gap-1.5 text-xs font-medium text-green-600">
+                    <svg class="h-3.5 w-3.5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                      <circle cx="12" cy="12" r="9" />
+                      <path d="m8.5 12.5 2.5 2.5 4.5-5" />
+                    </svg>
+                    Looks good — reference verified.
+                  </p>
+                </div>
+              </div>
+
+              <!-- Textarea with character counter -->
+              <div x-data="{ text: 'A modern analytics dashboard for SaaS teams with real-time charts and exportable reports.', max: 240 }">
+                <div class="mb-1.5 flex items-center justify-between gap-3">
+                  <label for="description" class="block text-sm font-medium text-slate-700">Description</label>
+                  <span class="text-xs font-medium"
+                        :class="text.length > max ? 'text-red-600' : 'text-slate-400'">
+                    <span x-text="text.length"></span> / <span x-text="max"></span>
+                  </span>
+                </div>
+                <textarea id="description" rows="4" x-model="text" :maxlength="max"
+                          placeholder="Write a short description of the project..."
+                          class="w-full resize-y rounded-lg border border-slate-200 bg-white px-3.5 py-2.5 text-sm leading-relaxed text-slate-700 placeholder-slate-400 outline-none transition focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20"></textarea>
+                <p class="mt-1.5 text-xs text-slate-400">Character counter powered by Alpine.js — max 240 characters.</p>
+              </div>
+
+              <!-- Select + Multi-select -->
+              <div class="grid grid-cols-1 gap-5 sm:grid-cols-2">
+                <!-- Standard select -->
+                <div>
+                  <label for="category" class="mb-1.5 block text-sm font-medium text-slate-700">Category</label>
+                  <div class="relative">
+                    <select id="category"
+                            class="h-11 w-full cursor-pointer appearance-none rounded-lg border border-slate-200 bg-white bg-[url('data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22%2394a3b8%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpath%20d%3D%22m6%209%206%206%206-6%22/%3E%3C/svg%3E')] bg-[length:14px_14px] bg-[right_12px_center] bg-no-repeat pl-3.5 pr-10 text-sm text-slate-600 outline-none transition focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20">
+                      <option value="">Select a category</option>
+                      <option>Web App</option>
+                      <option>Mobile</option>
+                      <option>Design</option>
+                      <option>Plugin</option>
+                    </select>
+                  </div>
+                  <p class="mt-1.5 text-xs text-slate-400">Standard single select.</p>
+                </div>
+
+                <!-- Multi-select -->
+                <div>
+                  <label for="tags" class="mb-1.5 block text-sm font-medium text-slate-700">Tags</label>
+                  <select id="tags" multiple size="4"
+                          class="w-full cursor-pointer rounded-lg border border-slate-200 bg-white px-3.5 py-2 text-sm text-slate-600 outline-none transition focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20">
+                    <option selected>Dashboard</option>
+                    <option>SaaS</option>
+                    <option selected>Analytics</option>
+                    <option>Marketing</option>
+                    <option>Internal Tool</option>
+                  </select>
+                  <p class="mt-1.5 text-xs text-slate-400">Multi-select — hold Ctrl / Cmd to pick several.</p>
+                </div>
+              </div>
+
+              <!-- Date + Time -->
+              <div class="grid grid-cols-1 gap-5 sm:grid-cols-2">
+                <div>
+                  <label for="startDate" class="mb-1.5 block text-sm font-medium text-slate-700">Start date</label>
+                  <input id="startDate" type="date" value="2026-10-12"
+                         class="h-11 w-full rounded-lg border border-slate-200 bg-white px-3.5 text-sm text-slate-700 outline-none transition focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20" />
+                </div>
+                <div>
+                  <label for="startTime" class="mb-1.5 block text-sm font-medium text-slate-700">Kick-off time</label>
+                  <input id="startTime" type="time" value="09:30"
+                         class="h-11 w-full rounded-lg border border-slate-200 bg-white px-3.5 text-sm text-slate-700 outline-none transition focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20" />
+                </div>
+              </div>
+
+              <!-- Number with stepper -->
+              <div x-data="{ qty: 3 }">
+                <label for="teamSize" class="mb-1.5 block text-sm font-medium text-slate-700">Team size</label>
+                <div class="flex w-full max-w-[220px] items-stretch overflow-hidden rounded-lg border border-slate-200 bg-white focus-within:border-brand-500 focus-within:ring-2 focus-within:ring-brand-500/20">
+                  <button type="button" @click="qty = Math.max(0, qty - 1)" aria-label="Decrease"
+                          class="flex w-11 shrink-0 items-center justify-center text-slate-500 transition-colors hover:bg-slate-100 hover:text-slate-700">
+                    <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M5 12h14" />
+                    </svg>
+                  </button>
+                  <input id="teamSize" type="number" x-model.number="qty" min="0" max="99"
+                         class="no-spin h-11 w-full border-x border-slate-200 bg-white text-center text-sm font-medium text-slate-700 outline-none" />
+                  <button type="button" @click="qty = Math.min(99, qty + 1)" aria-label="Increase"
+                          class="flex w-11 shrink-0 items-center justify-center text-slate-500 transition-colors hover:bg-slate-100 hover:text-slate-700">
+                    <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M12 5v14" />
+                      <path d="M5 12h14" />
+                    </svg>
+                  </button>
+                </div>
+                <p class="mt-1.5 text-xs text-slate-400">Number input with custom +/− stepper buttons.</p>
+              </div>
+
+              <!-- URL + Email -->
+              <div class="grid grid-cols-1 gap-5 sm:grid-cols-2">
+                <div>
+                  <label for="website" class="mb-1.5 block text-sm font-medium text-slate-700">Website URL</label>
+                  <input id="website" type="url" placeholder="https://example.com"
+                         class="h-11 w-full rounded-lg border border-slate-200 bg-white px-3.5 text-sm text-slate-700 placeholder-slate-400 outline-none transition focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20" />
+                </div>
+                <div>
+                  <label for="contactEmail" class="mb-1.5 block text-sm font-medium text-slate-700">Contact email</label>
+                  <input id="contactEmail" type="email" placeholder="hello@example.com"
+                         class="h-11 w-full rounded-lg border border-slate-200 bg-white px-3.5 text-sm text-slate-700 placeholder-slate-400 outline-none transition focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20" />
+                </div>
+              </div>
+
+              <!-- Range slider -->
+              <div x-data="{ progress: 65 }">
+                <div class="mb-1.5 flex items-center justify-between gap-3">
+                  <label for="progress" class="block text-sm font-medium text-slate-700">Completion progress</label>
+                  <span class="rounded-full bg-brand-50 px-2.5 py-0.5 text-xs font-semibold text-brand-600">
+                    <span x-text="progress"></span>%
+                  </span>
+                </div>
+                <input id="progress" type="range" min="0" max="100" x-model.number="progress"
+                       class="flat-range" />
+                <div class="mt-1.5 flex items-center justify-between text-xs text-slate-400">
+                  <span>0%</span>
+                  <span>Live value updates as you drag</span>
+                  <span>100%</span>
+                </div>
+              </div>
+
+              <!-- File upload dropzone -->
+              <div>
+                <label class="mb-1.5 block text-sm font-medium text-slate-700">Attachments</label>
+                <label for="fileUpload"
+                       class="flex cursor-pointer flex-col items-center justify-center gap-2 rounded-lg border-2 border-dashed border-slate-300 bg-slate-50/60 px-6 py-8 text-center transition-colors hover:border-brand-500 hover:bg-brand-50/40">
+                  <span class="flex h-12 w-12 items-center justify-center rounded-full bg-white text-brand-600 shadow-card">
+                    <svg class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M12 16V4" />
+                      <path d="m7 9 5-5 5 5" />
+                      <path d="M4 15v3a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-3" />
+                    </svg>
+                  </span>
+                  <span class="text-sm font-medium text-slate-700">
+                    Drag &amp; drop files here, or
+                    <span class="text-brand-600 underline decoration-brand-300 underline-offset-2">click to browse</span>
+                  </span>
+                  <span class="text-xs text-slate-400">PNG, JPG, PDF or ZIP — up to 10 MB each</span>
+                  <input id="fileUpload" type="file" multiple class="sr-only" />
+                </label>
+              </div>
+
+            </div>
+          </section>
+
+          <!-- ---------- TAXONOMIES ---------- -->
+          <section class="rounded-lg bg-white p-5 shadow-card sm:p-6">
+            <header class="mb-5">
+              <h2 class="text-base font-semibold text-slate-800">Taxonomies</h2>
+              <p class="mt-0.5 text-xs text-slate-400">Checkboxes, radios and toggle switches</p>
+            </header>
+
+            <div class="space-y-6">
+
+              <!-- Checkbox group -->
+              <div>
+                <p class="mb-2.5 text-sm font-medium text-slate-700">Technologies</p>
+                <div class="grid grid-cols-1 gap-2.5 sm:grid-cols-2">
+                  <label class="flex cursor-pointer items-center gap-3 rounded-lg border border-slate-200 px-3.5 py-2.5 text-sm text-slate-600 transition-colors hover:bg-slate-50">
+                    <input type="checkbox" checked
+                           class="h-4 w-4 rounded border-slate-300 accent-indigo-600" />
+                    Tailwind CSS
+                  </label>
+                  <label class="flex cursor-pointer items-center gap-3 rounded-lg border border-slate-200 px-3.5 py-2.5 text-sm text-slate-600 transition-colors hover:bg-slate-50">
+                    <input type="checkbox"
+                           class="h-4 w-4 rounded border-slate-300 accent-indigo-600" />
+                    Alpine.js
+                  </label>
+                  <label class="flex cursor-not-allowed items-center gap-3 rounded-lg border border-slate-200 bg-slate-50 px-3.5 py-2.5 text-sm text-slate-400">
+                    <input type="checkbox" disabled
+                           class="h-4 w-4 cursor-not-allowed rounded border-slate-300" />
+                    React (not available)
+                  </label>
+                  <label class="flex cursor-pointer items-center gap-3 rounded-lg border border-slate-200 px-3.5 py-2.5 text-sm text-slate-600 transition-colors hover:bg-slate-50">
+                    <input type="checkbox" checked
+                           class="h-4 w-4 rounded border-slate-300 accent-indigo-600" />
+                    Chart.js
+                  </label>
+                </div>
+              </div>
+
+              <!-- Radio group -->
+              <div>
+                <p class="mb-2.5 text-sm font-medium text-slate-700">Visibility</p>
+                <div class="grid grid-cols-1 gap-2.5 sm:grid-cols-3">
+                  <label class="flex cursor-pointer items-center gap-3 rounded-lg border border-slate-200 px-3.5 py-2.5 text-sm text-slate-600 transition-colors hover:bg-slate-50">
+                    <input type="radio" name="visibility" value="public" checked
+                           class="h-4 w-4 border-slate-300 accent-indigo-600" />
+                    Public
+                  </label>
+                  <label class="flex cursor-pointer items-center gap-3 rounded-lg border border-slate-200 px-3.5 py-2.5 text-sm text-slate-600 transition-colors hover:bg-slate-50">
+                    <input type="radio" name="visibility" value="private"
+                           class="h-4 w-4 border-slate-300 accent-indigo-600" />
+                    Private
+                  </label>
+                  <label class="flex cursor-pointer items-center gap-3 rounded-lg border border-slate-200 px-3.5 py-2.5 text-sm text-slate-600 transition-colors hover:bg-slate-50">
+                    <input type="radio" name="visibility" value="team"
+                           class="h-4 w-4 border-slate-300 accent-indigo-600" />
+                    Team only
+                  </label>
+                </div>
+              </div>
+
+              <!-- Toggle switches -->
+              <div>
+                <p class="mb-2.5 text-sm font-medium text-slate-700">Options</p>
+                <div class="space-y-3">
+
+                  <!-- Featured -->
+                  <div x-data="{ on: true }" class="flex items-center justify-between gap-4 rounded-lg border border-slate-200 px-3.5 py-3">
+                    <span class="text-sm text-slate-600">Featured project</span>
+                    <button type="button" role="switch" :aria-checked="on" @click="on = !on"
+                            class="relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-brand-500/40"
+                            :class="on ? 'bg-brand-600' : 'bg-slate-300'">
+                      <span class="pointer-events-none inline-block h-5 w-5 translate-y-0.5 rounded-full bg-white shadow-card transition-transform"
+                            :class="on ? 'translate-x-[22px]' : 'translate-x-0.5'"></span>
+                    </button>
+                  </div>
+
+                  <!-- Allow comments -->
+                  <div x-data="{ on: false }" class="flex items-center justify-between gap-4 rounded-lg border border-slate-200 px-3.5 py-3">
+                    <span class="text-sm text-slate-600">Allow comments</span>
+                    <button type="button" role="switch" :aria-checked="on" @click="on = !on"
+                            class="relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-brand-500/40"
+                            :class="on ? 'bg-brand-600' : 'bg-slate-300'">
+                      <span class="pointer-events-none inline-block h-5 w-5 translate-y-0.5 rounded-full bg-white shadow-card transition-transform"
+                            :class="on ? 'translate-x-[22px]' : 'translate-x-0.5'"></span>
+                    </button>
+                  </div>
+
+                  <!-- Make public -->
+                  <div x-data="{ on: true }" class="flex items-center justify-between gap-4 rounded-lg border border-slate-200 px-3.5 py-3">
+                    <span class="text-sm text-slate-600">Make public</span>
+                    <button type="button" role="switch" :aria-checked="on" @click="on = !on"
+                            class="relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-brand-500/40"
+                            :class="on ? 'bg-brand-600' : 'bg-slate-300'">
+                      <span class="pointer-events-none inline-block h-5 w-5 translate-y-0.5 rounded-full bg-white shadow-card transition-transform"
+                            :class="on ? 'translate-x-[22px]' : 'translate-x-0.5'"></span>
+                    </button>
+                  </div>
+
+                </div>
+              </div>
+
+            </div>
+          </section>
+
+        </div>
+
+        <!-- ================= RIGHT / NARROWER COLUMN ================= -->
+        <div class="space-y-5">
+
+          <!-- ---------- PUBLISH ---------- -->
+          <section class="rounded-lg bg-white p-5 shadow-card">
+            <header class="mb-4">
+              <h2 class="text-base font-semibold text-slate-800">Publish</h2>
+            </header>
+
+            <div class="space-y-4">
+
+              <div>
+                <label for="publishStatus" class="mb-1.5 block text-sm font-medium text-slate-700">Status</label>
+                <div class="relative">
+                  <select id="publishStatus"
+                          class="h-11 w-full cursor-pointer appearance-none rounded-lg border border-slate-200 bg-white bg-[url('data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22%2394a3b8%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpath%20d%3D%22m6%209%206%206%206-6%22/%3E%3C/svg%3E')] bg-[length:14px_14px] bg-[right_12px_center] bg-no-repeat pl-3.5 pr-10 text-sm text-slate-600 outline-none transition focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20">
+                    <option>Published</option>
+                    <option selected>Draft</option>
+                    <option>Scheduled</option>
+                    <option>Archived</option>
+                  </select>
+                </div>
+              </div>
+
+              <div>
+                <label for="publishDate" class="mb-1.5 block text-sm font-medium text-slate-700">Publish date</label>
+                <input id="publishDate" type="date" value="2026-10-15"
+                       class="h-11 w-full rounded-lg border border-slate-200 bg-white px-3.5 text-sm text-slate-700 outline-none transition focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20" />
+              </div>
+
+              <div class="flex items-center gap-2 pt-1">
+                <button type="button"
+                        class="rounded-lg border border-slate-200 bg-white px-3.5 py-2 text-sm font-medium text-slate-600 transition-colors hover:border-brand-500 hover:text-brand-600">
+                  Save Draft
+                </button>
+                <button type="button"
+                        class="rounded-lg px-2.5 py-2 text-sm font-medium text-slate-500 transition-colors hover:bg-slate-100 hover:text-slate-700">
+                  Preview
+                </button>
+              </div>
+
+              <button type="button"
+                      class="w-full rounded-lg bg-brand-600 px-4 py-2.5 text-sm font-medium text-white shadow-card transition-colors hover:bg-brand-700 focus:outline-none focus:ring-2 focus:ring-brand-500/40">
+                Publish
+              </button>
+
+            </div>
+          </section>
+
+          <!-- ---------- FEATURED IMAGE ---------- -->
+          <section class="rounded-lg bg-white p-5 shadow-card">
+            <header class="mb-4">
+              <h2 class="text-base font-semibold text-slate-800">Featured Image</h2>
+            </header>
+
+            <div class="space-y-4">
+              <div class="flex aspect-[16/10] w-full items-center justify-center overflow-hidden rounded-lg border-2 border-dashed border-slate-300 bg-slate-50">
+                <div class="flex flex-col items-center gap-2 text-slate-400">
+                  <svg class="h-8 w-8" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="3.5" y="4.5" width="17" height="15" rx="2" />
+                    <circle cx="9" cy="10" r="1.5" />
+                    <path d="m4.5 17.5 4.2-4.2a1.5 1.5 0 0 1 2.1 0l5.2 5.2" />
+                    <path d="m14.5 15.2 1.6-1.6a1.5 1.5 0 0 1 2.1 0l1.3 1.3" />
+                  </svg>
+                  <span class="text-xs font-medium">No image selected</span>
+                </div>
+              </div>
+
+              <button type="button"
+                      class="w-full rounded-lg border border-slate-200 bg-white px-4 py-2.5 text-sm font-medium text-slate-600 transition-colors hover:border-brand-500 hover:text-brand-600">
+                Set featured image
+              </button>
+            </div>
+          </section>
+
+          <!-- ---------- DANGER ZONE ---------- -->
+          <section class="rounded-lg bg-white p-5 shadow-card">
+            <header class="mb-4">
+              <h2 class="text-base font-semibold text-slate-800">Danger Zone</h2>
+              <p class="mt-0.5 text-xs text-slate-400">This action cannot be undone.</p>
+            </header>
+
+            <button type="button"
+                    class="w-full rounded-lg border border-red-300 bg-white px-4 py-2.5 text-sm font-medium text-red-600 transition-colors hover:bg-red-50 focus:outline-none focus:ring-2 focus:ring-red-500/30">
+              Delete Project
+            </button>
+          </section>
+
+        </div>
+      </div>
+
+      <!-- ===== BUTTONS — COMPLETE REFERENCE ===== -->
+      <section class="rounded-lg bg-white p-5 shadow-card sm:p-6">
+        <header class="mb-5">
+          <h2 class="text-base font-semibold text-slate-800">Buttons — Complete Reference</h2>
+          <p class="mt-0.5 text-xs text-slate-400">Every button variant used across the MOPS admin UI</p>
+        </header>
+
+        <div class="space-y-6">
+
+          <!-- Solid -->
+          <div>
+            <p class="mb-2.5 text-[11px] font-semibold uppercase tracking-wider text-slate-400">Solid</p>
+            <div class="flex flex-wrap items-center gap-2.5">
+              <button type="button" class="rounded-lg bg-brand-600 px-4 py-2.5 text-sm font-medium text-white shadow-card transition-colors hover:bg-brand-700">Primary</button>
+              <button type="button" class="rounded-lg bg-green-500 px-4 py-2.5 text-sm font-medium text-white shadow-card transition-colors hover:bg-green-600">Success</button>
+              <button type="button" class="rounded-lg bg-amber-500 px-4 py-2.5 text-sm font-medium text-white shadow-card transition-colors hover:bg-amber-600">Warning</button>
+              <button type="button" class="rounded-lg bg-red-500 px-4 py-2.5 text-sm font-medium text-white shadow-card transition-colors hover:bg-red-600">Danger</button>
+              <button type="button" class="rounded-lg bg-slate-500 px-4 py-2.5 text-sm font-medium text-white shadow-card transition-colors hover:bg-slate-600">Neutral</button>
+            </div>
+          </div>
+
+          <!-- Outline -->
+          <div>
+            <p class="mb-2.5 text-[11px] font-semibold uppercase tracking-wider text-slate-400">Outline</p>
+            <div class="flex flex-wrap items-center gap-2.5">
+              <button type="button" class="rounded-lg border border-brand-500 bg-white px-4 py-2.5 text-sm font-medium text-brand-600 transition-colors hover:bg-brand-50">Primary</button>
+              <button type="button" class="rounded-lg border border-green-500 bg-white px-4 py-2.5 text-sm font-medium text-green-600 transition-colors hover:bg-green-50">Success</button>
+              <button type="button" class="rounded-lg border border-amber-500 bg-white px-4 py-2.5 text-sm font-medium text-amber-600 transition-colors hover:bg-amber-50">Warning</button>
+              <button type="button" class="rounded-lg border border-red-500 bg-white px-4 py-2.5 text-sm font-medium text-red-600 transition-colors hover:bg-red-50">Danger</button>
+              <button type="button" class="rounded-lg border border-slate-300 bg-white px-4 py-2.5 text-sm font-medium text-slate-600 transition-colors hover:bg-slate-50">Neutral</button>
+            </div>
+          </div>
+
+          <!-- Text / icon-only -->
+          <div>
+            <p class="mb-2.5 text-[11px] font-semibold uppercase tracking-wider text-slate-400">Text &amp; Icon-only</p>
+            <div class="flex flex-wrap items-center gap-2.5">
+              <button type="button" class="rounded-lg px-3 py-2.5 text-sm font-medium text-brand-600 transition-colors hover:bg-brand-50">Text button</button>
+              <button type="button" class="rounded-lg px-3 py-2.5 text-sm font-medium text-slate-500 transition-colors hover:bg-slate-100 hover:text-slate-700">Cancel</button>
+              <button type="button" title="Edit" class="rounded-lg p-2.5 text-slate-500 transition-colors hover:bg-slate-100 hover:text-slate-700">
+                <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M4 20h4l10-10a2.5 2.5 0 0 0-3.5-3.5L4.5 16.5V20Z" />
+                </svg>
+              </button>
+              <button type="button" title="Delete" class="rounded-lg p-2.5 text-red-500 transition-colors hover:bg-red-50">
+                <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M4 7h16" /><path d="M10 11v6" /><path d="M14 11v6" />
+                  <path d="M6 7l1 12a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2l1-12" />
+                  <path d="M9 7V5a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2" />
+                </svg>
+              </button>
+            </div>
+          </div>
+
+          <!-- Sizes -->
+          <div>
+            <p class="mb-2.5 text-[11px] font-semibold uppercase tracking-wider text-slate-400">Sizes</p>
+            <div class="flex flex-wrap items-center gap-2.5">
+              <button type="button" class="rounded-lg bg-brand-600 px-3 py-1.5 text-xs font-medium text-white transition-colors hover:bg-brand-700">Small</button>
+              <button type="button" class="rounded-lg bg-brand-600 px-4 py-2.5 text-sm font-medium text-white transition-colors hover:bg-brand-700">Medium</button>
+              <button type="button" class="rounded-lg bg-brand-600 px-5 py-3 text-base font-medium text-white transition-colors hover:bg-brand-700">Large</button>
+            </div>
+          </div>
+
+          <!-- Disabled -->
+          <div>
+            <p class="mb-2.5 text-[11px] font-semibold uppercase tracking-wider text-slate-400">Disabled</p>
+            <div class="flex flex-wrap items-center gap-2.5">
+              <button type="button" disabled class="cursor-not-allowed rounded-lg bg-slate-200 px-4 py-2.5 text-sm font-medium text-slate-400">Solid disabled</button>
+              <button type="button" disabled class="cursor-not-allowed rounded-lg border border-slate-200 bg-white px-4 py-2.5 text-sm font-medium text-slate-300">Outline disabled</button>
+              <button type="button" disabled class="cursor-not-allowed rounded-lg px-3 py-2.5 text-sm font-medium text-slate-300">Text disabled</button>
+            </div>
+          </div>
+
+          <!-- With icon + loading -->
+          <div>
+            <p class="mb-2.5 text-[11px] font-semibold uppercase tracking-wider text-slate-400">With icon &amp; loading</p>
+            <div class="flex flex-wrap items-center gap-2.5">
+              <button type="button" class="inline-flex items-center gap-2 rounded-lg bg-brand-600 px-4 py-2.5 text-sm font-medium text-white transition-colors hover:bg-brand-700">
+                <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M12 5v14" /><path d="M5 12h14" />
+                </svg>
+                New Project
+              </button>
+              <button type="button" class="inline-flex items-center gap-2 rounded-lg bg-brand-600 px-4 py-2.5 text-sm font-medium text-white transition-colors hover:bg-brand-700">
+                <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M12 16V4" /><path d="m7 9 5-5 5 5" />
+                  <path d="M4 15v3a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-3" />
+                </svg>
+                Upload
+              </button>
+              <button type="button" disabled class="inline-flex cursor-wait items-center gap-2 rounded-lg bg-brand-600 px-4 py-2.5 text-sm font-medium text-white opacity-90">
+                <svg class="h-4 w-4 animate-spin" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round">
+                  <path d="M12 3a9 9 0 1 0 9 9" />
+                </svg>
+                Publishing...
+              </button>
+            </div>
+          </div>
+
+          <!-- FABs -->
+          <div>
+            <p class="mb-2.5 text-[11px] font-semibold uppercase tracking-wider text-slate-400">Floating action buttons</p>
+            <div class="flex flex-wrap items-center gap-3">
+              <button type="button" title="Add" class="flex h-12 w-12 items-center justify-center rounded-full bg-brand-600 text-white shadow-panel transition-colors hover:bg-brand-700">
+                <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M12 5v14" /><path d="M5 12h14" />
+                </svg>
+              </button>
+              <button type="button" class="inline-flex h-12 items-center gap-2 rounded-full bg-brand-600 px-5 text-sm font-medium text-white shadow-panel transition-colors hover:bg-brand-700">
+                <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M12 5v14" /><path d="M5 12h14" />
+                </svg>
+                Create
+              </button>
+            </div>
+          </div>
+
+          <!-- Segmented -->
+          <div>
+            <p class="mb-2.5 text-[11px] font-semibold uppercase tracking-wider text-slate-400">Segmented button group</p>
+            <div x-data="{ seg: 'Week' }" class="inline-flex items-center gap-1 rounded-lg bg-slate-100 p-1">
+              <template x-for="opt in ['Day', 'Week', 'Month']" :key="opt">
+                <button type="button" @click="seg = opt"
+                        class="rounded-md px-4 py-2 text-sm font-medium transition-colors"
+                        :class="seg === opt ? 'bg-white text-brand-600 shadow-card' : 'text-slate-500 hover:text-slate-700'"
+                        x-text="opt"></button>
+              </template>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+    </main>
+
+    <!-- ---------- FOOTER ---------- -->
+    <footer class="mt-auto px-4 py-5 text-center text-xs text-slate-400 sm:px-6 sm:text-left">
+      © 2026 MOPS Admin. All rights reserved.
+    </footer>
+
+  </div>
+
+  <!-- ================= MODAL DEMO ================= -->
+  <div x-show="modalOpen" x-cloak class="fixed inset-0 z-[60] flex items-center justify-center p-4">
+    <!-- Backdrop -->
+    <div x-show="modalOpen"
+         x-transition:enter="transition ease-out duration-150"
+         x-transition:enter-start="opacity-0"
+         x-transition:enter-end="opacity-100"
+         x-transition:leave="transition ease-in duration-100"
+         x-transition:leave-start="opacity-100"
+         x-transition:leave-end="opacity-0"
+         @click="modalOpen = false"
+         class="absolute inset-0 bg-slate-900/40"></div>
+
+    <!-- Card -->
+    <div x-show="modalOpen"
+         x-transition:enter="transition ease-out duration-150"
+         x-transition:enter-start="opacity-0 scale-95"
+         x-transition:enter-end="opacity-100 scale-100"
+         x-transition:leave="transition ease-in duration-100"
+         x-transition:leave-start="opacity-100 scale-100"
+         x-transition:leave-end="opacity-0 scale-95"
+         class="relative w-full max-w-md rounded-lg bg-white p-6 shadow-panel">
+      <div class="flex items-start gap-4">
+        <span class="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg bg-brand-50 text-brand-600">
+          <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="9" />
+            <path d="M12 8v4" />
+            <path d="M12 16h.01" />
+          </svg>
+        </span>
+        <div class="min-w-0 flex-1">
+          <h3 class="text-base font-semibold text-slate-800">Confirm action</h3>
+          <p class="mt-1 text-sm text-slate-500">
+            Are you sure you want to continue? This is a simple Alpine.js modal demo with no backend.
+          </p>
+        </div>
+        <button type="button" @click="modalOpen = false" title="Close"
+                class="rounded-lg p-1.5 text-slate-400 transition-colors hover:bg-slate-100 hover:text-slate-600">
+          <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M6 6l12 12" /><path d="M18 6 6 18" />
+          </svg>
+        </button>
+      </div>
+
+      <div class="mt-5 flex items-center justify-end gap-2">
+        <button type="button" @click="modalOpen = false"
+                class="rounded-lg border border-slate-200 bg-white px-4 py-2.5 text-sm font-medium text-slate-600 transition-colors hover:bg-slate-50">
+          Cancel
+        </button>
+        <button type="button" @click="modalOpen = false"
+                class="rounded-lg bg-brand-600 px-4 py-2.5 text-sm font-medium text-white transition-colors hover:bg-brand-700">
+          Confirm
+        </button>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+</body>
+</html>

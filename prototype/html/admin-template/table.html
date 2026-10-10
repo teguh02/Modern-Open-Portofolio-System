@@ -1,0 +1,1337 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Projects — MOPS Admin</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+
+<!-- DataTables default styles (loaded before Tailwind + overrides) -->
+<link rel="stylesheet" href="https://cdn.datatables.net/1.13.8/css/jquery.dataTables.min.css" />
+
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        fontFamily: {
+          sans: ['Inter', 'ui-sans-serif', 'system-ui', 'sans-serif']
+        },
+        colors: {
+          brand: {
+            50: '#eef2ff',
+            100: '#e0e7ff',
+            200: '#c7d2fe',
+            500: '#6366f1',
+            600: '#4f46e5',
+            700: '#4338ca'
+          }
+        },
+        boxShadow: {
+          card: '0 2px 4px rgba(15, 23, 42, 0.06)',
+          panel: '0 4px 12px rgba(15, 23, 42, 0.10)',
+          sidebar: '2px 0 4px rgba(15, 23, 42, 0.04)'
+        }
+      }
+    }
+  };
+</script>
+
+<script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.14.1/dist/cdn.min.js"></script>
+
+<style>
+  [x-cloak] { display: none !important; }
+  html { scroll-behavior: smooth; }
+  ::-webkit-scrollbar { width: 8px; height: 8px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: #dbe1ea; border-radius: 8px; }
+  ::-webkit-scrollbar-thumb:hover { background: #c3cbd8; }
+
+  /* ============================================================
+     DataTables flat Material theme overrides
+     ============================================================ */
+
+  .dataTables_wrapper { font-family: 'Inter', ui-sans-serif, system-ui, sans-serif; }
+
+  /* --- Top row: length select + search --- */
+  .dt-top-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+  .dt-bottom-row {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 14px 20px;
+  }
+  @media (min-width: 640px) {
+    .dt-bottom-row { flex-direction: row; }
+  }
+
+  .dataTables_length label,
+  .dataTables_filter label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 0;
+    font-size: 13px;
+    font-weight: 500;
+    color: #64748b;
+  }
+
+  .dataTables_length select {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    height: 40px;
+    padding: 0 32px 0 12px;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    background-color: #ffffff;
+    background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2394a3b8' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 9px center;
+    background-size: 14px 14px;
+    font-size: 13px;
+    color: #334155;
+    cursor: pointer;
+    outline: none;
+    transition: border-color .15s ease, box-shadow .15s ease;
+  }
+  .dataTables_length select:focus {
+    border-color: #4f46e5;
+    box-shadow: 0 0 0 3px rgba(79, 70, 229, .15);
+  }
+
+  .dataTables_filter input {
+    height: 40px;
+    width: 220px;
+    padding: 0 14px;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    background-color: #ffffff;
+    font-size: 13px;
+    color: #334155;
+    outline: none;
+    transition: border-color .15s ease, box-shadow .15s ease;
+  }
+  .dataTables_filter input::placeholder { color: #94a3b8; }
+  .dataTables_filter input:focus {
+    border-color: #4f46e5;
+    box-shadow: 0 0 0 3px rgba(79, 70, 229, .15);
+  }
+
+  /* --- Info text --- */
+  .dataTables_info {
+    padding: 0 !important;
+    font-size: 13px;
+    color: #64748b;
+    line-height: 1.4;
+  }
+
+  /* --- Pagination --- */
+  .dataTables_paginate {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+  .dataTables_wrapper .dataTables_paginate .paginate_button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 34px;
+    height: 34px;
+    padding: 0 10px;
+    margin: 0;
+    border: 1px solid transparent;
+    border-radius: 8px;
+    background: transparent;
+    background-image: none;
+    font-size: 13px;
+    font-weight: 500;
+    color: #475569 !important;
+    text-decoration: none !important;
+    cursor: pointer;
+    box-shadow: none;
+    transition: background-color .15s ease, color .15s ease;
+  }
+  .dataTables_wrapper .dataTables_paginate .paginate_button:hover {
+    background: #f1f5f9 !important;
+    background-image: none;
+    border-color: transparent !important;
+    color: #1e293b !important;
+  }
+  .dataTables_wrapper .dataTables_paginate .paginate_button.current,
+  .dataTables_wrapper .dataTables_paginate .paginate_button.current:hover {
+    background: #4f46e5 !important;
+    background-image: none;
+    border-color: #4f46e5 !important;
+    color: #ffffff !important;
+    font-weight: 600;
+  }
+  .dataTables_wrapper .dataTables_paginate .paginate_button.disabled,
+  .dataTables_wrapper .dataTables_paginate .paginate_button.disabled:hover,
+  .dataTables_wrapper .dataTables_paginate .paginate_button.disabled:active {
+    background: transparent !important;
+    background-image: none;
+    border-color: transparent !important;
+    color: #cbd5e1 !important;
+    cursor: default;
+    box-shadow: none;
+  }
+
+  /* --- Table cells --- */
+  table.dataTable {
+    border-collapse: separate;
+    border-spacing: 0;
+    width: 100%;
+    margin: 0;
+    clear: none;
+  }
+  table.dataTable thead > tr > th,
+  table.dataTable thead > tr > td {
+    padding: 12px 16px;
+    border-bottom: 1px solid #f1f5f9;
+    border-top: 0;
+    font-weight: 600;
+    vertical-align: middle;
+  }
+  table.dataTable tbody > tr > td {
+    padding: 12px 16px;
+    border-bottom: 1px solid #f1f5f9;
+    vertical-align: middle;
+  }
+  table.dataTable tbody > tr:last-child > td { border-bottom: 0; }
+  table.dataTable tbody > tr { transition: background-color .12s ease; }
+  table.dataTable tbody > tr:hover > td { background-color: #f8fafc; }
+
+  /* --- Sorting indicators --- */
+  table.dataTable thead > tr > th.sorting,
+  table.dataTable thead > tr > th.sorting_asc,
+  table.dataTable thead > tr > th.sorting_desc { padding-right: 30px; }
+
+  table.dataTable thead > tr > th.sorting:before,
+  table.dataTable thead > tr > th.sorting:after,
+  table.dataTable thead > tr > th.sorting_asc:before,
+  table.dataTable thead > tr > th.sorting_asc:after,
+  table.dataTable thead > tr > th.sorting_desc:before,
+  table.dataTable thead > tr > th.sorting_desc:after {
+    right: 12px;
+  }
+
+  /* --- Small screens --- */
+  @media (max-width: 639px) {
+    .dt-top-row { width: 100%; }
+    .dt-top-row .dataTables_length,
+    .dt-top-row .dataTables_filter { width: 100%; }
+    .dataTables_filter label,
+    .dataTables_length label { width: 100%; }
+    .dataTables_filter input { width: 100%; }
+    .dataTables_length select { width: 100%; }
+    .dt-bottom-row { padding: 14px 16px; }
+    .dataTables_info { text-align: center; }
+    .dataTables_paginate { justify-content: center; flex-wrap: wrap; }
+  }
+</style>
+</head>
+
+<body class="bg-[#f5f5f5] font-sans text-slate-700 antialiased">
+
+<div x-data="{ sidebarOpen: false, userMenuOpen: false }">
+
+  <!-- ================= MOBILE OVERLAY ================= -->
+  <div
+    x-show="sidebarOpen"
+    x-cloak
+    x-transition.opacity
+    @click="sidebarOpen = false"
+    class="fixed inset-0 z-40 bg-slate-900/40 lg:hidden">
+  </div>
+
+  <!-- ================= SIDEBAR ================= -->
+  <aside
+    class="fixed inset-y-0 left-0 z-50 flex w-[260px] flex-col bg-white shadow-sidebar transition-transform duration-200 ease-in-out lg:translate-x-0"
+    :class="sidebarOpen ? 'translate-x-0' : '-translate-x-full'">
+
+    <!-- Logo -->
+    <div class="flex h-16 shrink-0 items-center gap-3 px-5">
+      <span class="flex h-9 w-9 items-center justify-center rounded-lg bg-brand-600 text-sm font-bold text-white">M</span>
+      <span class="text-[17px] font-semibold tracking-tight text-slate-800">MOPS Admin</span>
+    </div>
+
+    <!-- Nav -->
+    <nav class="flex-1 overflow-y-auto px-3 pb-4">
+
+      <!-- OVERVIEW -->
+      <p class="px-3 pb-2 pt-4 text-[11px] font-semibold uppercase tracking-wider text-slate-400">Overview</p>
+      <div class="space-y-1">
+        <a href="#" @click="sidebarOpen = false"
+           class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-slate-500 transition-colors hover:bg-slate-100 hover:text-slate-700">
+          <svg class="h-5 w-5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3.5" y="3.5" width="7" height="7" rx="1.5" />
+            <rect x="13.5" y="3.5" width="7" height="7" rx="1.5" />
+            <rect x="3.5" y="13.5" width="7" height="7" rx="1.5" />
+            <rect x="13.5" y="13.5" width="7" height="7" rx="1.5" />
+          </svg>
+          Dashboard
+        </a>
+
+        <a href="#" @click="sidebarOpen = false"
+           class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-slate-500 transition-colors hover:bg-slate-100 hover:text-slate-700">
+          <svg class="h-5 w-5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M4 20h16" />
+            <path d="M7 16v-4" />
+            <path d="M12 16V8" />
+            <path d="M17 16v-6" />
+          </svg>
+          Analytics
+        </a>
+      </div>
+
+      <!-- CONTENT -->
+      <p class="px-3 pb-2 pt-6 text-[11px] font-semibold uppercase tracking-wider text-slate-400">Content</p>
+      <div class="space-y-1">
+        <a href="#" @click="sidebarOpen = false"
+           class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-slate-500 transition-colors hover:bg-slate-100 hover:text-slate-700">
+          <svg class="h-5 w-5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="8" r="3.5" />
+            <path d="M5 20a7 7 0 0 1 14 0" />
+          </svg>
+          Profile
+        </a>
+
+        <a href="#" @click="sidebarOpen = false"
+           class="flex items-center gap-3 rounded-lg bg-brand-600 px-3 py-2.5 text-sm font-medium text-white">
+          <svg class="h-5 w-5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M4 7.5A1.5 1.5 0 0 1 5.5 6h3.4a1.5 1.5 0 0 1 1.2.6l.9 1.2a1.5 1.5 0 0 0 1.2.6h6.3A1.5 1.5 0 0 1 20 9.9v7.6a1.5 1.5 0 0 1-1.5 1.5h-13A1.5 1.5 0 0 1 4 17.5v-10Z" />
+          </svg>
+          Projects
+        </a>
+
+        <a href="#" @click="sidebarOpen = false"
+           class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-slate-500 transition-colors hover:bg-slate-100 hover:text-slate-700">
+          <svg class="h-5 w-5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M8 3h6l4 4v13a1 1 0 0 1-1 1H8a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1Z" />
+            <path d="M14 3v4h4" />
+            <path d="M9.5 12.5h5" />
+            <path d="M9.5 16h3" />
+          </svg>
+          Blog
+        </a>
+
+        <a href="#" @click="sidebarOpen = false"
+           class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-slate-500 transition-colors hover:bg-slate-100 hover:text-slate-700">
+          <svg class="h-5 w-5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3.5" y="4.5" width="17" height="15" rx="2" />
+            <circle cx="9" cy="10" r="1.5" />
+            <path d="m4.5 17.5 4.2-4.2a1.5 1.5 0 0 1 2.1 0l5.2 5.2" />
+            <path d="m14.5 15.2 1.6-1.6a1.5 1.5 0 0 1 2.1 0l1.3 1.3" />
+          </svg>
+          Media
+        </a>
+      </div>
+
+      <!-- SYSTEM -->
+      <p class="px-3 pb-2 pt-6 text-[11px] font-semibold uppercase tracking-wider text-slate-400">System</p>
+      <div class="space-y-1">
+        <a href="#" @click="sidebarOpen = false"
+           class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-slate-500 transition-colors hover:bg-slate-100 hover:text-slate-700">
+          <svg class="h-5 w-5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M13 2.5 4.5 14H11l-1 7.5L18.5 10H12l1-7.5Z" />
+          </svg>
+          Plugins
+        </a>
+
+        <a href="#" @click="sidebarOpen = false"
+           class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-slate-500 transition-colors hover:bg-slate-100 hover:text-slate-700">
+          <svg class="h-5 w-5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 3.5c3 3.5 6 6.7 6 9.8a6 6 0 1 1-12 0c0-3.1 3-6.3 6-9.8Z" />
+          </svg>
+          Themes
+        </a>
+
+        <a href="#" @click="sidebarOpen = false"
+           class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-slate-500 transition-colors hover:bg-slate-100 hover:text-slate-700">
+          <svg class="h-5 w-5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="3" />
+            <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.6h.09A1.65 1.65 0 0 0 10 3.09V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1Z" />
+          </svg>
+          Settings
+        </a>
+      </div>
+    </nav>
+
+    <!-- User block -->
+    <div class="mt-auto shrink-0 border-t border-slate-100 p-3">
+      <div class="flex items-center gap-3 rounded-lg px-2 py-2 transition-colors hover:bg-slate-50">
+        <span class="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-brand-600 text-xs font-semibold text-white">AM</span>
+        <div class="min-w-0 flex-1">
+          <p class="truncate text-sm font-medium text-slate-700">Alex Morgan</p>
+          <p class="truncate text-xs text-slate-400">Administrator</p>
+        </div>
+        <button type="button" title="Sign out"
+                class="rounded-lg p-1.5 text-slate-400 transition-colors hover:bg-slate-100 hover:text-slate-600">
+          <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M15 17l5-5-5-5" />
+            <path d="M20 12H9" />
+            <path d="M12 20H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h6" />
+          </svg>
+        </button>
+      </div>
+    </div>
+  </aside>
+
+  <!-- ================= CONTENT WRAPPER ================= -->
+  <div class="flex min-h-screen flex-col lg:pl-[260px]">
+
+    <!-- ---------- TOP BAR ---------- -->
+    <header class="sticky top-0 z-30 flex h-16 shrink-0 items-center gap-3 bg-white px-4 shadow-card sm:px-6">
+
+      <button type="button" @click="sidebarOpen = true"
+              class="-ml-2 rounded-lg p-2 text-slate-500 transition-colors hover:bg-slate-100 hover:text-slate-700 lg:hidden">
+        <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M4 7h16" />
+          <path d="M4 12h16" />
+          <path d="M4 17h16" />
+        </svg>
+      </button>
+
+      <nav class="hidden items-center gap-2 text-sm sm:flex">
+        <span class="text-slate-400">Content</span>
+        <svg class="h-3.5 w-3.5 text-slate-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="m9 6 6 6-6 6" />
+        </svg>
+        <span class="font-medium text-slate-700">Projects</span>
+      </nav>
+
+      <span class="text-sm font-semibold text-slate-700 sm:hidden">Projects</span>
+
+      <div class="ml-auto flex items-center gap-2 sm:gap-3">
+
+        <!-- Search -->
+        <div class="relative hidden md:block">
+          <svg class="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="11" cy="11" r="7" />
+            <path d="m20 20-3.5-3.5" />
+          </svg>
+          <input type="search" placeholder="Search..."
+                 class="h-10 w-52 rounded-lg bg-slate-100 pl-9 pr-3 text-sm text-slate-700 placeholder-slate-400 outline-none transition focus:ring-2 focus:ring-brand-500/40 lg:w-64" />
+        </div>
+
+        <!-- Notifications -->
+        <button type="button"
+                class="relative rounded-lg p-2 text-slate-500 transition-colors hover:bg-slate-100 hover:text-slate-700">
+          <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M18 8a6 6 0 1 0-12 0c0 6-2 7-2 7h16s-2-1-2-7Z" />
+            <path d="M10.3 20a2 2 0 0 0 3.4 0" />
+          </svg>
+          <span class="absolute right-1 top-1 flex h-4 min-w-[16px] items-center justify-center rounded-full bg-red-500 px-1 text-[10px] font-semibold leading-none text-white">3</span>
+        </button>
+
+        <!-- Avatar dropdown -->
+        <div class="relative" @click.outside="userMenuOpen = false">
+          <button type="button" @click="userMenuOpen = !userMenuOpen"
+                  class="flex items-center gap-2 rounded-lg p-1 transition-colors hover:bg-slate-100">
+            <span class="flex h-9 w-9 items-center justify-center rounded-full bg-brand-600 text-xs font-semibold text-white">AM</span>
+            <svg class="hidden h-4 w-4 text-slate-400 sm:block" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="m6 9 6 6 6-6" />
+            </svg>
+          </button>
+
+          <div x-show="userMenuOpen" x-cloak
+               x-transition:enter="transition ease-out duration-100"
+               x-transition:enter-start="opacity-0 scale-95"
+               x-transition:enter-end="opacity-100 scale-100"
+               x-transition:leave="transition ease-in duration-75"
+               x-transition:leave-start="opacity-100 scale-100"
+               x-transition:leave-end="opacity-0 scale-95"
+               class="absolute right-0 mt-2 w-48 origin-top-right rounded-lg bg-white py-1 shadow-panel">
+            <div class="px-4 py-2">
+              <p class="text-sm font-medium text-slate-700">Alex Morgan</p>
+              <p class="truncate text-xs text-slate-400">alex@mopsadmin.com</p>
+            </div>
+            <div class="my-1 h-px bg-slate-100"></div>
+            <a href="#" class="block px-4 py-2 text-sm text-slate-600 transition-colors hover:bg-slate-50">Your Profile</a>
+            <a href="#" class="block px-4 py-2 text-sm text-slate-600 transition-colors hover:bg-slate-50">Account Settings</a>
+            <div class="my-1 h-px bg-slate-100"></div>
+            <a href="#" class="block px-4 py-2 text-sm text-red-600 transition-colors hover:bg-red-50">Sign out</a>
+          </div>
+        </div>
+
+      </div>
+    </header>
+
+    <!-- ---------- MAIN ---------- -->
+    <main class="flex-1 space-y-5 p-4 sm:p-6">
+
+      <!-- ===== PAGE HEADER ===== -->
+      <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+        <div>
+          <h1 class="text-xl font-semibold tracking-tight text-slate-800 sm:text-2xl">Projects</h1>
+          <p class="mt-1 text-sm text-slate-500">Manage your portfolio projects</p>
+        </div>
+
+        <button type="button"
+                class="inline-flex items-center justify-center gap-2 self-start rounded-lg bg-brand-600 px-4 py-2.5 text-sm font-medium text-white shadow-card transition-colors hover:bg-brand-700 focus:outline-none focus:ring-2 focus:ring-brand-500/40 sm:self-auto">
+          <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 5v14" />
+            <path d="M5 12h14" />
+          </svg>
+          New Project
+        </button>
+      </div>
+
+      <!-- ===== TABLE CARD ===== -->
+      <div class="overflow-hidden rounded-lg bg-white shadow-card"
+           x-data="{ selected: 0, bulkAction: '' }"
+           @selection-changed.window="selected = $event.detail.count">
+
+        <!-- Toolbar -->
+        <div class="flex flex-col gap-3 border-b border-slate-100 p-4 sm:flex-row sm:items-center sm:justify-between">
+
+          <!-- Bulk actions -->
+          <div class="flex flex-wrap items-center gap-2">
+            <select x-model="bulkAction"
+                    class="h-10 cursor-pointer appearance-none rounded-lg border border-slate-200 bg-white bg-[url('data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22%2394a3b8%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpath%20d%3D%22m6%209%206%206%206-6%22/%3E%3C/svg%3E')] bg-[length:14px_14px] bg-[right_10px_center] bg-no-repeat pl-3 pr-9 text-sm text-slate-600 outline-none transition focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20">
+              <option value="">Bulk actions</option>
+              <option value="edit">Edit</option>
+              <option value="delete">Delete</option>
+              <option value="export">Export</option>
+            </select>
+
+            <button type="button"
+                    :disabled="selected === 0 || bulkAction === ''"
+                    class="h-10 rounded-lg bg-brand-600 px-4 text-sm font-medium text-white transition-colors hover:bg-brand-700 focus:outline-none focus:ring-2 focus:ring-brand-500/40 disabled:cursor-not-allowed disabled:bg-slate-200 disabled:text-slate-400 disabled:hover:bg-slate-200">
+              Apply
+            </button>
+
+            <span x-show="selected > 0" x-cloak
+                  class="text-xs font-medium text-slate-500">
+              <span x-text="selected"></span> selected
+            </span>
+          </div>
+
+          <!-- DataTables length + search get moved here -->
+          <div id="dtTopSlot"></div>
+        </div>
+
+        <!-- Scrollable table area -->
+        <div class="overflow-x-auto">
+          <table id="projectsTable" class="min-w-[1000px] w-full text-left text-sm">
+            <thead>
+              <tr class="bg-slate-50 text-[11px] font-semibold uppercase tracking-wider text-slate-400">
+                <th class="w-12">
+                  <input type="checkbox" id="selectAll" aria-label="Select all rows"
+                         class="h-4 w-4 cursor-pointer rounded border-slate-300 accent-indigo-600 align-middle" />
+                </th>
+                <th>Project Name</th>
+                <th>Category</th>
+                <th>Status</th>
+                <th>Views</th>
+                <th>Created</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+
+            <tbody>
+              <!-- 1 -->
+              <tr>
+                <td><input type="checkbox" class="row-checkbox h-4 w-4 cursor-pointer rounded border-slate-300 accent-indigo-600 align-middle" /></td>
+                <td>
+                  <div class="flex items-center gap-3">
+                    <img src="https://placehold.co/40x40/4f46e5/ffffff?text=NB" alt="Nova Banking Dashboard" class="h-10 w-10 shrink-0 rounded-lg object-cover" />
+                    <span class="font-semibold text-slate-700">Nova Banking Dashboard</span>
+                  </div>
+                </td>
+                <td><span class="inline-flex rounded-full bg-indigo-100 px-2.5 py-1 text-xs font-medium text-indigo-700">Web App</span></td>
+                <td><span class="inline-flex rounded-full bg-green-100 px-2.5 py-1 text-xs font-medium text-green-700">Published</span></td>
+                <td class="text-slate-600">12,480</td>
+                <td class="text-slate-500" data-order="2026-10-12">Oct 12, 2026</td>
+                <td>
+                  <div class="flex items-center gap-2">
+                    <button type="button" class="rounded-lg border border-slate-200 px-3 py-1.5 text-xs font-medium text-slate-600 transition-colors hover:border-brand-500 hover:text-brand-600">Edit</button>
+                    <button type="button" title="Delete" class="rounded-lg p-1.5 text-slate-400 transition-colors hover:bg-red-50 hover:text-red-500">
+                      <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M4 7h16" /><path d="M10 11v6" /><path d="M14 11v6" />
+                        <path d="M6 7l1 12a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2l1-12" />
+                        <path d="M9 7V5a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2" />
+                      </svg>
+                    </button>
+                  </div>
+                </td>
+              </tr>
+
+              <!-- 2 -->
+              <tr>
+                <td><input type="checkbox" class="row-checkbox h-4 w-4 cursor-pointer rounded border-slate-300 accent-indigo-600 align-middle" /></td>
+                <td>
+                  <div class="flex items-center gap-3">
+                    <img src="https://placehold.co/40x40/2563eb/ffffff?text=FT" alt="FitTrack Mobile App" class="h-10 w-10 shrink-0 rounded-lg object-cover" />
+                    <span class="font-semibold text-slate-700">FitTrack Mobile App</span>
+                  </div>
+                </td>
+                <td><span class="inline-flex rounded-full bg-blue-100 px-2.5 py-1 text-xs font-medium text-blue-700">Mobile</span></td>
+                <td><span class="inline-flex rounded-full bg-green-100 px-2.5 py-1 text-xs font-medium text-green-700">Published</span></td>
+                <td class="text-slate-600">9,215</td>
+                <td class="text-slate-500" data-order="2026-10-10">Oct 10, 2026</td>
+                <td>
+                  <div class="flex items-center gap-2">
+                    <button type="button" class="rounded-lg border border-slate-200 px-3 py-1.5 text-xs font-medium text-slate-600 transition-colors hover:border-brand-500 hover:text-brand-600">Edit</button>
+                    <button type="button" title="Delete" class="rounded-lg p-1.5 text-slate-400 transition-colors hover:bg-red-50 hover:text-red-500">
+                      <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M4 7h16" /><path d="M10 11v6" /><path d="M14 11v6" />
+                        <path d="M6 7l1 12a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2l1-12" />
+                        <path d="M9 7V5a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2" />
+                      </svg>
+                    </button>
+                  </div>
+                </td>
+              </tr>
+
+              <!-- 3 -->
+              <tr>
+                <td><input type="checkbox" class="row-checkbox h-4 w-4 cursor-pointer rounded border-slate-300 accent-indigo-600 align-middle" /></td>
+                <td>
+                  <div class="flex items-center gap-3">
+                    <img src="https://placehold.co/40x40/8b5cf6/ffffff?text=AB" alt="Aurora Brand Identity" class="h-10 w-10 shrink-0 rounded-lg object-cover" />
+                    <span class="font-semibold text-slate-700">Aurora Brand Identity</span>
+                  </div>
+                </td>
+                <td><span class="inline-flex rounded-full bg-purple-100 px-2.5 py-1 text-xs font-medium text-purple-700">Design</span></td>
+                <td><span class="inline-flex rounded-full bg-amber-100 px-2.5 py-1 text-xs font-medium text-amber-700">Draft</span></td>
+                <td class="text-slate-600">4,102</td>
+                <td class="text-slate-500" data-order="2026-10-08">Oct 08, 2026</td>
+                <td>
+                  <div class="flex items-center gap-2">
+                    <button type="button" class="rounded-lg border border-slate-200 px-3 py-1.5 text-xs font-medium text-slate-600 transition-colors hover:border-brand-500 hover:text-brand-600">Edit</button>
+                    <button type="button" title="Delete" class="rounded-lg p-1.5 text-slate-400 transition-colors hover:bg-red-50 hover:text-red-500">
+                      <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M4 7h16" /><path d="M10 11v6" /><path d="M14 11v6" />
+                        <path d="M6 7l1 12a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2l1-12" />
+                        <path d="M9 7V5a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2" />
+                      </svg>
+                    </button>
+                  </div>
+                </td>
+              </tr>
+
+              <!-- 4 -->
+              <tr>
+                <td><input type="checkbox" class="row-checkbox h-4 w-4 cursor-pointer rounded border-slate-300 accent-indigo-600 align-middle" /></td>
+                <td>
+                  <div class="flex items-center gap-3">
+                    <img src="https://placehold.co/40x40/0d9488/ffffff?text=SS" alt="Slack Sync Plugin" class="h-10 w-10 shrink-0 rounded-lg object-cover" />
+                    <span class="font-semibold text-slate-700">Slack Sync Plugin</span>
+                  </div>
+                </td>
+                <td><span class="inline-flex rounded-full bg-teal-100 px-2.5 py-1 text-xs font-medium text-teal-700">Plugin</span></td>
+                <td><span class="inline-flex rounded-full bg-green-100 px-2.5 py-1 text-xs font-medium text-green-700">Published</span></td>
+                <td class="text-slate-600">7,830</td>
+                <td class="text-slate-500" data-order="2026-10-06">Oct 06, 2026</td>
+                <td>
+                  <div class="flex items-center gap-2">
+                    <button type="button" class="rounded-lg border border-slate-200 px-3 py-1.5 text-xs font-medium text-slate-600 transition-colors hover:border-brand-500 hover:text-brand-600">Edit</button>
+                    <button type="button" title="Delete" class="rounded-lg p-1.5 text-slate-400 transition-colors hover:bg-red-50 hover:text-red-500">
+                      <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M4 7h16" /><path d="M10 11v6" /><path d="M14 11v6" />
+                        <path d="M6 7l1 12a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2l1-12" />
+                        <path d="M9 7V5a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2" />
+                      </svg>
+                    </button>
+                  </div>
+                </td>
+              </tr>
+
+              <!-- 5 -->
+              <tr>
+                <td><input type="checkbox" class="row-checkbox h-4 w-4 cursor-pointer rounded border-slate-300 accent-indigo-600 align-middle" /></td>
+                <td>
+                  <div class="flex items-center gap-3">
+                    <img src="https://placehold.co/40x40/4f46e5/ffffff?text=OE" alt="Orbit E-Commerce" class="h-10 w-10 shrink-0 rounded-lg object-cover" />
+                    <span class="font-semibold text-slate-700">Orbit E-Commerce</span>
+                  </div>
+                </td>
+                <td><span class="inline-flex rounded-full bg-indigo-100 px-2.5 py-1 text-xs font-medium text-indigo-700">Web App</span></td>
+                <td><span class="inline-flex rounded-full bg-green-100 px-2.5 py-1 text-xs font-medium text-green-700">Published</span></td>
+                <td class="text-slate-600">15,640</td>
+                <td class="text-slate-500" data-order="2026-10-04">Oct 04, 2026</td>
+                <td>
+                  <div class="flex items-center gap-2">
+                    <button type="button" class="rounded-lg border border-slate-200 px-3 py-1.5 text-xs font-medium text-slate-600 transition-colors hover:border-brand-500 hover:text-brand-600">Edit</button>
+                    <button type="button" title="Delete" class="rounded-lg p-1.5 text-slate-400 transition-colors hover:bg-red-50 hover:text-red-500">
+                      <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M4 7h16" /><path d="M10 11v6" /><path d="M14 11v6" />
+                        <path d="M6 7l1 12a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2l1-12" />
+                        <path d="M9 7V5a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2" />
+                      </svg>
+                    </button>
+                  </div>
+                </td>
+              </tr>
+
+              <!-- 6 -->
+              <tr>
+                <td><input type="checkbox" class="row-checkbox h-4 w-4 cursor-pointer rounded border-slate-300 accent-indigo-600 align-middle" /></td>
+                <td>
+                  <div class="flex items-center gap-3">
+                    <img src="https://placehold.co/40x40/2563eb/ffffff?text=PH" alt="Pulse Health Tracker" class="h-10 w-10 shrink-0 rounded-lg object-cover" />
+                    <span class="font-semibold text-slate-700">Pulse Health Tracker</span>
+                  </div>
+                </td>
+                <td><span class="inline-flex rounded-full bg-blue-100 px-2.5 py-1 text-xs font-medium text-blue-700">Mobile</span></td>
+                <td><span class="inline-flex rounded-full bg-amber-100 px-2.5 py-1 text-xs font-medium text-amber-700">Draft</span></td>
+                <td class="text-slate-600">2,315</td>
+                <td class="text-slate-500" data-order="2026-10-02">Oct 02, 2026</td>
+                <td>
+                  <div class="flex items-center gap-2">
+                    <button type="button" class="rounded-lg border border-slate-200 px-3 py-1.5 text-xs font-medium text-slate-600 transition-colors hover:border-brand-500 hover:text-brand-600">Edit</button>
+                    <button type="button" title="Delete" class="rounded-lg p-1.5 text-slate-400 transition-colors hover:bg-red-50 hover:text-red-500">
+                      <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M4 7h16" /><path d="M10 11v6" /><path d="M14 11v6" />
+                        <path d="M6 7l1 12a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2l1-12" />
+                        <path d="M9 7V5a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2" />
+                      </svg>
+                    </button>
+                  </div>
+                </td>
+              </tr>
+
+              <!-- 7 -->
+              <tr>
+                <td><input type="checkbox" class="row-checkbox h-4 w-4 cursor-pointer rounded border-slate-300 accent-indigo-600 align-middle" /></td>
+                <td>
+                  <div class="flex items-center gap-3">
+                    <img src="https://placehold.co/40x40/8b5cf6/ffffff?text=LU" alt="Lumen UI Kit" class="h-10 w-10 shrink-0 rounded-lg object-cover" />
+                    <span class="font-semibold text-slate-700">Lumen UI Kit</span>
+                  </div>
+                </td>
+                <td><span class="inline-flex rounded-full bg-purple-100 px-2.5 py-1 text-xs font-medium text-purple-700">Design</span></td>
+                <td><span class="inline-flex rounded-full bg-green-100 px-2.5 py-1 text-xs font-medium text-green-700">Published</span></td>
+                <td class="text-slate-600">11,270</td>
+                <td class="text-slate-500" data-order="2026-09-30">Sep 30, 2026</td>
+                <td>
+                  <div class="flex items-center gap-2">
+                    <button type="button" class="rounded-lg border border-slate-200 px-3 py-1.5 text-xs font-medium text-slate-600 transition-colors hover:border-brand-500 hover:text-brand-600">Edit</button>
+                    <button type="button" title="Delete" class="rounded-lg p-1.5 text-slate-400 transition-colors hover:bg-red-50 hover:text-red-500">
+                      <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M4 7h16" /><path d="M10 11v6" /><path d="M14 11v6" />
+                        <path d="M6 7l1 12a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2l1-12" />
+                        <path d="M9 7V5a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2" />
+                      </svg>
+                    </button>
+                  </div>
+                </td>
+              </tr>
+
+              <!-- 8 -->
+              <tr>
+                <td><input type="checkbox" class="row-checkbox h-4 w-4 cursor-pointer rounded border-slate-300 accent-indigo-600 align-middle" /></td>
+                <td>
+                  <div class="flex items-center gap-3">
+                    <img src="https://placehold.co/40x40/0d9488/ffffff?text=FC" alt="FormCraft Builder" class="h-10 w-10 shrink-0 rounded-lg object-cover" />
+                    <span class="font-semibold text-slate-700">FormCraft Builder</span>
+                  </div>
+                </td>
+                <td><span class="inline-flex rounded-full bg-teal-100 px-2.5 py-1 text-xs font-medium text-teal-700">Plugin</span></td>
+                <td><span class="inline-flex rounded-full bg-slate-100 px-2.5 py-1 text-xs font-medium text-slate-600">Archived</span></td>
+                <td class="text-slate-600">3,940</td>
+                <td class="text-slate-500" data-order="2026-09-28">Sep 28, 2026</td>
+                <td>
+                  <div class="flex items-center gap-2">
+                    <button type="button" class="rounded-lg border border-slate-200 px-3 py-1.5 text-xs font-medium text-slate-600 transition-colors hover:border-brand-500 hover:text-brand-600">Edit</button>
+                    <button type="button" title="Delete" class="rounded-lg p-1.5 text-slate-400 transition-colors hover:bg-red-50 hover:text-red-500">
+                      <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M4 7h16" /><path d="M10 11v6" /><path d="M14 11v6" />
+                        <path d="M6 7l1 12a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2l1-12" />
+                        <path d="M9 7V5a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2" />
+                      </svg>
+                    </button>
+                  </div>
+                </td>
+              </tr>
+
+              <!-- 9 -->
+              <tr>
+                <td><input type="checkbox" class="row-checkbox h-4 w-4 cursor-pointer rounded border-slate-300 accent-indigo-600 align-middle" /></td>
+                <td>
+                  <div class="flex items-center gap-3">
+                    <img src="https://placehold.co/40x40/4f46e5/ffffff?text=VA" alt="Vertex Analytics" class="h-10 w-10 shrink-0 rounded-lg object-cover" />
+                    <span class="font-semibold text-slate-700">Vertex Analytics</span>
+                  </div>
+                </td>
+                <td><span class="inline-flex rounded-full bg-indigo-100 px-2.5 py-1 text-xs font-medium text-indigo-700">Web App</span></td>
+                <td><span class="inline-flex rounded-full bg-green-100 px-2.5 py-1 text-xs font-medium text-green-700">Published</span></td>
+                <td class="text-slate-600">18,320</td>
+                <td class="text-slate-500" data-order="2026-09-26">Sep 26, 2026</td>
+                <td>
+                  <div class="flex items-center gap-2">
+                    <button type="button" class="rounded-lg border border-slate-200 px-3 py-1.5 text-xs font-medium text-slate-600 transition-colors hover:border-brand-500 hover:text-brand-600">Edit</button>
+                    <button type="button" title="Delete" class="rounded-lg p-1.5 text-slate-400 transition-colors hover:bg-red-50 hover:text-red-500">
+                      <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M4 7h16" /><path d="M10 11v6" /><path d="M14 11v6" />
+                        <path d="M6 7l1 12a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2l1-12" />
+                        <path d="M9 7V5a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2" />
+                      </svg>
+                    </button>
+                  </div>
+                </td>
+              </tr>
+
+              <!-- 10 -->
+              <tr>
+                <td><input type="checkbox" class="row-checkbox h-4 w-4 cursor-pointer rounded border-slate-300 accent-indigo-600 align-middle" /></td>
+                <td>
+                  <div class="flex items-center gap-3">
+                    <img src="https://placehold.co/40x40/2563eb/ffffff?text=DT" alt="Drift Travel App" class="h-10 w-10 shrink-0 rounded-lg object-cover" />
+                    <span class="font-semibold text-slate-700">Drift Travel App</span>
+                  </div>
+                </td>
+                <td><span class="inline-flex rounded-full bg-blue-100 px-2.5 py-1 text-xs font-medium text-blue-700">Mobile</span></td>
+                <td><span class="inline-flex rounded-full bg-green-100 px-2.5 py-1 text-xs font-medium text-green-700">Published</span></td>
+                <td class="text-slate-600">8,760</td>
+                <td class="text-slate-500" data-order="2026-09-24">Sep 24, 2026</td>
+                <td>
+                  <div class="flex items-center gap-2">
+                    <button type="button" class="rounded-lg border border-slate-200 px-3 py-1.5 text-xs font-medium text-slate-600 transition-colors hover:border-brand-500 hover:text-brand-600">Edit</button>
+                    <button type="button" title="Delete" class="rounded-lg p-1.5 text-slate-400 transition-colors hover:bg-red-50 hover:text-red-500">
+                      <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M4 7h16" /><path d="M10 11v6" /><path d="M14 11v6" />
+                        <path d="M6 7l1 12a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2l1-12" />
+                        <path d="M9 7V5a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2" />
+                      </svg>
+                    </button>
+                  </div>
+                </td>
+              </tr>
+
+              <!-- 11 -->
+              <tr>
+                <td><input type="checkbox" class="row-checkbox h-4 w-4 cursor-pointer rounded border-slate-300 accent-indigo-600 align-middle" /></td>
+                <td>
+                  <div class="flex items-center gap-3">
+                    <img src="https://placehold.co/40x40/8b5cf6/ffffff?text=MI" alt="Mono Icon Pack" class="h-10 w-10 shrink-0 rounded-lg object-cover" />
+                    <span class="font-semibold text-slate-700">Mono Icon Pack</span>
+                  </div>
+                </td>
+                <td><span class="inline-flex rounded-full bg-purple-100 px-2.5 py-1 text-xs font-medium text-purple-700">Design</span></td>
+                <td><span class="inline-flex rounded-full bg-amber-100 px-2.5 py-1 text-xs font-medium text-amber-700">Draft</span></td>
+                <td class="text-slate-600">1,890</td>
+                <td class="text-slate-500" data-order="2026-09-22">Sep 22, 2026</td>
+                <td>
+                  <div class="flex items-center gap-2">
+                    <button type="button" class="rounded-lg border border-slate-200 px-3 py-1.5 text-xs font-medium text-slate-600 transition-colors hover:border-brand-500 hover:text-brand-600">Edit</button>
+                    <button type="button" title="Delete" class="rounded-lg p-1.5 text-slate-400 transition-colors hover:bg-red-50 hover:text-red-500">
+                      <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M4 7h16" /><path d="M10 11v6" /><path d="M14 11v6" />
+                        <path d="M6 7l1 12a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2l1-12" />
+                        <path d="M9 7V5a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2" />
+                      </svg>
+                    </button>
+                  </div>
+                </td>
+              </tr>
+
+              <!-- 12 -->
+              <tr>
+                <td><input type="checkbox" class="row-checkbox h-4 w-4 cursor-pointer rounded border-slate-300 accent-indigo-600 align-middle" /></td>
+                <td>
+                  <div class="flex items-center gap-3">
+                    <img src="https://placehold.co/40x40/0d9488/ffffff?text=CB" alt="CacheBoost Plugin" class="h-10 w-10 shrink-0 rounded-lg object-cover" />
+                    <span class="font-semibold text-slate-700">CacheBoost Plugin</span>
+                  </div>
+                </td>
+                <td><span class="inline-flex rounded-full bg-teal-100 px-2.5 py-1 text-xs font-medium text-teal-700">Plugin</span></td>
+                <td><span class="inline-flex rounded-full bg-green-100 px-2.5 py-1 text-xs font-medium text-green-700">Published</span></td>
+                <td class="text-slate-600">5,410</td>
+                <td class="text-slate-500" data-order="2026-09-20">Sep 20, 2026</td>
+                <td>
+                  <div class="flex items-center gap-2">
+                    <button type="button" class="rounded-lg border border-slate-200 px-3 py-1.5 text-xs font-medium text-slate-600 transition-colors hover:border-brand-500 hover:text-brand-600">Edit</button>
+                    <button type="button" title="Delete" class="rounded-lg p-1.5 text-slate-400 transition-colors hover:bg-red-50 hover:text-red-500">
+                      <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M4 7h16" /><path d="M10 11v6" /><path d="M14 11v6" />
+                        <path d="M6 7l1 12a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2l1-12" />
+                        <path d="M9 7V5a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2" />
+                      </svg>
+                    </button>
+                  </div>
+                </td>
+              </tr>
+
+              <!-- 13 -->
+              <tr>
+                <td><input type="checkbox" class="row-checkbox h-4 w-4 cursor-pointer rounded border-slate-300 accent-indigo-600 align-middle" /></td>
+                <td>
+                  <div class="flex items-center gap-3">
+                    <img src="https://placehold.co/40x40/4f46e5/ffffff?text=LF" alt="Ledger Finance Suite" class="h-10 w-10 shrink-0 rounded-lg object-cover" />
+                    <span class="font-semibold text-slate-700">Ledger Finance Suite</span>
+                  </div>
+                </td>
+                <td><span class="inline-flex rounded-full bg-indigo-100 px-2.5 py-1 text-xs font-medium text-indigo-700">Web App</span></td>
+                <td><span class="inline-flex rounded-full bg-green-100 px-2.5 py-1 text-xs font-medium text-green-700">Published</span></td>
+                <td class="text-slate-600">21,050</td>
+                <td class="text-slate-500" data-order="2026-09-18">Sep 18, 2026</td>
+                <td>
+                  <div class="flex items-center gap-2">
+                    <button type="button" class="rounded-lg border border-slate-200 px-3 py-1.5 text-xs font-medium text-slate-600 transition-colors hover:border-brand-500 hover:text-brand-600">Edit</button>
+                    <button type="button" title="Delete" class="rounded-lg p-1.5 text-slate-400 transition-colors hover:bg-red-50 hover:text-red-500">
+                      <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M4 7h16" /><path d="M10 11v6" /><path d="M14 11v6" />
+                        <path d="M6 7l1 12a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2l1-12" />
+                        <path d="M9 7V5a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2" />
+                      </svg>
+                    </button>
+                  </div>
+                </td>
+              </tr>
+
+              <!-- 14 -->
+              <tr>
+                <td><input type="checkbox" class="row-checkbox h-4 w-4 cursor-pointer rounded border-slate-300 accent-indigo-600 align-middle" /></td>
+                <td>
+                  <div class="flex items-center gap-3">
+                    <img src="https://placehold.co/40x40/2563eb/ffffff?text=BG" alt="Bloom Garden Planner" class="h-10 w-10 shrink-0 rounded-lg object-cover" />
+                    <span class="font-semibold text-slate-700">Bloom Garden Planner</span>
+                  </div>
+                </td>
+                <td><span class="inline-flex rounded-full bg-blue-100 px-2.5 py-1 text-xs font-medium text-blue-700">Mobile</span></td>
+                <td><span class="inline-flex rounded-full bg-slate-100 px-2.5 py-1 text-xs font-medium text-slate-600">Archived</span></td>
+                <td class="text-slate-600">2,640</td>
+                <td class="text-slate-500" data-order="2026-09-16">Sep 16, 2026</td>
+                <td>
+                  <div class="flex items-center gap-2">
+                    <button type="button" class="rounded-lg border border-slate-200 px-3 py-1.5 text-xs font-medium text-slate-600 transition-colors hover:border-brand-500 hover:text-brand-600">Edit</button>
+                    <button type="button" title="Delete" class="rounded-lg p-1.5 text-slate-400 transition-colors hover:bg-red-50 hover:text-red-500">
+                      <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M4 7h16" /><path d="M10 11v6" /><path d="M14 11v6" />
+                        <path d="M6 7l1 12a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2l1-12" />
+                        <path d="M9 7V5a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2" />
+                      </svg>
+                    </button>
+                  </div>
+                </td>
+              </tr>
+
+              <!-- 15 -->
+              <tr>
+                <td><input type="checkbox" class="row-checkbox h-4 w-4 cursor-pointer rounded border-slate-300 accent-indigo-600 align-middle" /></td>
+                <td>
+                  <div class="flex items-center gap-3">
+                    <img src="https://placehold.co/40x40/8b5cf6/ffffff?text=SD" alt="Spectra Design System" class="h-10 w-10 shrink-0 rounded-lg object-cover" />
+                    <span class="font-semibold text-slate-700">Spectra Design System</span>
+                  </div>
+                </td>
+                <td><span class="inline-flex rounded-full bg-purple-100 px-2.5 py-1 text-xs font-medium text-purple-700">Design</span></td>
+                <td><span class="inline-flex rounded-full bg-green-100 px-2.5 py-1 text-xs font-medium text-green-700">Published</span></td>
+                <td class="text-slate-600">13,900</td>
+                <td class="text-slate-500" data-order="2026-09-14">Sep 14, 2026</td>
+                <td>
+                  <div class="flex items-center gap-2">
+                    <button type="button" class="rounded-lg border border-slate-200 px-3 py-1.5 text-xs font-medium text-slate-600 transition-colors hover:border-brand-500 hover:text-brand-600">Edit</button>
+                    <button type="button" title="Delete" class="rounded-lg p-1.5 text-slate-400 transition-colors hover:bg-red-50 hover:text-red-500">
+                      <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M4 7h16" /><path d="M10 11v6" /><path d="M14 11v6" />
+                        <path d="M6 7l1 12a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2l1-12" />
+                        <path d="M9 7V5a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2" />
+                      </svg>
+                    </button>
+                  </div>
+                </td>
+              </tr>
+
+              <!-- 16 -->
+              <tr>
+                <td><input type="checkbox" class="row-checkbox h-4 w-4 cursor-pointer rounded border-slate-300 accent-indigo-600 align-middle" /></td>
+                <td>
+                  <div class="flex items-center gap-3">
+                    <img src="https://placehold.co/40x40/0d9488/ffffff?text=SM" alt="SEO Meta Manager" class="h-10 w-10 shrink-0 rounded-lg object-cover" />
+                    <span class="font-semibold text-slate-700">SEO Meta Manager</span>
+                  </div>
+                </td>
+                <td><span class="inline-flex rounded-full bg-teal-100 px-2.5 py-1 text-xs font-medium text-teal-700">Plugin</span></td>
+                <td><span class="inline-flex rounded-full bg-amber-100 px-2.5 py-1 text-xs font-medium text-amber-700">Draft</span></td>
+                <td class="text-slate-600">4,720</td>
+                <td class="text-slate-500" data-order="2026-09-12">Sep 12, 2026</td>
+                <td>
+                  <div class="flex items-center gap-2">
+                    <button type="button" class="rounded-lg border border-slate-200 px-3 py-1.5 text-xs font-medium text-slate-600 transition-colors hover:border-brand-500 hover:text-brand-600">Edit</button>
+                    <button type="button" title="Delete" class="rounded-lg p-1.5 text-slate-400 transition-colors hover:bg-red-50 hover:text-red-500">
+                      <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M4 7h16" /><path d="M10 11v6" /><path d="M14 11v6" />
+                        <path d="M6 7l1 12a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2l1-12" />
+                        <path d="M9 7V5a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2" />
+                      </svg>
+                    </button>
+                  </div>
+                </td>
+              </tr>
+
+              <!-- 17 -->
+              <tr>
+                <td><input type="checkbox" class="row-checkbox h-4 w-4 cursor-pointer rounded border-slate-300 accent-indigo-600 align-middle" /></td>
+                <td>
+                  <div class="flex items-center gap-3">
+                    <img src="https://placehold.co/40x40/4f46e5/ffffff?text=AC" alt="Atlas CRM Platform" class="h-10 w-10 shrink-0 rounded-lg object-cover" />
+                    <span class="font-semibold text-slate-700">Atlas CRM Platform</span>
+                  </div>
+                </td>
+                <td><span class="inline-flex rounded-full bg-indigo-100 px-2.5 py-1 text-xs font-medium text-indigo-700">Web App</span></td>
+                <td><span class="inline-flex rounded-full bg-green-100 px-2.5 py-1 text-xs font-medium text-green-700">Published</span></td>
+                <td class="text-slate-600">16,880</td>
+                <td class="text-slate-500" data-order="2026-09-10">Sep 10, 2026</td>
+                <td>
+                  <div class="flex items-center gap-2">
+                    <button type="button" class="rounded-lg border border-slate-200 px-3 py-1.5 text-xs font-medium text-slate-600 transition-colors hover:border-brand-500 hover:text-brand-600">Edit</button>
+                    <button type="button" title="Delete" class="rounded-lg p-1.5 text-slate-400 transition-colors hover:bg-red-50 hover:text-red-500">
+                      <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M4 7h16" /><path d="M10 11v6" /><path d="M14 11v6" />
+                        <path d="M6 7l1 12a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2l1-12" />
+                        <path d="M9 7V5a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2" />
+                      </svg>
+                    </button>
+                  </div>
+                </td>
+              </tr>
+
+              <!-- 18 -->
+              <tr>
+                <td><input type="checkbox" class="row-checkbox h-4 w-4 cursor-pointer rounded border-slate-300 accent-indigo-600 align-middle" /></td>
+                <td>
+                  <div class="flex items-center gap-3">
+                    <img src="https://placehold.co/40x40/2563eb/ffffff?text=CR" alt="CookBook Recipe App" class="h-10 w-10 shrink-0 rounded-lg object-cover" />
+                    <span class="font-semibold text-slate-700">CookBook Recipe App</span>
+                  </div>
+                </td>
+                <td><span class="inline-flex rounded-full bg-blue-100 px-2.5 py-1 text-xs font-medium text-blue-700">Mobile</span></td>
+                <td><span class="inline-flex rounded-full bg-green-100 px-2.5 py-1 text-xs font-medium text-green-700">Published</span></td>
+                <td class="text-slate-600">6,930</td>
+                <td class="text-slate-500" data-order="2026-09-08">Sep 08, 2026</td>
+                <td>
+                  <div class="flex items-center gap-2">
+                    <button type="button" class="rounded-lg border border-slate-200 px-3 py-1.5 text-xs font-medium text-slate-600 transition-colors hover:border-brand-500 hover:text-brand-600">Edit</button>
+                    <button type="button" title="Delete" class="rounded-lg p-1.5 text-slate-400 transition-colors hover:bg-red-50 hover:text-red-500">
+                      <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M4 7h16" /><path d="M10 11v6" /><path d="M14 11v6" />
+                        <path d="M6 7l1 12a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2l1-12" />
+                        <path d="M9 7V5a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2" />
+                      </svg>
+                    </button>
+                  </div>
+                </td>
+              </tr>
+
+              <!-- 19 -->
+              <tr>
+                <td><input type="checkbox" class="row-checkbox h-4 w-4 cursor-pointer rounded border-slate-300 accent-indigo-600 align-middle" /></td>
+                <td>
+                  <div class="flex items-center gap-3">
+                    <img src="https://placehold.co/40x40/8b5cf6/ffffff?text=VP" alt="Vellum Portfolio Theme" class="h-10 w-10 shrink-0 rounded-lg object-cover" />
+                    <span class="font-semibold text-slate-700">Vellum Portfolio Theme</span>
+                  </div>
+                </td>
+                <td><span class="inline-flex rounded-full bg-purple-100 px-2.5 py-1 text-xs font-medium text-purple-700">Design</span></td>
+                <td><span class="inline-flex rounded-full bg-green-100 px-2.5 py-1 text-xs font-medium text-green-700">Published</span></td>
+                <td class="text-slate-600">10,450</td>
+                <td class="text-slate-500" data-order="2026-09-06">Sep 06, 2026</td>
+                <td>
+                  <div class="flex items-center gap-2">
+                    <button type="button" class="rounded-lg border border-slate-200 px-3 py-1.5 text-xs font-medium text-slate-600 transition-colors hover:border-brand-500 hover:text-brand-600">Edit</button>
+                    <button type="button" title="Delete" class="rounded-lg p-1.5 text-slate-400 transition-colors hover:bg-red-50 hover:text-red-500">
+                      <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M4 7h16" /><path d="M10 11v6" /><path d="M14 11v6" />
+                        <path d="M6 7l1 12a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2l1-12" />
+                        <path d="M9 7V5a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2" />
+                      </svg>
+                    </button>
+                  </div>
+                </td>
+              </tr>
+
+              <!-- 20 -->
+              <tr>
+                <td><input type="checkbox" class="row-checkbox h-4 w-4 cursor-pointer rounded border-slate-300 accent-indigo-600 align-middle" /></td>
+                <td>
+                  <div class="flex items-center gap-3">
+                    <img src="https://placehold.co/40x40/0d9488/ffffff?text=BK" alt="Backup Guardian" class="h-10 w-10 shrink-0 rounded-lg object-cover" />
+                    <span class="font-semibold text-slate-700">Backup Guardian</span>
+                  </div>
+                </td>
+                <td><span class="inline-flex rounded-full bg-teal-100 px-2.5 py-1 text-xs font-medium text-teal-700">Plugin</span></td>
+                <td><span class="inline-flex rounded-full bg-slate-100 px-2.5 py-1 text-xs font-medium text-slate-600">Archived</span></td>
+                <td class="text-slate-600">2,180</td>
+                <td class="text-slate-500" data-order="2026-09-04">Sep 04, 2026</td>
+                <td>
+                  <div class="flex items-center gap-2">
+                    <button type="button" class="rounded-lg border border-slate-200 px-3 py-1.5 text-xs font-medium text-slate-600 transition-colors hover:border-brand-500 hover:text-brand-600">Edit</button>
+                    <button type="button" title="Delete" class="rounded-lg p-1.5 text-slate-400 transition-colors hover:bg-red-50 hover:text-red-500">
+                      <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M4 7h16" /><path d="M10 11v6" /><path d="M14 11v6" />
+                        <path d="M6 7l1 12a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2l1-12" />
+                        <path d="M9 7V5a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2" />
+                      </svg>
+                    </button>
+                  </div>
+                </td>
+              </tr>
+
+              <!-- 21 -->
+              <tr>
+                <td><input type="checkbox" class="row-checkbox h-4 w-4 cursor-pointer rounded border-slate-300 accent-indigo-600 align-middle" /></td>
+                <td>
+                  <div class="flex items-center gap-3">
+                    <img src="https://placehold.co/40x40/4f46e5/ffffff?text=HP" alt="Helios Admin Panel" class="h-10 w-10 shrink-0 rounded-lg object-cover" />
+                    <span class="font-semibold text-slate-700">Helios Admin Panel</span>
+                  </div>
+                </td>
+                <td><span class="inline-flex rounded-full bg-indigo-100 px-2.5 py-1 text-xs font-medium text-indigo-700">Web App</span></td>
+                <td><span class="inline-flex rounded-full bg-amber-100 px-2.5 py-1 text-xs font-medium text-amber-700">Draft</span></td>
+                <td class="text-slate-600">5,760</td>
+                <td class="text-slate-500" data-order="2026-09-02">Sep 02, 2026</td>
+                <td>
+                  <div class="flex items-center gap-2">
+                    <button type="button" class="rounded-lg border border-slate-200 px-3 py-1.5 text-xs font-medium text-slate-600 transition-colors hover:border-brand-500 hover:text-brand-600">Edit</button>
+                    <button type="button" title="Delete" class="rounded-lg p-1.5 text-slate-400 transition-colors hover:bg-red-50 hover:text-red-500">
+                      <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M4 7h16" /><path d="M10 11v6" /><path d="M14 11v6" />
+                        <path d="M6 7l1 12a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2l1-12" />
+                        <path d="M9 7V5a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2" />
+                      </svg>
+                    </button>
+                  </div>
+                </td>
+              </tr>
+
+              <!-- 22 -->
+              <tr>
+                <td><input type="checkbox" class="row-checkbox h-4 w-4 cursor-pointer rounded border-slate-300 accent-indigo-600 align-middle" /></td>
+                <td>
+                  <div class="flex items-center gap-3">
+                    <img src="https://placehold.co/40x40/2563eb/ffffff?text=RF" alt="Runway Fashion App" class="h-10 w-10 shrink-0 rounded-lg object-cover" />
+                    <span class="font-semibold text-slate-700">Runway Fashion App</span>
+                  </div>
+                </td>
+                <td><span class="inline-flex rounded-full bg-blue-100 px-2.5 py-1 text-xs font-medium text-blue-700">Mobile</span></td>
+                <td><span class="inline-flex rounded-full bg-green-100 px-2.5 py-1 text-xs font-medium text-green-700">Published</span></td>
+                <td class="text-slate-600">9,340</td>
+                <td class="text-slate-500" data-order="2026-08-31">Aug 31, 2026</td>
+                <td>
+                  <div class="flex items-center gap-2">
+                    <button type="button" class="rounded-lg border border-slate-200 px-3 py-1.5 text-xs font-medium text-slate-600 transition-colors hover:border-brand-500 hover:text-brand-600">Edit</button>
+                    <button type="button" title="Delete" class="rounded-lg p-1.5 text-slate-400 transition-colors hover:bg-red-50 hover:text-red-500">
+                      <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M4 7h16" /><path d="M10 11v6" /><path d="M14 11v6" />
+                        <path d="M6 7l1 12a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2l1-12" />
+                        <path d="M9 7V5a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2" />
+                      </svg>
+                    </button>
+                  </div>
+                </td>
+              </tr>
+
+              <!-- 23 -->
+              <tr>
+                <td><input type="checkbox" class="row-checkbox h-4 w-4 cursor-pointer rounded border-slate-300 accent-indigo-600 align-middle" /></td>
+                <td>
+                  <div class="flex items-center gap-3">
+                    <img src="https://placehold.co/40x40/8b5cf6/ffffff?text=PL" alt="Prism Logo Collection" class="h-10 w-10 shrink-0 rounded-lg object-cover" />
+                    <span class="font-semibold text-slate-700">Prism Logo Collection</span>
+                  </div>
+                </td>
+                <td><span class="inline-flex rounded-full bg-purple-100 px-2.5 py-1 text-xs font-medium text-purple-700">Design</span></td>
+                <td><span class="inline-flex rounded-full bg-amber-100 px-2.5 py-1 text-xs font-medium text-amber-700">Draft</span></td>
+                <td class="text-slate-600">3,120</td>
+                <td class="text-slate-500" data-order="2026-08-29">Aug 29, 2026</td>
+                <td>
+                  <div class="flex items-center gap-2">
+                    <button type="button" class="rounded-lg border border-slate-200 px-3 py-1.5 text-xs font-medium text-slate-600 transition-colors hover:border-brand-500 hover:text-brand-600">Edit</button>
+                    <button type="button" title="Delete" class="rounded-lg p-1.5 text-slate-400 transition-colors hover:bg-red-50 hover:text-red-500">
+                      <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M4 7h16" /><path d="M10 11v6" /><path d="M14 11v6" />
+                        <path d="M6 7l1 12a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2l1-12" />
+                        <path d="M9 7V5a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2" />
+                      </svg>
+                    </button>
+                  </div>
+                </td>
+              </tr>
+
+              <!-- 24 -->
+              <tr>
+                <td><input type="checkbox" class="row-checkbox h-4 w-4 cursor-pointer rounded border-slate-300 accent-indigo-600 align-middle" /></td>
+                <td>
+                  <div class="flex items-center gap-3">
+                    <img src="https://placehold.co/40x40/0d9488/ffffff?text=CW" alt="ChatFlow Widget" class="h-10 w-10 shrink-0 rounded-lg object-cover" />
+                    <span class="font-semibold text-slate-700">ChatFlow Widget</span>
+                  </div>
+                </td>
+                <td><span class="inline-flex rounded-full bg-teal-100 px-2.5 py-1 text-xs font-medium text-teal-700">Plugin</span></td>
+                <td><span class="inline-flex rounded-full bg-green-100 px-2.5 py-1 text-xs font-medium text-green-700">Published</span></td>
+                <td class="text-slate-600">7,050</td>
+                <td class="text-slate-500" data-order="2026-08-27">Aug 27, 2026</td>
+                <td>
+                  <div class="flex items-center gap-2">
+                    <button type="button" class="rounded-lg border border-slate-200 px-3 py-1.5 text-xs font-medium text-slate-600 transition-colors hover:border-brand-500 hover:text-brand-600">Edit</button>
+                    <button type="button" title="Delete" class="rounded-lg p-1.5 text-slate-400 transition-colors hover:bg-red-50 hover:text-red-500">
+                      <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M4 7h16" /><path d="M10 11v6" /><path d="M14 11v6" />
+                        <path d="M6 7l1 12a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2l1-12" />
+                        <path d="M9 7V5a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2" />
+                      </svg>
+                    </button>
+                  </div>
+                </td>
+              </tr>
+
+              <!-- 25 -->
+              <tr>
+                <td><input type="checkbox" class="row-checkbox h-4 w-4 cursor-pointer rounded border-slate-300 accent-indigo-600 align-middle" /></td>
+                <td>
+                  <div class="flex items-center gap-3">
+                    <img src="https://placehold.co/40x40/4f46e5/ffffff?text=NS" alt="Nebula SaaS Dashboard" class="h-10 w-10 shrink-0 rounded-lg object-cover" />
+                    <span class="font-semibold text-slate-700">Nebula SaaS Dashboard</span>
+                  </div>
+                </td>
+                <td><span class="inline-flex rounded-full bg-indigo-100 px-2.5 py-1 text-xs font-medium text-indigo-700">Web App</span></td>
+                <td><span class="inline-flex rounded-full bg-green-100 px-2.5 py-1 text-xs font-medium text-green-700">Published</span></td>
+                <td class="text-slate-600">19,470</td>
+                <td class="text-slate-500" data-order="2026-08-25">Aug 25, 2026</td>
+                <td>
+                  <div class="flex items-center gap-2">
+                    <button type="button" class="rounded-lg border border-slate-200 px-3 py-1.5 text-xs font-medium text-slate-600 transition-colors hover:border-brand-500 hover:text-brand-600">Edit</button>
+                    <button type="button" title="Delete" class="rounded-lg p-1.5 text-slate-400 transition-colors hover:bg-red-50 hover:text-red-500">
+                      <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M4 7h16" /><path d="M10 11v6" /><path d="M14 11v6" />
+                        <path d="M6 7l1 12a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2l1-12" />
+                        <path d="M9 7V5a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2" />
+                      </svg>
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- DataTables info + pagination get moved here -->
+        <div id="dtBottomSlot" class="border-t border-slate-100"></div>
+      </div>
+
+    </main>
+
+    <!-- ---------- FOOTER ---------- -->
+    <footer class="mt-auto px-4 py-5 text-center text-xs text-slate-400 sm:px-6 sm:text-left">
+      © 2026 MOPS Admin. All rights reserved.
+    </footer>
+
+  </div>
+</div>
+
+<!-- ================= SCRIPTS ================= -->
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.8/js/jquery.dataTables.min.js"></script>
+
+<script>
+(function () {
+  'use strict';
+
+  /* ---------- Selection helpers (Alpine bridge) ---------- */
+  function updateSelection() {
+    var rowBoxes = document.querySelectorAll('.row-checkbox');
+    var checked = document.querySelectorAll('.row-checkbox:checked').length;
+    var selectAll = document.getElementById('selectAll');
+
+    if (selectAll) {
+      selectAll.checked = rowBoxes.length > 0 && checked === rowBoxes.length;
+      selectAll.indeterminate = checked > 0 && checked < rowBoxes.length;
+    }
+
+    window.dispatchEvent(new CustomEvent('selection-changed', { detail: { count: checked } }));
+  }
+
+  /* ---------- Init ---------- */
+  function initTable() {
+    if (typeof jQuery === 'undefined' || !jQuery.fn.DataTable) return;
+
+    var table = jQuery('#projectsTable').DataTable({
+      pageLength: 10,
+      lengthMenu: [[10, 25, 50, -1], [10, 25, 50, 'All']],
+      order: [[5, 'desc']],
+      autoWidth: false,
+      columnDefs: [
+        { orderable: false, targets: [0, 6] },
+        { className: 'dt-center', targets: [0] }
+      ],
+      dom: '<"dt-top-row"lf>t<"dt-bottom-row"ip>',
+      language: {
+        search: '',
+        searchPlaceholder: 'Search projects...',
+        lengthMenu: '_MENU_ per page',
+        info: 'Showing _START_ to _END_ of _TOTAL_ entries',
+        infoEmpty: 'Showing 0 to 0 of 0 entries',
+        infoFiltered: '(filtered from _MAX_ total entries)',
+        zeroRecords: 'No matching projects found',
+        emptyTable: 'No projects available',
+        paginate: { previous: 'Prev', next: 'Next' }
+      },
+      drawCallback: function () {
+        updateSelection();
+      }
+    });
+
+    /* ----- Move DataTables controls into the flat toolbar slots ----- */
+    var topRow = document.querySelector('.dt-top-row');
+    var bottomRow = document.querySelector('.dt-bottom-row');
+    var topSlot = document.getElementById('dtTopSlot');
+    var bottomSlot = document.getElementById('dtBottomSlot');
+
+    if (topRow && topSlot) topSlot.appendChild(topRow);
+    if (bottomRow && bottomSlot) bottomSlot.appendChild(bottomRow);
+
+    /* ----- Select-all checkbox ----- */
+    var selectAll = document.getElementById('selectAll');
+    if (selectAll) {
+      selectAll.addEventListener('change', function () {
+        var isChecked = this.checked;
+        document.querySelectorAll('.row-checkbox').forEach(function (cb) {
+          cb.checked = isChecked;
+        });
+        updateSelection();
+      });
+    }
+
+    /* ----- Delegated change listener for row checkboxes ----- */
+    var tableEl = document.getElementById('projectsTable');
+    if (tableEl) {
+      tableEl.addEventListener('change', function (e) {
+        if (e.target && e.target.classList.contains('row-checkbox')) {
+          updateSelection();
+        }
+      });
+    }
+
+    /* ----- Initial state ----- */
+    updateSelection();
+
+    /* Expose for debugging / future use */
+    window.projectsTable = table;
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initTable);
+  } else {
+    initTable();
+  }
+})();
+</script>
+
+</body>
+</html>
