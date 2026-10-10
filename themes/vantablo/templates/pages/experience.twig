@@ -1,0 +1,15 @@
+{% extends 'layout.twig' %}
+
+{% block content %}
+  <div class="border-b border-line">
+    <div class="mx-auto max-w-content px-5 py-14">
+      <a href="/" class="font-mono text-xs text-muted transition hover:text-accent">← Beranda</a>
+      <h1 class="mt-4 font-mono text-3xl font-semibold text-ink md:text-4xl">{{ section.title }}</h1>
+      <p class="mt-2 font-mono text-xs text-muted">{{ items|length }} posisi · daftar lengkap</p>
+    </div>
+  </div>
+
+  {% include 'sections/experience.twig' with {
+    section: {id: 'experience', title: section.title, items: items, total: items|length, more_url: null, hide_title: true}
+  } only %}
+{% endblock %}

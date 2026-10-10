@@ -1,0 +1,9 @@
+{% if pagination.pages > 1 %}
+  <nav class="mt-12 flex items-center justify-center gap-2 text-sm" aria-label="Pagination">
+    <a href="?page={{ pagination.page - 1 }}"
+       class="rounded-lg border border-line px-4 py-2 {{ pagination.page <= 1 ? 'pointer-events-none opacity-40' : 'hover:bg-surface2' }}">Sebelumnya</a>
+    <span class="px-3 text-xs text-muted">{{ pagination.page }} / {{ pagination.pages }}</span>
+    <a href="?page={{ pagination.page + 1 }}"
+       class="rounded-lg border border-line px-4 py-2 {{ pagination.page >= pagination.pages ? 'pointer-events-none opacity-40' : 'hover:bg-surface2' }}">Berikutnya</a>
+  </nav>
+{% endif %}

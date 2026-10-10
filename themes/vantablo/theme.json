@@ -1,0 +1,31 @@
+{
+    "name": "Vantablo",
+    "version": "1.0.0",
+    "author": "MOPS",
+    "description": "Tema gelap untuk persona developer: aksen monospace, timeline pengalaman, dan grid proyek.",
+    "persona": "developer",
+    "requires": "0.1",
+    "templates": [
+        "layout.twig",
+        "home.twig",
+        "sections/profile.twig",
+        "sections/about.twig",
+        "sections/experience.twig",
+        "sections/projects.twig",
+        "sections/skills.twig",
+        "sections/education.twig",
+        "sections/certifications.twig",
+        "sections/awards.twig",
+        "sections/blog.twig",
+        "pages/experience.twig",
+        "pages/projects.twig",
+        "pages/skills.twig",
+        "pages/education.twig",
+        "pages/certifications.twig",
+        "pages/awards.twig",
+        "pages/project.twig",
+        "blog/index.twig",
+        "blog/show.twig",
+        "errors/404.twig"
+    ]
+}

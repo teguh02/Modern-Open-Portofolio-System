@@ -1,0 +1,8 @@
+{
+    "name": "Analytics Lite",
+    "version": "1.0.0",
+    "author": "MOPS",
+    "description": "Menghitung page view halaman publik dan menampilkan ringkasannya sebagai kartu di dashboard admin. Contoh plugin resmi: membaca hook, punya tabel sendiri, dan menambah template tanpa menyentuh core.",
+    "requires": "0.1",
+    "main": "plugin.php"
+}

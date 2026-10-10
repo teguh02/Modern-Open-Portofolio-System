@@ -1,0 +1,267 @@
+<?php
+
+declare(strict_types=1);
+
+/**
+ * MOPS CLI: migrations, admin users, theme/plugin inspection, backups.
+ *
+ *   php bin/mops <command> [options]
+ */
+
+define('MOPS', true);
+define('MOPS_ROOT', dirname(__DIR__));
+define('MOPS_CLI', true);
+
+require MOPS_ROOT . '/vendor/autoload.php';
+
+use Mops\Core\App;
+use Mops\Core\Backup;
+use Mops\Core\Config;
+use Mops\Core\Database;
+use Mops\Core\Env;
+use Mops\Core\Migrator;
+use Mops\Core\Paths;
+use Mops\Core\PluginManager;
+use Mops\Core\Settings;
+use Mops\Core\ThemeManager;
+use Throwable;
+use Mops\Repositories\UserRepository;
+
+Env::load(Paths::make('.env'));
+
+$config = Config::fromFile(Paths::make('config/config.php'));
+date_default_timezone_set((string) $config->get('app.timezone', 'UTC'));
+
+foreach (['storage', 'uploads', 'cache', 'logs', 'backups'] as $folder) {
+    Paths::ensure($config->path($folder));
+}
+
+$kernel = new App($config);
+$db = $kernel->get(Database::class);
+
+$arguments = array_slice($argv, 1);
+$command = array_shift($arguments) ?: 'help';
+$flags = parseFlags($arguments);
+
+exit(run($command, $flags, $kernel, $db));
+
+/**
+ * @param array<string, string|bool> $flags
+ */
+function run(string $command, array $flags, App $kernel, Database $db): int
+{
+    $config = $kernel->config();
+    $migrator = new Migrator($db, $config->path('migrations'));
+
+    switch ($command) {
+        case 'migrate':
+            $applied = $migrator->run();
+            out($applied === [] ? 'Tidak ada migrasi baru.' : 'Migrasi dijalankan: ' . implode(', ', $applied));
+
+            return 0;
+
+        case 'migrate:status':
+            $applied = $migrator->applied();
+            $pending = $migrator->pending();
+
+            out('Database: ' . $config->get('database.driver'));
+            out('Terpasang (' . count($applied) . '): ' . (implode(', ', $applied) ?: '-'));
+            out('Tertunda (' . count($pending) . '): ' . (implode(', ', $pending) ?: '-'));
+
+            return $pending === [] ? 0 : 1;
+
+        case 'migrate:rollback':
+            $rolled = $migrator->rollback();
+            out($rolled === [] ? 'Tidak ada batch untuk di-rollback.' : 'Rollback: ' . implode(', ', $rolled));
+
+            return 0;
+
+        case 'user:create':
+            $email = flag($flags, 'email');
+            $password = flag($flags, 'password');
+            $name = flag($flags, 'name', 'Admin');
+
+            if ($email === '' || $password === '') {
+                err('Wajib: --email=... --password=... [--name=...]');
+
+                return 1;
+            }
+
+            $users = new UserRepository($db);
+
+            if ($users->findByEmail($email) !== null) {
+                err('Email sudah terdaftar.');
+
+                return 1;
+            }
+
+            $user = $users->create(['name' => $name, 'email' => $email, 'password' => $password]);
+            out('Admin dibuat: ' . $user['email']);
+
+            return 0;
+
+        case 'user:password':
+            $email = flag($flags, 'email');
+            $password = flag($flags, 'password');
+            $users = new UserRepository($db);
+            $user = $users->findByEmail($email);
+
+            if ($user === null) {
+                err('User tidak ditemukan.');
+
+                return 1;
+            }
+
+            $users->updatePassword((int) $user['id'], $password);
+            out('Password diperbarui untuk ' . $email);
+
+            return 0;
+
+        case 'theme:list':
+            $themes = $kernel->get(ThemeManager::class);
+
+            foreach ($themes->all() as $slug => $theme) {
+                out(sprintf(
+                    '%s %s v%s — %s',
+                    $slug === $themes->activeSlug() ? '*' : '-',
+                    $slug,
+                    $theme['version'],
+                    ($theme['valid'] ?? false) ? 'ok' : 'TIDAK LENGKAP',
+                ));
+            }
+
+            return 0;
+
+        case 'plugin:list':
+            $plugins = $kernel->get(PluginManager::class);
+
+            foreach ($plugins->all() as $slug => $plugin) {
+                out(sprintf(
+                    '%s %s v%s — %s',
+                    $plugin['active'] ? '*' : '-',
+                    $slug,
+                    $plugin['version'],
+                    $plugin['valid'] ? 'ok' : 'TIDAK VALID',
+                ));
+            }
+
+            return 0;
+
+        case 'plugin:activate':
+            $slug = (string) ($arguments[0] ?? flag($flags, 'slug'));
+
+            if ($slug === '') {
+                err('Wajib: php bin/mops plugin:activate <slug>');
+
+                return 1;
+            }
+
+            try {
+                $kernel->get(PluginManager::class)->activate($slug);
+                out("Plugin diaktifkan: {$slug}");
+            } catch (Throwable $e) {
+                err($e->getMessage());
+
+                return 1;
+            }
+
+            return 0;
+
+        case 'plugin:deactivate':
+            $slug = (string) ($arguments[0] ?? flag($flags, 'slug'));
+
+            if ($slug === '') {
+                err('Wajib: php bin/mops plugin:deactivate <slug>');
+
+                return 1;
+            }
+
+            $kernel->get(PluginManager::class)->deactivate($slug);
+            out("Plugin dinonaktifkan: {$slug}");
+
+            return 0;
+
+        case 'backup':
+            $backup = $kernel->get(Backup::class);
+            $result = $backup->create(flag($flags, 'scope', 'full'));
+            out('Backup dibuat: ' . $result['filename'] . ' (' . $result['size'] . ' bytes)');
+
+            return 0;
+
+        case 'status':
+            $settings = $kernel->get(Settings::class);
+            out('MOPS ' . App::VERSION);
+            out('Terinstal: ' . ($kernel->isInstalled() ? 'ya' : 'belum'));
+            out('Database: ' . $config->get('database.driver'));
+            out('Tema aktif: ' . $settings->get('active_theme'));
+            out('Plugin aktif: ' . implode(', ', $settings->json('active_plugins', [])));
+
+            return 0;
+
+        case 'help':
+        default:
+            out('MOPS CLI ' . App::VERSION);
+            out('');
+            out('Perintah:');
+            out('  migrate                  Jalankan migrasi tertunda');
+            out('  migrate:status           Status migrasi (exit 1 kalau ada yang tertunda)');
+            out('  migrate:rollback         Rollback batch terakhir');
+            out('  user:create              --email --password [--name]');
+            out('  user:password            --email --password');
+            out('  theme:list               Daftar tema');
+            out('  plugin:list              Daftar plugin');
+            out('  plugin:activate <slug>   Aktifkan plugin');
+            out('  plugin:deactivate <slug> Nonaktifkan plugin');
+            out('  backup                   [--scope=full|database]');
+            out('  status                   Ringkasan instalasi');
+
+            return $command === 'help' ? 0 : 1;
+    }
+}
+
+/**
+ * @param array<int, string> $arguments
+ * @return array<string, string|bool>
+ */
+function parseFlags(array $arguments): array
+{
+    $flags = [];
+
+    foreach ($arguments as $argument) {
+        if (!str_starts_with($argument, '--')) {
+            continue;
+        }
+
+        $argument = substr($argument, 2);
+
+        if (str_contains($argument, '=')) {
+            [$key, $value] = explode('=', $argument, 2);
+            $flags[$key] = $value;
+            continue;
+        }
+
+        $flags[$argument] = true;
+    }
+
+    return $flags;
+}
+
+/**
+ * @param array<string, string|bool> $flags
+ */
+function flag(array $flags, string $name, string $default = ''): string
+{
+    $value = $flags[$name] ?? $default;
+
+    return is_string($value) ? $value : $default;
+}
+
+function out(string $message): void
+{
+    fwrite(STDOUT, $message . PHP_EOL);
+}
+
+function err(string $message): void
+{
+    fwrite(STDERR, $message . PHP_EOL);
+}

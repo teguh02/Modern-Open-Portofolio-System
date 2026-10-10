@@ -2,7 +2,44 @@
 
 ## Repo status
 
-No code, no `composer.json`, no git history, no build/test/lint commands yet. Sources of truth, in priority order: `plan.md` (original design doc, mixed Indonesian/English), `docs/superpowers/specs/` (approved feature specs — read the relevant spec before implementing a feature), then `prototype/` (visual reference only — if a prototype conflicts with a spec, the spec wins). Start from `docs/README.md` for an overview + folder map. When you add tooling, record the exact commands here.
+MOPS 0.1–0.4 are implemented and running: installer, auth, the full portfolio data model, projects,
+blog, media library, settings, Section Registry homepage, theme manager, plugin manager with hooks,
+backups/security (1.0 partial), and two bundled themes. Sources of truth, in priority order:
+`plan.md` (original design doc, mixed Indonesian/English), `docs/superpowers/specs/` (approved feature
+specs — read the relevant spec before implementing a feature), then `prototype/` (visual reference only
+— if a prototype conflicts with a spec, the spec wins). Start from `docs/README.md` for an overview +
+folder map, and `knowledge.md` for the current file map and gotchas.
+
+## Commands
+
+```bash
+composer install                 # PHP deps (prefix COMPOSER_ALLOW_SUPERUSER=1 when running as root)
+npm install                      # Tailwind + Alpine + self-hosted fonts
+npm run build                    # build:js then build:css -> public/assets/
+cp .env.example .env             # configuration (gitignored)
+
+php bin/mops migrate             # run migrations
+php bin/mops migrate:status      # exit 1 when a migration is pending
+php bin/mops migrate:rollback    # roll back the last batch
+php bin/mops status              # install state, active theme/plugins
+php bin/mops user:create --email=you@example.com --password=secret123 [--name="Nama"]
+php bin/mops user:password --email=you@example.com --password=newsecret
+php bin/mops theme:list          # also: plugin:list, backup [--scope=full|database]
+
+composer serve                   # dev server: php -S 127.0.0.1:8000 -t public dev/router.php
+composer lint                    # php -l over app/, bin/, tests/
+composer test                    # PHPUnit (unit + feature)
+composer check                   # lint + test
+php dev/smoke.php                # in-process end-to-end run against a throwaway database
+```
+
+First run: `cp .env.example .env`, `php bin/mops migrate`, then open `/install` (or create the admin with
+`php bin/mops user:create` and log in at `/admin/login`).
+
+Verification expectations: run `composer check` for any change under `app/`, `themes/`, `plugins/` or
+`resources/`, and `php dev/smoke.php` when touching routing, middleware, controllers or templates.
+`tests/Unit/PortabilityTest.php` enforces the architecture rules below (no driver-specific SQL in
+repositories, themes never touch the data layer, both bundled themes stay complete, no CDN references).
 
 MOPS = self-hosted portfolio CMS (WordPress-like plugins/themes, but focused on professional portfolios for developers, designers, musicians).
 
@@ -28,6 +65,12 @@ From `plan.md` — do not substitute without asking:
 - Plugins extend via hooks/events (`do_action` / `add_action` / `add_filter`) and manifests, never by editing core.
 - Blog images are files under `storage/uploads/YYYY/MM/` (DB stores the path only) — never base64.
 - Homepage is one LinkedIn-style page driven by a core **Section Registry** (`docs/superpowers/specs/2026-10-10-homepage-sections-design.md`): section order, per-section item limits, visibility (admin toggle AND auto-hide when empty), and "Lihat selengkapnya" URLs are computed in core and passed pre-sliced to the theme. Only identity + bio are enabled on fresh install. Never move limit/visibility logic into themes.
+
+## Web root and asset serving
+
+Only `public/` is web-accessible. Uploads (`storage/uploads/YYYY/MM/`) and theme assets are streamed by
+core routes (`/uploads/{path}`, `/theme/{slug}/assets/{path}`), never copied into `public/`. `dev/`
+holds the dev router and smoke script and must stay outside the document root.
 
 ## Prototypes (visual reference)
 

@@ -1,0 +1,141 @@
+{% extends 'admin/layout.twig' %}
+{% import 'admin/partials/icon.twig' as icons %}
+
+{% block content %}
+  <div class="card" x-data="bulkSelect">
+    <div class="card-header">
+      <div>
+        <h2 class="text-sm font-semibold text-ink">{{ resource_title }}</h2>
+        <p class="text-xs text-muted">{{ pagination.total }} item</p>
+      </div>
+      <div class="flex flex-wrap items-center gap-2">
+        <form action="/admin/{{ route_base }}" method="get" class="flex items-center gap-2">
+          <input type="search" name="q" value="{{ search }}" class="field w-44" placeholder="Search…" aria-label="Search {{ resource_title }}">
+          <button type="submit" class="btn-secondary btn-sm">{{ icons.svg('search', 'h-4 w-4') }}</button>
+        </form>
+        <a href="/admin/{{ route_base }}/create" class="btn-primary btn-sm">
+          {{ icons.svg('plus', 'h-4 w-4') }} New
+        </a>
+      </div>
+    </div>
+
+    <form action="/admin/{{ route_base }}/bulk" method="post" x-ref="bulk_form">
+      {{ csrf_field() }}
+
+      <div class="flex flex-wrap items-center gap-2 border-b border-line bg-surface2 px-5 py-3">
+        <label class="flex items-center gap-2 text-xs text-muted">
+          <input type="checkbox" x-model="all" @change="toggleAll()" class="rounded border-line">
+          Select all
+        </label>
+        <select name="action" class="field w-40 py-1.5 text-xs" aria-label="Bulk action">
+          <option value="delete">Delete selected</option>
+        </select>
+        <button type="button" class="btn-secondary btn-sm" @click="apply()">Apply</button>
+        <span class="text-xs text-muted" x-text="ids.length + ' selected'"></span>
+      </div>
+
+      <div class="table-wrap">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th class="w-10"></th>
+              {% for column in columns %}
+                <th>
+                  {% if column.sortable|default(false) %}
+                    {% set nextDir = (sort == column.name and dir == 'asc') ? 'desc' : 'asc' %}
+                    <a href="?sort={{ column.name }}&dir={{ nextDir }}{{ search ? '&q=' ~ search|url_encode : '' }}" class="hover:text-brand">{{ column.label }}</a>
+                  {% else %}
+                    {{ column.label }}
+                  {% endif %}
+                </th>
+              {% endfor %}
+              <th class="w-40 text-right">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for row in items %}
+              <tr>
+                <td>
+                  <input type="checkbox" name="ids[]" value="{{ row.id }}" x-model="ids" @change="sync()"
+                         class="rounded border-line" aria-label="Select {{ row.id }}">
+                </td>
+
+                {% for column in columns %}
+                  {% set value = row[column.name]|default(null) %}
+                  <td>
+                    {% if column.type|default('text') == 'badge' %}
+                      {% if column.name == 'is_current' %}
+                        <span class="pill {{ value ? 'bg-green-100 text-green-700' : 'bg-slate-100 text-slate-600' }}">
+                          {{ value ? 'Current' : 'Ended' }}
+                        </span>
+                      {% elseif column.name == 'is_expired' %}
+                        <span class="pill {{ value ? 'bg-amber-100 text-amber-700' : 'bg-green-100 text-green-700' }}">
+                          {{ value ? 'Expired' : 'Active' }}
+                        </span>
+                      {% else %}
+                        {% set isPublished = value == 'published' %}
+                        <span class="pill {{ isPublished ? 'bg-green-100 text-green-700' : 'bg-amber-100 text-amber-700' }}">
+                          {{ value|capitalize }}
+                        </span>
+                      {% endif %}
+                    {% elseif column.type|default('text') == 'boolean' %}
+                      <span class="pill {{ value ? 'bg-green-100 text-green-700' : 'bg-slate-100 text-slate-600' }}">
+                        {{ value ? 'Yes' : 'No' }}
+                      </span>
+                    {% elseif column.type|default('text') == 'progress' %}
+                      <div class="flex items-center gap-2">
+                        <div class="h-1.5 w-24 overflow-hidden rounded-full bg-surface2">
+                          <div class="h-full rounded-full bg-brand" style="width: {{ value }}%"></div>
+                        </div>
+                        <span class="text-xs text-muted">{{ value }}%</span>
+                      </div>
+                    {% elseif column.name == 'title' %}
+                      <span class="font-medium text-ink">{{ value }}</span>
+                    {% else %}
+                      {{ value }}
+                    {% endif %}
+                  </td>
+                {% endfor %}
+
+                <td class="text-right">
+                  <div class="inline-flex items-center gap-1">
+                    {% if can_toggle %}
+                      <form action="/admin/{{ route_base }}/{{ row.id }}/toggle" method="post">
+                        {{ csrf_field() }}
+                        <button type="submit" class="btn-text btn-sm" title="Toggle status">{{ icons.svg('eye', 'h-4 w-4') }}</button>
+                      </form>
+                    {% endif %}
+                    <a href="/admin/{{ route_base }}/{{ row.id }}/edit" class="btn-text btn-sm" title="Edit">
+                      {{ icons.svg('edit', 'h-4 w-4') }}
+                    </a>
+                    <button type="submit" form="del-{{ row.id }}" class="btn-text btn-sm text-red-600 hover:bg-red-50"
+                            title="Delete" x-data="confirmButton('Hapus item ini?')" @click="ask($event)">
+                      {{ icons.svg('trash', 'h-4 w-4') }}
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            {% else %}
+              <tr>
+                <td colspan="{{ columns|length + 2 }}" class="py-10 text-center text-muted">
+                  Belum ada data{{ search ? ' untuk pencarian "' ~ search ~ '"' : '' }}.
+                  <a href="/admin/{{ route_base }}/create" class="t-link">Tambah sekarang</a>
+                </td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </form>
+
+    {# Delete forms live outside the bulk form (nested forms are invalid HTML);
+       each delete button targets its own form through the form="" attribute. #}
+    {% for row in items %}
+      <form id="del-{{ row.id }}" action="/admin/{{ route_base }}/{{ row.id }}/delete" method="post" class="hidden">
+        {{ csrf_field() }}
+      </form>
+    {% endfor %}
+
+    {% include 'admin/partials/pagination.twig' with { pagination: pagination, search: search } %}
+  </div>
+{% endblock %}

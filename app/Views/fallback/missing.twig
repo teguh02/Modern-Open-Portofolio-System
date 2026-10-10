@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="{{ site.locale|default('id') }}">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{{ page.title|default(site.name) }}</title>
+  <link rel="stylesheet" href="{{ asset('css/app.css') }}">
+</head>
+<body class="bg-bg text-ink">
+  <main class="mx-auto flex max-w-content flex-col items-start gap-4 px-6 py-20">
+    <p class="pill bg-amber-100 text-amber-700">template hilang</p>
+    <h1 class="text-2xl font-semibold">{{ site.name }}</h1>
+    <p class="text-sm text-muted">
+      Tema aktif (<code>{{ theme.slug }}</code>) tidak menyediakan
+      <code>{{ missing_template|default('template ini') }}</code>.
+    </p>
+    <p class="text-sm text-muted">
+      Pilih tema lain di <a class="t-link" href="/admin/themes">Admin → Themes</a>, atau lengkapi template tema di
+      <code>themes/{{ theme.slug }}/templates/</code>.
+    </p>
+  </main>
+</body>
+</html>

@@ -1,0 +1,49 @@
+{% set grouped = {} %}
+{% for item in section.items %}
+  {% set key = item.category ?: 'Lainnya' %}
+  {% set grouped = grouped|merge({(key): (grouped[key]|default([]))|merge([item])}) %}
+{% endfor %}
+
+<section id="keahlian" class="border-b border-line py-16 md:py-20">
+  <div class="mx-auto max-w-content px-5">
+    <div class="flex flex-wrap items-end justify-between gap-4">
+      <div>
+        <p class="font-mono text-xs uppercase tracking-widest text-accent">04</p>
+        {% if not section.hide_title|default(false) %}
+          <h2 class="mt-1 font-mono text-2xl font-semibold text-ink">{{ section.title }}</h2>
+        {% endif %}
+        <p class="mt-1 font-mono text-xs text-muted">{{ section.total }} keahlian</p>
+      </div>
+      {% if section.more_url %}
+        <a href="{{ section.more_url }}" class="font-mono text-sm text-accent transition hover:opacity-80">Lihat selengkapnya →</a>
+      {% endif %}
+    </div>
+
+    <div class="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+      {% for category, items in grouped %}
+        <div class="rounded-xl border border-line bg-surface p-5">
+          <h3 class="font-mono text-xs uppercase tracking-widest text-accent">{{ category }}</h3>
+          <ul class="mt-4 space-y-3">
+            {% for skill in items %}
+              <li>
+                <div class="flex items-baseline justify-between gap-3">
+                  <span class="text-sm text-ink">{{ skill.name }}</span>
+                  <span class="font-mono text-[11px] text-muted">
+                    {{ skill.years ? skill.years ~ 'thn' : skill.level ~ '%' }}
+                  </span>
+                </div>
+                <div class="mt-1.5 h-1 w-full overflow-hidden rounded-full bg-surface2">
+                  <div class="h-full rounded-full bg-brand" style="width: {{ skill.level }}%"></div>
+                </div>
+              </li>
+            {% endfor %}
+          </ul>
+        </div>
+      {% else %}
+        <p class="rounded-xl border border-dashed border-line p-6 text-center font-mono text-sm text-muted sm:col-span-2 lg:col-span-3">
+          Belum ada keahlian.
+        </p>
+      {% endfor %}
+    </div>
+  </div>
+</section>

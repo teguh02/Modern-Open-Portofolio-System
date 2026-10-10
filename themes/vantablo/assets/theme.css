@@ -1,0 +1,50 @@
+/* Vantablo — dark developer theme.
+   Palette taken from prototype/html/vantablo (base #0A0A0B, accent #7C6CFF, lime #C6F24E). */
+:root {
+  --c-bg: 10 10 11;
+  --c-surface: 17 17 19;
+  --c-surface-2: 23 23 27;
+  --c-border: 38 38 44;
+  --c-ink: 226 232 240;
+  --c-muted: 148 163 184;
+  --c-brand: 124 108 255;
+  --c-brand-ink: 255 255 255;
+  --c-accent: 198 242 78;
+}
+
+[x-cloak] {
+  display: none !important;
+}
+
+html {
+  scroll-behavior: smooth;
+  -webkit-tap-highlight-color: transparent;
+}
+
+body {
+  background-image:
+    radial-gradient(circle at 15% -10%, rgba(124, 108, 255, 0.1), transparent 45%),
+    radial-gradient(circle at 90% 5%, rgba(198, 242, 78, 0.05), transparent 40%);
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+}
+
+::selection {
+  background: rgb(124 108 255 / 0.3);
+  color: #fff;
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+::-webkit-scrollbar-track {
+  background: #0a0a0b;
+}
+::-webkit-scrollbar-thumb {
+  background: #26262c;
+  border-radius: 999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #35353d;
+}

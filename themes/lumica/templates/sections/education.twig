@@ -1,0 +1,30 @@
+<section id="pendidikan" class="border-b border-line py-16 md:py-24">
+  <div class="mx-auto max-w-content px-6">
+    <div class="flex flex-wrap items-end justify-between gap-4">
+      {% if not section.hide_title|default(false) %}
+        <h2 class="font-serif text-2xl tracking-tight text-ink md:text-3xl">{{ section.title }}</h2>
+      {% endif %}
+      {% if section.more_url %}
+        <a href="{{ section.more_url }}" class="lumica-underline text-sm text-muted">Lihat selengkapnya</a>
+      {% endif %}
+    </div>
+
+    <div class="mt-12 divide-y divide-line border-t border-line">
+      {% for item in section.items %}
+        <div class="grid gap-x-8 gap-y-2 py-7 md:grid-cols-12">
+          <p class="text-sm text-muted md:col-span-3">{{ item.period }}</p>
+          <div class="md:col-span-9">
+            <h3 class="font-serif text-lg leading-snug text-ink">{{ item.school }}</h3>
+            <p class="mt-1 text-sm text-muted">
+              {{ item.degree }}{% if item.field_of_study %} · {{ item.field_of_study }}{% endif %}
+              {% if item.grade %} · {{ item.grade }}{% endif %}
+            </p>
+            {% if item.description %}<p class="mt-2 text-sm text-muted">{{ item.description }}</p>{% endif %}
+          </div>
+        </div>
+      {% else %}
+        <p class="py-8 text-sm text-muted">Belum ada pendidikan.</p>
+      {% endfor %}
+    </div>
+  </div>
+</section>

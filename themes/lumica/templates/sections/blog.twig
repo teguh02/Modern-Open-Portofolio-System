@@ -1,0 +1,30 @@
+<section id="tulisan" class="border-b border-line py-16 md:py-24">
+  <div class="mx-auto max-w-content px-6">
+    <div class="flex flex-wrap items-end justify-between gap-4">
+      {% if not section.hide_title|default(false) %}
+        <h2 class="font-serif text-2xl tracking-tight text-ink md:text-3xl">{{ section.title }}</h2>
+      {% endif %}
+      {% if section.more_url %}
+        <a href="{{ section.more_url }}" class="lumica-underline text-sm text-muted">Lihat selengkapnya</a>
+      {% endif %}
+    </div>
+
+    <div class="mt-12 divide-y divide-line border-t border-line">
+      {% for post in section.items %}
+        <article class="grid gap-x-8 gap-y-2 py-7 md:grid-cols-12">
+          <p class="text-xs uppercase tracking-wider text-muted md:col-span-3">
+            {{ post.published_label }}{% if post.reading_time %} · {{ post.reading_time }} menit{% endif %}
+          </p>
+          <div class="md:col-span-9">
+            <h3 class="font-serif text-xl leading-snug text-ink">
+              <a href="/blog/{{ post.slug }}" class="transition-colors hover:text-brand">{{ post.title }}</a>
+            </h3>
+            <p class="mt-2 text-sm leading-relaxed text-muted">{{ post.excerpt_text }}</p>
+          </div>
+        </article>
+      {% else %}
+        <p class="py-8 text-sm text-muted">Belum ada tulisan.</p>
+      {% endfor %}
+    </div>
+  </div>
+</section>

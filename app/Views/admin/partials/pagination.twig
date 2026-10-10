@@ -1,0 +1,21 @@
+{% if pagination.pages > 1 %}
+  {% set query = search is defined and search ? '&q=' ~ search|url_encode : '' %}
+  <div class="flex flex-wrap items-center justify-between gap-3 border-t border-line px-5 py-4 text-sm text-muted">
+    <span>
+      Menampilkan {{ pagination.items_from|default((pagination.page - 1) * pagination.per_page + 1) }}–{{ pagination.items_to|default(min(pagination.page * pagination.per_page, pagination.total)) }}
+      dari {{ pagination.total }}
+    </span>
+    <nav class="flex items-center gap-1" aria-label="Pagination">
+      <a href="?page={{ pagination.page - 1 }}{{ query }}"
+         class="rounded-md border border-line px-3 py-1.5 {{ pagination.page <= 1 ? 'pointer-events-none opacity-40' : 'hover:bg-surface2' }}">Prev</a>
+
+      {% for p in 1..pagination.pages %}
+        <a href="?page={{ p }}{{ query }}"
+           class="rounded-md border px-3 py-1.5 {{ p == pagination.page ? 'border-brand bg-brand text-brandink' : 'border-line hover:bg-surface2' }}">{{ p }}</a>
+      {% endfor %}
+
+      <a href="?page={{ pagination.page + 1 }}{{ query }}"
+         class="rounded-md border border-line px-3 py-1.5 {{ pagination.page >= pagination.pages ? 'pointer-events-none opacity-40' : 'hover:bg-surface2' }}">Next</a>
+    </nav>
+  </div>
+{% endif %}

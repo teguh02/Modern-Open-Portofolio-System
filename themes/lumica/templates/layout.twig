@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="{{ site.locale|default('id') }}" class="scroll-smooth">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}{{ page.title|default(site.name) }}{% if page.title is not defined and site.tagline %} — {{ site.tagline }}{% endif %}{% endblock %}</title>
+  {% if page.meta_description|default('') %}<meta name="description" content="{{ page.meta_description }}">{% endif %}
+  <meta property="og:title" content="{{ page.title|default(site.name) }}">
+  <meta property="og:type" content="website">
+  {% if page.canonical|default('') %}<link rel="canonical" href="{{ page.canonical }}">{% endif %}
+  <link rel="stylesheet" href="{{ asset('css/app.css') }}">
+  <link rel="stylesheet" href="{{ theme_asset('theme.css') }}">
+  <script defer src="{{ asset('js/app.js') }}"></script>
+
+  {# Injeksi plugin #1 (zona tema): head, sebelum </head>. #}
+  {{ render_hook('theme_head', { path: current_path, page: page|default({}), user: auth_user }) }}
+</head>
+
+<body class="min-h-screen bg-bg font-sans text-ink antialiased">
+{% set zone_context = { path: current_path, page: page|default({}), site: site, user: auth_user } %}
+{# Injeksi plugin #2 (zona tema): tepat setelah <body> dibuka. #}
+{{ render_hook('theme_body_open', zone_context) }}
+
+{% set profile = portfolio.profile|default({}) %}
+
+<header class="sticky top-0 z-50 border-b border-line bg-bg/85 backdrop-blur-md" x-data="drawer">
+  <div class="mx-auto max-w-content px-6">
+    <div class="flex h-16 items-center justify-between">
+      <a href="/" class="font-serif text-xl tracking-tight text-ink transition-colors hover:text-brand">{{ site.name }}</a>
+
+      <nav class="hidden items-center gap-9 text-sm text-muted md:flex">
+        <a href="/" class="transition-colors hover:text-brand">Beranda</a>
+        {% for item in nav %}
+          <a href="{{ item.url }}" class="transition-colors hover:text-brand">{{ item.title }}</a>
+        {% endfor %}
+        {% if profile.email %}
+          <a href="mailto:{{ profile.email }}" class="transition-colors hover:text-brand">Kontak</a>
+        {% endif %}
+      </nav>
+
+      <button type="button" class="inline-flex h-10 w-10 items-center justify-center rounded-md text-muted transition-colors hover:text-brand md:hidden"
+              @click="toggle()" :aria-expanded="open" aria-label="Buka menu navigasi">
+        <svg x-show="!open" class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+          <path stroke-linecap="round" d="M3.75 6.75h16.5M3.75 12h16.5M3.75 17.25h16.5"/>
+        </svg>
+        <svg x-show="open" x-cloak class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+          <path stroke-linecap="round" d="M6 18 18 6M6 6l12 12"/>
+        </svg>
+      </button>
+    </div>
+  </div>
+
+  <div x-show="open" x-cloak class="border-t border-line bg-bg/95 backdrop-blur-md md:hidden">
+    <nav class="mx-auto flex max-w-content flex-col px-6 py-3 text-sm">
+      <a href="/" @click="close()" class="py-3 text-muted transition-colors hover:text-brand">Beranda</a>
+      {% for item in nav %}
+        <a href="{{ item.url }}" @click="close()" class="py-3 text-muted transition-colors hover:text-brand">{{ item.title }}</a>
+      {% endfor %}
+    </nav>
+  </div>
+</header>
+
+<main>
+  {# Injeksi plugin: awal konten utama, di semua halaman publik. #}
+  {{ render_hook('main_before_content', zone_context) }}
+  {% block content %}{% endblock %}
+  {# Injeksi plugin: akhir konten utama, di semua halaman publik. #}
+  {{ render_hook('main_after_content', zone_context) }}
+</main>
+
+<footer class="mt-8 border-t border-line py-12">
+  <div class="mx-auto flex max-w-content flex-col gap-4 px-6 text-sm text-muted sm:flex-row sm:items-center sm:justify-between">
+    <p class="font-serif text-base text-ink">{{ site.name }}</p>
+    <div class="flex flex-wrap items-center gap-5 text-xs">
+      {% for link in profile.social_links|default([]) %}
+        <a href="{{ link.url }}" class="transition-colors hover:text-brand" rel="noopener">{{ link.label ?: link.url }}</a>
+      {% endfor %}
+      {% if profile.email %}<a href="mailto:{{ profile.email }}" class="transition-colors hover:text-brand">{{ profile.email }}</a>{% endif %}
+    </div>
+    <p class="text-xs">© {{ 'now'|date('Y') }} · Powered by MOPS</p>
+  </div>
+</footer>
+
+{# Injeksi plugin #3 (zona tema): footer dokumen, setelah elemen <footer>. #}
+{{ render_hook('theme_footer', zone_context) }}
+
+</body>
+</html>

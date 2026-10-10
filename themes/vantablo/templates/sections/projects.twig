@@ -1,0 +1,60 @@
+<section id="proyek" class="border-b border-line py-16 md:py-20">
+  <div class="mx-auto max-w-content px-5">
+    <div class="flex flex-wrap items-end justify-between gap-4">
+      <div>
+        <p class="font-mono text-xs uppercase tracking-widest text-accent">03</p>
+        {% if not section.hide_title|default(false) %}
+          <h2 class="mt-1 font-mono text-2xl font-semibold text-ink">{{ section.title }}</h2>
+        {% endif %}
+        <p class="mt-1 font-mono text-xs text-muted">{{ section.total }} proyek</p>
+      </div>
+      {% if section.more_url %}
+        <a href="{{ section.more_url }}" class="font-mono text-sm text-accent transition hover:opacity-80">Lihat selengkapnya →</a>
+      {% endif %}
+    </div>
+
+    <div class="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+      {% for item in section.items %}
+        <article class="group flex flex-col overflow-hidden rounded-xl border border-line bg-surface transition hover:border-brand/50">
+          <a href="/projects/{{ item.slug }}" class="block">
+            {% if item.thumbnail %}
+              <img src="{{ upload_url(item.thumbnail) }}" alt="{{ item.title }}" class="h-40 w-full object-cover" loading="lazy">
+            {% else %}
+              <div class="grid h-40 place-items-center bg-surface2 font-mono text-xs uppercase tracking-widest text-muted">
+                {{ item.role ?: 'project' }}
+              </div>
+            {% endif %}
+          </a>
+          <div class="flex flex-1 flex-col p-5">
+            {% if item.featured %}
+              <span class="mb-2 inline-flex w-fit items-center rounded-full border border-accent/30 bg-accent/10 px-2 py-0.5 font-mono text-[11px] text-accent">unggulan</span>
+            {% endif %}
+            <h3 class="font-mono text-base font-semibold text-ink">
+              <a href="/projects/{{ item.slug }}" class="transition group-hover:text-accent">{{ item.title }}</a>
+            </h3>
+            {% if item.period %}<p class="mt-1 font-mono text-xs text-muted">{{ item.period }}</p>{% endif %}
+            {% if item.summary_text %}<p class="mt-3 text-sm leading-relaxed text-muted">{{ item.summary_text }}</p>{% endif %}
+
+            {% if item.tech_stack|length > 0 %}
+              <div class="mt-4 flex flex-wrap gap-1.5">
+                {% for tech in item.tech_stack|slice(0, 5) %}
+                  <span class="rounded border border-line bg-surface2 px-1.5 py-0.5 font-mono text-[11px] text-muted">{{ tech }}</span>
+                {% endfor %}
+              </div>
+            {% endif %}
+
+            <div class="mt-5 flex items-center gap-4 border-t border-line pt-4 font-mono text-xs">
+              <a href="/projects/{{ item.slug }}" class="text-accent transition hover:opacity-80">Detail</a>
+              {% if item.project_url %}<a href="{{ item.project_url }}" rel="noopener" class="text-muted transition hover:text-ink">Live</a>{% endif %}
+              {% if item.repo_url %}<a href="{{ item.repo_url }}" rel="noopener" class="text-muted transition hover:text-ink">Repo</a>{% endif %}
+            </div>
+          </div>
+        </article>
+      {% else %}
+        <p class="rounded-xl border border-dashed border-line p-6 text-center font-mono text-sm text-muted sm:col-span-2 lg:col-span-3">
+          Belum ada proyek yang dipublikasikan.
+        </p>
+      {% endfor %}
+    </div>
+  </div>
+</section>

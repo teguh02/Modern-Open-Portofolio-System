@@ -1,0 +1,58 @@
+{% extends 'layout.twig' %}
+
+{% block content %}
+<article class="mx-auto max-w-content px-6 py-16">
+  <a href="/projects" class="text-xs uppercase tracking-wider text-muted transition-colors hover:text-brand">← Semua proyek</a>
+
+  <header class="mt-8 max-w-2xl">
+    <p class="text-xs uppercase tracking-wider text-muted">
+      {{ project.role ?: 'Proyek' }}{% if project.period %} · {{ project.period }}{% endif %}
+    </p>
+    <h1 class="mt-3 font-serif text-4xl leading-tight tracking-tight text-ink md:text-5xl">{{ project.title }}</h1>
+    {% if project.summary_text %}
+      <p class="mt-5 text-lg leading-relaxed text-muted">{{ project.summary_text }}</p>
+    {% endif %}
+    <div class="mt-6 flex flex-wrap gap-3 text-sm">
+      {% if project.project_url %}<a href="{{ project.project_url }}" rel="noopener" class="rounded-lg bg-brand px-4 py-2 text-brandink">Kunjungi proyek</a>{% endif %}
+      {% if project.repo_url %}<a href="{{ project.repo_url }}" rel="noopener" class="rounded-lg border border-line px-4 py-2 text-muted hover:text-ink">Repositori</a>{% endif %}
+    </div>
+  </header>
+
+  {% if project.thumbnail %}
+    <img src="{{ upload_url(project.thumbnail) }}" alt="{{ project.title }}" class="mt-10 w-full rounded-2xl border border-line object-cover">
+  {% endif %}
+
+  <dl class="mt-10 grid grid-cols-2 gap-6 border-y border-line py-8 text-sm sm:grid-cols-4">
+    {% if project.client %}<div><dt class="text-xs uppercase tracking-wider text-muted">Klien</dt><dd class="mt-1 text-ink">{{ project.client }}</dd></div>{% endif %}
+    {% if project.role %}<div><dt class="text-xs uppercase tracking-wider text-muted">Peran</dt><dd class="mt-1 text-ink">{{ project.role }}</dd></div>{% endif %}
+    {% if project.period %}<div><dt class="text-xs uppercase tracking-wider text-muted">Periode</dt><dd class="mt-1 text-ink">{{ project.period }}</dd></div>{% endif %}
+    {% if project.tech_stack|length > 0 %}<div><dt class="text-xs uppercase tracking-wider text-muted">Stack</dt><dd class="mt-1 text-ink">{{ project.tech_stack|join(', ') }}</dd></div>{% endif %}
+  </dl>
+
+  {% if project.description %}
+    <div class="t-prose mt-10 max-w-2xl">{{ project.description|clean_html }}</div>
+  {% endif %}
+
+  {% if project.gallery|length > 0 %}
+    <div class="mt-12 grid gap-6 sm:grid-cols-2">
+      {% for image in project.gallery %}
+        <img src="{{ upload_url(image) }}" alt="{{ project.title }}" class="w-full rounded-xl border border-line object-cover" loading="lazy">
+      {% endfor %}
+    </div>
+  {% endif %}
+
+  {% if related|default([])|length > 0 %}
+    <section class="mt-16 border-t border-line pt-10">
+      <h2 class="font-serif text-xl text-ink">Proyek lain</h2>
+      <div class="mt-6 grid gap-8 sm:grid-cols-3">
+        {% for item in related|slice(0, 3) %}
+          <a href="/projects/{{ item.slug }}" class="group">
+            <p class="font-serif text-lg text-ink transition-colors group-hover:text-brand">{{ item.title }}</p>
+            <p class="mt-1 text-sm text-muted">{{ item.summary_text }}</p>
+          </a>
+        {% endfor %}
+      </div>
+    </section>
+  {% endif %}
+</article>
+{% endblock %}

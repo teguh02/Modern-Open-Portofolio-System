@@ -1,0 +1,40 @@
+{% import 'admin/partials/icon.twig' as icons %}
+
+<div class="flex h-16 items-center gap-3 border-b border-white/10 px-5">
+  <span class="grid h-9 w-9 place-items-center rounded-lg bg-brand font-semibold text-brandink">M</span>
+  <div class="leading-tight">
+    <p class="text-sm font-semibold text-white">MOPS Admin</p>
+    <p class="text-[11px] text-slate-400">{{ site.name }}</p>
+  </div>
+</div>
+
+<nav class="flex-1 overflow-y-auto px-3 py-2">
+  {% for group in nav %}
+    <p class="nav-group-label">{{ group.label }}</p>
+    {% for item in group.items %}
+      <a href="{{ item.href }}" class="nav-link {{ item.active ? 'nav-link-active' : '' }}">
+        {{ icons.svg(item.icon, 'h-[18px] w-[18px] shrink-0') }}
+        <span class="truncate">{{ item.label }}</span>
+      </a>
+    {% endfor %}
+  {% endfor %}
+</nav>
+
+<div class="border-t border-white/10 p-4">
+  <div class="flex items-center gap-3">
+    <span class="grid h-9 w-9 place-items-center rounded-full bg-white/10 text-sm font-semibold text-white">
+      {{ current_user.initial|default('A') }}
+    </span>
+    <div class="min-w-0 flex-1 leading-tight">
+      <p class="truncate text-sm text-white">{{ current_user.name|default('Admin') }}</p>
+      <p class="truncate text-[11px] text-slate-400">{{ current_user.email|default('') }}</p>
+    </div>
+  </div>
+  <form action="/admin/logout" method="post" class="mt-3">
+    {{ csrf_field() }}
+    <button type="submit" class="nav-link w-full">
+      {{ icons.svg('logout', 'h-[18px] w-[18px]') }}
+      <span>Logout</span>
+    </button>
+  </form>
+</div>

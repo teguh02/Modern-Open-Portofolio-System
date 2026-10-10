@@ -1,0 +1,63 @@
+{% set view = section.items|first|default(profile) %}
+{% set initials = view.full_name ? view.full_name|split(' ')|slice(0, 2)|map(w => w|slice(0, 1))|join('') : 'MO' %}
+
+<section id="beranda" class="border-b border-line">
+  <div class="mx-auto max-w-content px-6 pb-20 pt-20 text-center md:pt-28">
+    <div class="mx-auto grid h-32 w-32 place-items-center overflow-hidden rounded-full bg-surface2 ring-1 ring-line md:h-36 md:w-36">
+      {% if view.photo %}
+        <img src="{{ upload_url(view.photo) }}" alt="{{ view.full_name }}" class="h-full w-full object-cover">
+      {% else %}
+        <span class="font-serif text-3xl text-brand md:text-4xl">{{ initials|upper }}</span>
+      {% endif %}
+    </div>
+
+    <h1 class="mt-8 font-serif text-4xl tracking-tight text-ink md:text-5xl">{{ view.full_name ?: site.name }}</h1>
+
+    {% if view.headline %}
+      <p class="mt-3 text-base text-muted md:text-lg">{{ view.headline }}</p>
+    {% endif %}
+    {% if view.location %}
+      <p class="mt-1 text-sm text-muted">{{ view.location }}</p>
+    {% endif %}
+
+    {% if view.availability %}
+      <p class="mt-5 inline-flex items-center gap-2 rounded-full border border-line bg-surface px-4 py-1.5 text-xs text-muted">
+        <span class="h-1.5 w-1.5 rounded-full bg-accent"></span>{{ view.availability }}
+      </p>
+    {% endif %}
+
+    {% if view.short_bio %}
+      <p class="mx-auto mt-7 max-w-xl text-base leading-relaxed text-muted">{{ view.short_bio }}</p>
+    {% endif %}
+
+    {% if view.stats|default([])|length > 0 %}
+      <dl class="mx-auto mt-12 grid max-w-2xl grid-cols-2 gap-y-8 border-t border-line pt-10 sm:grid-cols-4">
+        {% for stat in view.stats %}
+          <div>
+            <dd class="font-serif text-3xl text-ink">{{ stat.value }}</dd>
+            <dt class="mt-1 text-xs uppercase tracking-wider text-muted">{{ stat.label }}</dt>
+          </div>
+        {% endfor %}
+      </dl>
+    {% endif %}
+
+    {% if view.focus_areas|default([])|length > 0 %}
+      <div class="mt-10 flex flex-wrap justify-center gap-2">
+        {% for area in view.focus_areas %}
+          <span class="rounded-full border border-line px-3 py-1 text-xs text-muted">
+            {{ area is iterable ? area.label|default('') : area }}
+          </span>
+        {% endfor %}
+      </div>
+    {% endif %}
+
+    <div class="mt-9 flex flex-wrap items-center justify-center gap-3 text-sm">
+      {% for link in view.social_links|default([]) %}
+        <a href="{{ link.url }}" rel="noopener" class="lumica-underline text-ink">{{ link.label ?: link.url }}</a>
+      {% endfor %}
+      {% if view.resume_file %}
+        <a href="{{ upload_url(view.resume_file) }}" class="rounded-lg bg-brand px-4 py-2 text-brandink">Unduh resume</a>
+      {% endif %}
+    </div>
+  </div>
+</section>

@@ -1,0 +1,38 @@
+<section id="proyek" class="border-b border-line py-16 md:py-24">
+  <div class="mx-auto max-w-content px-6">
+    <div class="flex flex-wrap items-end justify-between gap-4">
+      {% if not section.hide_title|default(false) %}
+        <h2 class="font-serif text-2xl tracking-tight text-ink md:text-3xl">{{ section.title }}</h2>
+      {% endif %}
+      {% if section.more_url %}
+        <a href="{{ section.more_url }}" class="lumica-underline text-sm text-muted">Lihat selengkapnya</a>
+      {% endif %}
+    </div>
+
+    <div class="mt-14 grid gap-x-8 gap-y-14 sm:grid-cols-2">
+      {% for item in section.items %}
+        <article class="group">
+          <a href="/projects/{{ item.slug }}" class="block overflow-hidden rounded-xl border border-line bg-surface">
+            {% if item.thumbnail %}
+              <img src="{{ upload_url(item.thumbnail) }}" alt="{{ item.title }}" class="h-56 w-full object-cover transition duration-500 group-hover:scale-[1.02]" loading="lazy">
+            {% else %}
+              <div class="grid h-56 place-items-center bg-surface2 font-serif text-3xl text-brand/60">{{ item.title|slice(0, 1)|upper }}</div>
+            {% endif %}
+          </a>
+          <p class="mt-4 text-xs uppercase tracking-wider text-muted">
+            {{ item.role ?: 'Proyek' }}{% if item.period %} · {{ item.period }}{% endif %}
+          </p>
+          <h3 class="mt-2 font-serif text-xl leading-snug text-ink">
+            <a href="/projects/{{ item.slug }}" class="transition-colors hover:text-brand">{{ item.title }}</a>
+          </h3>
+          {% if item.summary_text %}<p class="mt-2 text-sm leading-relaxed text-muted">{{ item.summary_text }}</p>{% endif %}
+          {% if item.tech_stack|length > 0 %}
+            <p class="mt-3 text-xs text-muted">{{ item.tech_stack|join(' · ') }}</p>
+          {% endif %}
+        </article>
+      {% else %}
+        <p class="text-sm text-muted sm:col-span-2">Belum ada proyek yang dipublikasikan.</p>
+      {% endfor %}
+    </div>
+  </div>
+</section>

@@ -1,0 +1,196 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Self-hosted fonts (no CDN at runtime, see the locked stack). */
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('/assets/fonts/inter-400.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url('/assets/fonts/inter-600.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Fraunces';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url('/assets/fonts/fraunces-500.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Fraunces';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url('/assets/fonts/fraunces-600.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'JetBrains Mono';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('/assets/fonts/jetbrains-mono-400.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'JetBrains Mono';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url('/assets/fonts/jetbrains-mono-500.woff2') format('woff2');
+}
+
+/* Default tokens = admin palette (flat material, indigo primary).
+   Public themes override these in themes/<slug>/assets/theme.css. */
+@layer base {
+  :root {
+    --c-bg: 245 245 245;
+    --c-surface: 255 255 255;
+    --c-surface-2: 249 250 251;
+    --c-border: 229 231 235;
+    --c-ink: 17 24 39;
+    --c-muted: 107 114 128;
+    --c-brand: 79 70 229;
+    --c-brand-ink: 255 255 255;
+    --c-accent: 14 165 233;
+  }
+
+  body {
+    @apply font-sans antialiased;
+  }
+}
+
+@layer components {
+  /* Shared admin building blocks (see docs/admin-ui.md). */
+  .card {
+    @apply rounded-lg border border-line bg-surface shadow-[0_1px_3px_rgba(16,24,40,.08)];
+  }
+  .card-header {
+    @apply flex items-center justify-between border-b border-line px-5 py-4;
+  }
+  .card-body {
+    @apply px-5 py-4;
+  }
+  .btn {
+    @apply inline-flex items-center justify-center gap-2 rounded-lg px-4 py-2 text-sm font-medium transition focus:outline-none focus:ring-2 focus:ring-brand/40 disabled:cursor-not-allowed disabled:opacity-50;
+  }
+  .btn-primary {
+    @apply btn bg-brand text-brandink hover:brightness-110;
+  }
+  .btn-secondary {
+    @apply btn border border-line bg-surface text-ink hover:bg-surface2;
+  }
+  .btn-danger {
+    @apply btn bg-red-600 text-white hover:bg-red-700;
+  }
+  .btn-text {
+    @apply btn px-2 text-brand hover:bg-brand/10;
+  }
+  .btn-sm {
+    @apply px-3 py-1.5 text-xs;
+  }
+  .btn-lg {
+    @apply px-5 py-2.5 text-base;
+  }
+  .field {
+    @apply w-full rounded-lg border border-line bg-surface px-3 py-2 text-sm text-ink placeholder:text-muted focus:border-brand focus:outline-none focus:ring-2 focus:ring-brand/20 disabled:bg-surface2 disabled:text-muted;
+  }
+  .field-error {
+    @apply border-red-500 focus:border-red-500 focus:ring-red-200;
+  }
+  .field-success {
+    @apply border-green-500 focus:border-green-500 focus:ring-green-200;
+  }
+  .label {
+    @apply mb-1.5 block text-sm font-medium text-ink;
+  }
+  .hint {
+    @apply mt-1 text-xs text-muted;
+  }
+  .error-text {
+    @apply mt-1 text-xs text-red-600;
+  }
+  .nav-link {
+    @apply flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium text-slate-300 transition hover:bg-white/10 hover:text-white;
+  }
+  .nav-link-active {
+    @apply bg-brand text-white hover:bg-brand;
+  }
+  .nav-group-label {
+    @apply px-3 pb-1 pt-4 text-[11px] font-semibold uppercase tracking-wider text-slate-500;
+  }
+  .pill {
+    @apply inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium;
+  }
+  .table-wrap {
+    @apply overflow-x-auto;
+  }
+  .data-table {
+    @apply w-full text-left text-sm;
+  }
+  .data-table thead th {
+    @apply border-b border-line bg-surface2 px-4 py-3 text-xs font-semibold uppercase tracking-wide text-muted;
+  }
+  .data-table tbody td {
+    @apply border-b border-line px-4 py-3 align-middle text-ink;
+  }
+
+  /* Public theme building blocks. */
+  .t-card {
+    @apply rounded-xl border border-line bg-surface p-6;
+  }
+  .t-btn {
+    @apply inline-flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-medium transition;
+  }
+  .t-btn-primary {
+    @apply t-btn bg-brand text-brandink hover:opacity-90;
+  }
+  .t-btn-ghost {
+    @apply t-btn border border-line text-ink hover:bg-surface2;
+  }
+  .t-chip {
+    @apply inline-flex items-center rounded-full border border-line bg-surface2 px-3 py-1 text-xs font-medium text-ink;
+  }
+  .t-link {
+    @apply font-medium text-brand hover:underline;
+  }
+  .t-prose {
+    @apply text-ink/90 leading-relaxed;
+  }
+  .t-prose h2 {
+    @apply mt-6 mb-2 text-xl font-semibold text-ink;
+  }
+  .t-prose h3 {
+    @apply mt-5 mb-2 text-lg font-semibold text-ink;
+  }
+  .t-prose p {
+    @apply my-3;
+  }
+  .t-prose ul {
+    @apply my-3 list-disc pl-6;
+  }
+  .t-prose ol {
+    @apply my-3 list-decimal pl-6;
+  }
+  .t-prose a {
+    @apply text-brand underline;
+  }
+  .t-prose img {
+    @apply my-4 max-w-full rounded-lg;
+  }
+  .t-prose blockquote {
+    @apply my-4 border-l-4 border-line pl-4 italic text-muted;
+  }
+  .t-prose code {
+    @apply rounded bg-surface2 px-1.5 py-0.5 text-sm;
+  }
+  .t-prose pre {
+    @apply my-4 overflow-x-auto rounded-lg bg-surface2 p-4 text-sm;
+  }
+}

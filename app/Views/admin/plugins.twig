@@ -1,0 +1,114 @@
+{% extends 'admin/layout.twig' %}
+{% import 'admin/partials/icon.twig' as icons %}
+
+{% block content %}
+  <div class="mb-5 rounded-lg border border-line bg-surface px-5 py-4 text-sm text-muted">
+    Plugin memperluas MOPS lewat hook/event (<code>add_action</code>, <code>add_filter</code>), zona injeksi
+    template, dan manifest <code>plugin.json</code> — tidak pernah dengan mengubah core.
+  </div>
+
+  {% if load_errors|length > 0 %}
+    <div class="mb-5 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+      {% for error in load_errors %}<p>{{ error }}</p>{% endfor %}
+    </div>
+  {% endif %}
+
+  <div class="grid gap-5 lg:grid-cols-3">
+    <div class="space-y-5 lg:col-span-2">
+      {% for plugin in plugins %}
+        <div class="card">
+          <div class="card-header">
+            <div>
+              <h2 class="text-sm font-semibold text-ink">{{ plugin.name }}</h2>
+              <p class="text-xs text-muted">{{ plugin.slug }} · v{{ plugin.version }} · oleh {{ plugin.author }}</p>
+            </div>
+            {% if plugin.is_active %}
+              <span class="pill bg-green-100 text-green-700">active</span>
+            {% elseif not plugin.valid %}
+              <span class="pill bg-red-100 text-red-700">invalid</span>
+            {% else %}
+              <span class="pill bg-slate-100 text-slate-600">inactive</span>
+            {% endif %}
+          </div>
+          <div class="card-body">
+            <p class="text-sm text-muted">{{ plugin.description }}</p>
+            {% if not plugin.valid %}
+              <p class="mt-2 text-xs text-red-600">Manifest atau file utama tidak ditemukan.</p>
+            {% endif %}
+            {% if plugin.requires %}
+              <p class="mt-2 text-xs text-muted">Membutuhkan MOPS ≥ {{ plugin.requires }}</p>
+            {% endif %}
+          </div>
+          <div class="card-body border-t border-line">
+            {% if plugin.is_active %}
+              <form action="/admin/plugins/{{ plugin.slug }}/deactivate" method="post">
+                {{ csrf_field() }}
+                <button type="submit" class="btn-secondary">Nonaktifkan</button>
+              </form>
+            {% else %}
+              <form action="/admin/plugins/{{ plugin.slug }}/activate" method="post">
+                {{ csrf_field() }}
+                <button type="submit" class="btn-primary" {{ plugin.valid ? '' : 'disabled' }}>Aktifkan</button>
+              </form>
+            {% endif %}
+          </div>
+        </div>
+      {% else %}
+        <div class="card card-body text-sm text-muted">Belum ada plugin di folder <code>plugins/</code>.</div>
+      {% endfor %}
+    </div>
+
+    <div class="space-y-5">
+      <div class="card">
+        <div class="card-header">
+          <h2 class="text-sm font-semibold text-ink">Injection Zones</h2>
+          <span class="text-xs text-muted">{{ filled_zones|length }}/{{ zones|length }} terisi</span>
+        </div>
+        <div class="card-body space-y-3">
+          <p class="text-xs text-muted">
+            Titik suntik resmi di template core/tema. Plugin menempel lewat
+            <code>add_action('&lt;zona&gt;', ...)</code> tanpa menyentuh template.
+          </p>
+          {% for id, zone in zones %}
+            <div class="rounded border border-line px-3 py-2">
+              <div class="flex items-center justify-between gap-2">
+                <code class="text-[11px] text-ink">{{ id }}</code>
+                {% if id in filled_zones %}
+                  <span class="pill bg-green-100 text-green-700">dipakai</span>
+                {% elseif zone.scope == 'admin' %}
+                  <span class="pill bg-slate-100 text-slate-500">admin</span>
+                {% else %}
+                  <span class="pill bg-slate-100 text-slate-500">kosong</span>
+                {% endif %}
+              </div>
+              <p class="mt-1 text-[11px] text-muted">{{ zone.where }}</p>
+              <p class="mt-0.5 text-[11px] text-muted">Argumen: <code>{{ zone.args }}</code></p>
+            </div>
+          {% endfor %}
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <h2 class="text-sm font-semibold text-ink">Registered Hooks</h2>
+          <span class="text-xs text-muted">{{ hooks|length }}</span>
+        </div>
+        <div class="card-body">
+          {% if hooks|length == 0 %}
+            <p class="text-xs text-muted">Belum ada hook tambahan dari plugin.</p>
+          {% else %}
+            <div class="flex flex-wrap gap-1.5">
+              {% for hook in hooks %}
+                <code class="rounded bg-surface2 px-1.5 py-0.5 text-[11px] text-ink">{{ hook }}</code>
+              {% endfor %}
+            </div>
+          {% endif %}
+          <p class="mt-4 text-xs text-muted">
+            Core sendiri memicu hook seperti <code>plugins_loaded</code>, <code>section_registry</code>,
+            <code>portfolio_payload</code>, dan <code>routes_registered</code>.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}

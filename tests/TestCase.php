@@ -1,0 +1,44 @@
+<?php
+
+declare(strict_types=1);
+
+namespace Mops\Tests;
+
+use PHPUnit\Framework\TestCase as BaseTestCase;
+
+/**
+ * Shared helpers. Feature tests boot the real application against a temporary
+ * SQLite database so every assertion goes through the same stack production uses.
+ */
+abstract class TestCase extends BaseTestCase
+{
+    /** @var array<int, string> */
+    private array $temporaryFiles = [];
+
+    protected function tearDown(): void
+    {
+        foreach ($this->temporaryFiles as $file) {
+            if (is_file($file)) {
+                @unlink($file);
+            }
+        }
+
+        $this->temporaryFiles = [];
+        $_SESSION = [];
+
+        parent::tearDown();
+    }
+
+    protected function tempDatabase(): string
+    {
+        $path = MOPS_TEST_ROOT . '/db-' . bin2hex(random_bytes(4)) . '.sqlite';
+
+        if (is_file($path)) {
+            @unlink($path);
+        }
+
+        $this->temporaryFiles[] = $path;
+
+        return $path;
+    }
+}

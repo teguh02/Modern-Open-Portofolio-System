@@ -1,0 +1,34 @@
+{% extends 'layout.twig' %}
+
+{% block content %}
+  {# Zona injeksi khusus homepage: sebelum bagian-bagian profil. #}
+  {{ render_hook('home_before_sections', zone_context, sections) }}
+
+  {% for section in sections %}
+    {% include section.template ignore missing with {
+      section: section,
+      portfolio: portfolio,
+      profile: portfolio.profile|default({}),
+    } only %}
+  {% endfor %}
+
+  {# Owner-only hint on a fresh install (identity + bio only). #}
+  {% if sections|length <= 2 and auth_user %}
+    <section class="mx-auto max-w-content px-6 py-14">
+      <div class="rounded-2xl border border-dashed border-line bg-surface p-8">
+        <p class="font-serif text-lg text-ink">Homepage masih menampilkan identitas + bio saja</p>
+        <p class="mt-2 text-sm text-muted">
+          Ini perilaku bawaan saat instalasi baru: bagian lain menyala setelah diisi dan diaktifkan di admin.
+        </p>
+        <div class="mt-4 flex flex-wrap gap-3 text-sm">
+          <a href="/admin/projects" class="rounded-lg bg-brand px-3 py-2 text-brandink">Tambah proyek</a>
+          <a href="/admin/experiences" class="rounded-lg border border-line px-3 py-2 text-muted hover:text-ink">Tambah pengalaman</a>
+          <a href="/admin/settings" class="rounded-lg border border-line px-3 py-2 text-muted hover:text-ink">Atur bagian homepage</a>
+        </div>
+      </div>
+    </section>
+  {% endif %}
+
+  {# Zona injeksi khusus homepage: area call-to-action tepat di atas footer. #}
+  {{ render_hook('home_after_sections', zone_context, sections) }}
+{% endblock %}

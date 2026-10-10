@@ -1,0 +1,14 @@
+{% extends 'layout.twig' %}
+
+{% block title %}404 — {{ site.name }}{% endblock %}
+
+{% block content %}
+<section class="mx-auto grid max-w-content place-items-center px-5 py-24 text-center">
+  <p class="font-mono text-xs uppercase tracking-widest text-accent">error 404</p>
+  <h1 class="mt-4 font-mono text-3xl font-semibold text-ink md:text-4xl">{{ message|default('Halaman tidak ditemukan.') }}</h1>
+  <p class="mt-3 max-w-md text-sm text-muted">
+    Alamat yang Anda tuju tidak ada atau sudah dipindahkan.
+  </p>
+  <a href="/" class="mt-8 rounded-lg bg-brand px-4 py-2.5 font-mono text-sm text-brandink transition hover:opacity-90">Kembali ke beranda</a>
+</section>
+{% endblock %}

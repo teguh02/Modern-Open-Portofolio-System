@@ -1,0 +1,31 @@
+<section id="penghargaan" class="border-b border-line py-16 md:py-20">
+  <div class="mx-auto max-w-content px-5">
+    <div class="flex flex-wrap items-end justify-between gap-4">
+      <div>
+        <p class="font-mono text-xs uppercase tracking-widest text-accent">07</p>
+        {% if not section.hide_title|default(false) %}
+          <h2 class="mt-1 font-mono text-2xl font-semibold text-ink">{{ section.title }}</h2>
+        {% endif %}
+      </div>
+      {% if section.more_url %}
+        <a href="{{ section.more_url }}" class="font-mono text-sm text-accent transition hover:opacity-80">Lihat selengkapnya →</a>
+      {% endif %}
+    </div>
+
+    <ul class="mt-10 divide-y divide-line rounded-xl border border-line bg-surface">
+      {% for item in section.items %}
+        <li class="flex flex-wrap items-baseline justify-between gap-3 px-5 py-4">
+          <div>
+            <h3 class="font-mono text-sm font-semibold text-ink">
+              {% if item.url %}<a href="{{ item.url }}" rel="noopener" class="transition hover:text-accent">{{ item.title }}</a>{% else %}{{ item.title }}{% endif %}
+            </h3>
+            {% if item.description %}<p class="mt-1 text-xs text-muted">{{ item.description }}</p>{% endif %}
+          </div>
+          <span class="font-mono text-xs text-accent">{{ item.year }}</span>
+        </li>
+      {% else %}
+        <li class="px-5 py-6 text-center font-mono text-sm text-muted">Belum ada penghargaan.</li>
+      {% endfor %}
+    </ul>
+  </div>
+</section>

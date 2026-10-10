@@ -1,0 +1,46 @@
+{% extends 'layout.twig' %}
+
+{% block content %}
+<article class="mx-auto max-w-content px-5 py-14">
+  <a href="/blog" class="font-mono text-xs text-muted transition hover:text-accent">← Semua tulisan</a>
+
+  <header class="mx-auto mt-6 max-w-2xl border-b border-line pb-8">
+    <p class="font-mono text-[11px] uppercase tracking-widest text-accent">
+      {{ post.published_label }}{% if post.reading_time %} · {{ post.reading_time }} menit baca{% endif %}
+    </p>
+    <h1 class="mt-3 font-mono text-3xl font-semibold leading-tight text-ink md:text-4xl">{{ post.title }}</h1>
+    {% if post.excerpt_text %}
+      <p class="mt-4 text-base text-muted">{{ post.excerpt_text }}</p>
+    {% endif %}
+    {% if post.tags|length > 0 %}
+      <div class="mt-4 flex flex-wrap gap-1.5">
+        {% for tag in post.tags %}
+          <span class="rounded border border-line bg-surface2 px-1.5 py-0.5 font-mono text-[11px] text-muted">#{{ tag }}</span>
+        {% endfor %}
+      </div>
+    {% endif %}
+  </header>
+
+  {% if post.cover_image %}
+    <img src="{{ upload_url(post.cover_image) }}" alt="{{ post.title }}" class="mx-auto mt-8 w-full max-w-3xl rounded-xl border border-line object-cover">
+  {% endif %}
+
+  <div class="t-prose mx-auto mt-10 max-w-2xl">
+    {{ post.content|clean_html }}
+  </div>
+
+  {% if related|default([])|length > 0 %}
+    <section class="mx-auto mt-14 max-w-2xl border-t border-line pt-8">
+      <h2 class="font-mono text-sm uppercase tracking-widest text-accent">Tulisan terkait</h2>
+      <ul class="mt-4 space-y-2">
+        {% for item in related|slice(0, 3) %}
+          <li>
+            <a href="/blog/{{ item.slug }}" class="text-sm text-ink transition hover:text-accent">{{ item.title }}</a>
+            <span class="ml-2 font-mono text-[11px] text-muted">{{ item.published_label }}</span>
+          </li>
+        {% endfor %}
+      </ul>
+    </section>
+  {% endif %}
+</article>
+{% endblock %}

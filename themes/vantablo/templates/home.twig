@@ -1,0 +1,41 @@
+{% extends 'layout.twig' %}
+
+{#
+  The theme renders the sections core handed over: order, limits and visibility
+  are already applied. A theme may also skip a section it does not support.
+#}
+{% block content %}
+  {# Zona injeksi khusus homepage: sebelum bagian-bagian profil. #}
+  {{ render_hook('home_before_sections', zone_context, sections) }}
+
+  {% for section in sections %}
+    {% include section.template ignore missing with {
+      section: section,
+      portfolio: portfolio,
+      profile: portfolio.profile|default({}),
+    } only %}
+  {% endfor %}
+
+  {# Owner-only hint: a fresh install shows identity + bio until more sections
+     are filled in and toggled on. Visitors never see this. #}
+  {% if sections|length <= 2 and auth_user %}
+    <section class="mx-auto max-w-content border-t border-line px-5 py-14">
+      <div class="rounded-xl border border-dashed border-line bg-surface p-6">
+        <p class="font-mono text-xs uppercase tracking-widest text-accent">Setup</p>
+        <h2 class="mt-2 font-mono text-lg font-semibold text-ink">Homepage masih menampilkan identitas + bio saja</h2>
+        <p class="mt-2 text-sm text-muted">
+          Ini perilaku bawaan MOPS pada instalasi baru: bagian lain menyala setelah Anda mengisinya dan
+          menyalakan toggle-nya di admin.
+        </p>
+        <div class="mt-4 flex flex-wrap gap-3 font-mono text-xs">
+          <a href="/admin/projects" class="rounded-lg border border-brand/40 bg-brand/10 px-3 py-2 text-ink">Tambah proyek</a>
+          <a href="/admin/experiences" class="rounded-lg border border-line px-3 py-2 text-muted hover:text-ink">Tambah pengalaman</a>
+          <a href="/admin/settings" class="rounded-lg border border-line px-3 py-2 text-muted hover:text-ink">Atur bagian homepage</a>
+        </div>
+      </div>
+    </section>
+  {% endif %}
+
+  {# Zona injeksi khusus homepage: area call-to-action tepat di atas footer. #}
+  {{ render_hook('home_after_sections', zone_context, sections) }}
+{% endblock %}

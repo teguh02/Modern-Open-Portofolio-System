@@ -1,0 +1,8 @@
+{
+    "name": "CV ATS Download",
+    "version": "1.0.0",
+    "author": "MOPS",
+    "description": "Menambahkan tombol \"Download CV (ATS PDF)\" di footer homepage dan route /cv.pdf yang menyusun data portofolio menjadi PDF satu kolom, teks asli, tanpa tabel/grafis supaya lolos parsing ATS. Generator PDF ditulis sendiri tanpa dependency. Contoh plugin: hanya memakai HookZones, route, filter view_paths, dan Portfolio — tidak menyentuh core atau tema.",
+    "requires": "0.1",
+    "main": "plugin.php"
+}

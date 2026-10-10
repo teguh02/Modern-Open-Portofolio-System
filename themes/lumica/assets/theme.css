@@ -1,0 +1,46 @@
+/* Lumica — light editorial theme for designers.
+   Palette from prototype/html/lumica (paper #FAF8F4, ink #211D18, clay #B4653F, sage #8A9A7B). */
+:root {
+  --c-bg: 250 248 244;
+  --c-surface: 255 255 255;
+  --c-surface-2: 243 239 231;
+  --c-border: 229 223 212;
+  --c-ink: 33 29 24;
+  --c-muted: 110 102 92;
+  --c-brand: 180 101 63;
+  --c-brand-ink: 255 255 255;
+  --c-accent: 138 154 123;
+}
+
+[x-cloak] {
+  display: none !important;
+}
+
+html {
+  scroll-behavior: smooth;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1,
+h2,
+h3,
+.font-serif {
+  font-variation-settings: 'SOFT' 0, 'WONK' 0;
+}
+
+/* Slim editorial underline used on section headings. */
+.lumica-rule {
+  border-top: 1px solid rgb(var(--c-border));
+}
+
+.lumica-underline {
+  background-image: linear-gradient(to right, rgb(var(--c-brand)), rgb(var(--c-brand)));
+  background-size: 0% 1px;
+  background-position: 0 100%;
+  background-repeat: no-repeat;
+  transition: background-size 0.25s ease;
+}
+
+.lumica-underline:hover {
+  background-size: 100% 1px;
+}

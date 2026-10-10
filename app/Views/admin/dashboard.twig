@@ -1,0 +1,158 @@
+{% extends 'admin/layout.twig' %}
+{% import 'admin/partials/icon.twig' as icons %}
+
+{% block content %}
+  {# ------------------------------------------------------------ stat cards #}
+  <div class="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+    {% for card in stats %}
+      <div class="card">
+        <div class="card-body">
+          <p class="text-xs font-semibold uppercase tracking-wide text-muted">{{ card.label }}</p>
+          <p class="mt-2 text-3xl font-semibold text-ink">{{ card.value }}</p>
+          <p class="mt-1 flex items-center gap-2 text-xs text-muted">
+            <span class="pill bg-slate-100 text-slate-600">{{ card.delta }}</span>
+            <span>{{ card.hint }}</span>
+          </p>
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+
+  <div class="mt-5 grid gap-5 xl:grid-cols-3">
+    {# ------------------------------------------------------------- chart #}
+    <div class="card xl:col-span-2">
+      <div class="card-header">
+        <div>
+          <h2 class="text-sm font-semibold text-ink">Content — Last 6 Months</h2>
+          <p class="text-xs text-muted">Computed from published posts and created projects.</p>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="flex items-end gap-4 overflow-x-auto pb-2" style="min-height: 190px">
+          {% for column in chart.columns %}
+            <div class="flex min-w-[64px] flex-1 flex-col items-center gap-2">
+              <div class="flex h-40 w-full items-end justify-center gap-1">
+                {% for bar in column.bars %}
+                  <div class="w-3 rounded-t {{ loop.index == 1 ? 'bg-brand/80' : 'bg-accent/80' }}"
+                       style="height: {{ max(bar.percent, bar.value > 0 ? 6 : 0) }}%"
+                       title="{{ bar.name }}: {{ bar.value }}"></div>
+                {% endfor %}
+              </div>
+              <span class="text-xs text-muted">{{ column.label }}</span>
+            </div>
+          {% endfor %}
+        </div>
+        <div class="mt-3 flex flex-wrap gap-4 border-t border-line pt-3 text-xs text-muted">
+          {% for name in chart.series %}
+            <span class="flex items-center gap-2">
+              <span class="h-2 w-2 rounded-full {{ loop.index == 1 ? 'bg-brand' : 'bg-accent' }}"></span>{{ name }}
+            </span>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+
+    {# --------------------------------------------------------------- mix #}
+    {% set mixTotal = mix|reduce((carry, item) => carry + item.value, 0) %}
+    <div class="card">
+      <div class="card-header">
+        <h2 class="text-sm font-semibold text-ink">Content Mix</h2>
+      </div>
+      <div class="card-body space-y-3">
+        {% for item in mix %}
+          {% set percent = mixTotal > 0 ? (item.value / mixTotal * 100)|round : 0 %}
+          <div>
+            <div class="flex items-center justify-between text-xs">
+              <span class="font-medium text-ink">{{ item.label }}</span>
+              <span class="text-muted">{{ item.value }} · {{ percent }}%</span>
+            </div>
+            <div class="mt-1.5 h-1.5 w-full overflow-hidden rounded-full bg-surface2">
+              <div class="h-full rounded-full" style="width: {{ percent }}%; background-color: {{ item.color }}"></div>
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+
+  {# Plugin widgets render here through the `admin_dashboard_widgets` hook. #}
+  {{ render_hook('admin_dashboard_widgets', stats) }}
+
+  <div class="mt-5 grid gap-5 xl:grid-cols-3">
+    {# --------------------------------------------------------- activity #}
+    <div class="card xl:col-span-2">
+      <div class="card-header">
+        <h2 class="text-sm font-semibold text-ink">Recent Activity</h2>
+        <span class="text-xs text-muted">Latest 8 events</span>
+      </div>
+      <div class="table-wrap">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Action</th>
+              <th>Description</th>
+              <th class="text-right">When</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for row in recent %}
+              <tr>
+                <td><span class="pill bg-indigo-100 text-indigo-700">{{ row.action }}</span></td>
+                <td>{{ row.description }}</td>
+                <td class="text-right text-muted">{{ row.relative }}</td>
+              </tr>
+            {% else %}
+              <tr><td colspan="3" class="py-6 text-center text-muted">Belum ada aktivitas.</td></tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    {# ------------------------------------------------------ completeness #}
+    <div class="space-y-5">
+      <div class="card">
+        <div class="card-header">
+          <h2 class="text-sm font-semibold text-ink">Profile Completeness</h2>
+          <span class="pill bg-indigo-100 text-indigo-700">{{ profile_completeness.percent }}%</span>
+        </div>
+        <div class="card-body">
+          <div class="h-2 w-full overflow-hidden rounded-full bg-surface2">
+            <div class="h-full rounded-full bg-brand" style="width: {{ profile_completeness.percent }}%"></div>
+          </div>
+          {% if profile_completeness.missing|length > 0 %}
+            <p class="mt-3 text-xs text-muted">Belum lengkap:</p>
+            <ul class="mt-1 space-y-1 text-xs text-ink">
+              {% for item in profile_completeness.missing %}
+                <li class="flex items-center gap-2"><span class="h-1.5 w-1.5 rounded-full bg-amber-500"></span>{{ item }}</li>
+              {% endfor %}
+            </ul>
+          {% else %}
+            <p class="mt-3 text-xs text-green-700">Profil sudah lengkap.</p>
+          {% endif %}
+          <a href="/admin/profile" class="btn-primary btn-sm mt-4 w-full">Edit profile</a>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <h2 class="text-sm font-semibold text-ink">Homepage Sections</h2>
+          <a href="/admin/settings" class="text-xs font-medium text-brand hover:underline">Settings</a>
+        </div>
+        <div class="card-body space-y-2">
+          {% for id, enabled in sections %}
+            <div class="flex items-center justify-between text-sm">
+              <span class="text-ink">{{ id|capitalize }}</span>
+              {% if enabled %}
+                <span class="pill bg-green-100 text-green-700">on</span>
+              {% else %}
+                <span class="pill bg-slate-100 text-slate-600">off</span>
+              {% endif %}
+            </div>
+          {% endfor %}
+          <p class="pt-2 text-xs text-muted">Urutan dan limit per bagian dikunci di core (Section Registry).</p>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}

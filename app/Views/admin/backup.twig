@@ -1,0 +1,80 @@
+{% extends 'admin/layout.twig' %}
+{% import 'admin/partials/icon.twig' as icons %}
+
+{% block content %}
+  <div class="grid gap-5 lg:grid-cols-3">
+    <div class="card lg:col-span-1">
+      <div class="card-header"><h2 class="text-sm font-semibold text-ink">Buat Backup</h2></div>
+      <form action="/admin/backup" method="post" class="card-body space-y-3">
+        {{ csrf_field() }}
+        <div>
+          <label class="label" for="scope">Cakupan</label>
+          <select name="scope" id="scope" class="field">
+            <option value="full">Database + uploads (zip)</option>
+            <option value="database">Database saja</option>
+          </select>
+        </div>
+        <p class="hint">
+          {% if supports_zip %}
+            Backup zip berisi file database dan seluruh file media.
+          {% else %}
+            Ekstensi zip tidak aktif — backup berupa salinan file database SQLite.
+          {% endif %}
+        </p>
+        <button type="submit" class="btn-primary w-full">{{ icons.svg('archive', 'h-4 w-4') }} Buat backup</button>
+      </form>
+    </div>
+
+    <div class="card lg:col-span-2">
+      <div class="card-header">
+        <h2 class="text-sm font-semibold text-ink">Riwayat Backup</h2>
+        <span class="text-xs text-muted">{{ backups|length }} file</span>
+      </div>
+      <div class="table-wrap">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>File</th>
+              <th>Ukuran</th>
+              <th>Dibuat</th>
+              <th class="text-right">Aksi</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for backup in backups %}
+              <tr>
+                <td class="font-mono text-xs">{{ backup.filename }}</td>
+                <td class="text-muted">{{ backup.readable }}</td>
+                <td class="text-muted">{{ backup.created_at }}</td>
+                <td class="text-right">
+                  <div class="inline-flex items-center gap-1">
+                    <a href="/admin/backup/{{ backup.filename }}/download" class="btn-text btn-sm">{{ icons.svg('download', 'h-4 w-4') }}</a>
+                    <form action="/admin/backup/{{ backup.filename }}/restore" method="post">
+                      {{ csrf_field() }}
+                      <button type="submit" class="btn-text btn-sm" x-data="confirmButton('Pulihkan backup ini? Database saat ini akan diganti.')" @click="ask($event)">
+                        {{ icons.svg('upload', 'h-4 w-4') }}
+                      </button>
+                    </form>
+                    <form action="/admin/backup/{{ backup.filename }}/delete" method="post">
+                      {{ csrf_field() }}
+                      <button type="submit" class="btn-text btn-sm text-red-600 hover:bg-red-50"
+                              x-data="confirmButton('Hapus file backup ini?')" @click="ask($event)">
+                        {{ icons.svg('trash', 'h-4 w-4') }}
+                      </button>
+                    </form>
+                  </div>
+                </td>
+              </tr>
+            {% else %}
+              <tr><td colspan="4" class="py-8 text-center text-muted">Belum ada backup.</td></tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+      <div class="card-body border-t border-line text-xs text-muted">
+        Restore otomatis hanya untuk driver SQLite; driver lain perlu impor manual. Sebelum menimpa database,
+        MOPS otomatis membuat backup pengaman.
+      </div>
+    </div>
+  </div>
+{% endblock %}

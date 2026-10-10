@@ -1,0 +1,55 @@
+{% extends 'admin/layout.twig' %}
+{% import 'admin/partials/icon.twig' as icons %}
+
+{% block content %}
+  <div class="mb-5 rounded-lg border border-line bg-surface px-5 py-4 text-sm text-muted">
+    Dua tema bawaan (<span class="font-medium text-ink">vantablo</span> — developer, gelap dan
+    <span class="font-medium text-ink">lumica</span> — designer, terang) ikut terpasang sejak awal.
+    Tema hanya merender data: mengganti tema tidak pernah menghapus data.
+  </div>
+
+  <div class="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
+    {% for item in themes %}
+      <div class="card flex flex-col">
+        <div class="h-40 overflow-hidden rounded-t-lg border-b border-line bg-surface2">
+          {% if item.screenshot %}
+            <img src="/uploads/{{ item.screenshot }}" alt="{{ item.name }} preview" class="h-40 w-full object-cover">
+          {% else %}
+            <div class="grid h-40 place-items-center text-muted">{{ icons.svg('swatch', 'h-8 w-8') }}</div>
+          {% endif %}
+        </div>
+        <div class="card-body flex-1">
+          <div class="flex items-start justify-between gap-3">
+            <div>
+              <h2 class="text-sm font-semibold text-ink">{{ item.name }}</h2>
+              <p class="text-xs text-muted">{{ item.slug }} · v{{ item.version }}</p>
+            </div>
+            {% if item.is_active %}
+              <span class="pill bg-green-100 text-green-700">active</span>
+            {% elseif not item.valid %}
+              <span class="pill bg-red-100 text-red-700">incomplete</span>
+            {% endif %}
+          </div>
+          <p class="mt-2 text-xs text-muted">{{ item.description }}</p>
+          <p class="mt-2 text-xs text-muted">Oleh {{ item.author }} · persona {{ item.persona }}</p>
+
+          {% if not item.valid %}
+            <p class="mt-3 text-xs text-red-600">Template hilang: {{ item.missing_templates|join(', ') }}</p>
+          {% endif %}
+        </div>
+        <div class="card-body border-t border-line">
+          {% if item.is_active %}
+            <button type="button" class="btn-secondary w-full" disabled>Aktif</button>
+          {% else %}
+            <form action="/admin/themes/{{ item.slug }}/activate" method="post">
+              {{ csrf_field() }}
+              <button type="submit" class="btn-primary w-full" {{ item.valid ? '' : 'disabled' }}>Aktifkan</button>
+            </form>
+          {% endif %}
+        </div>
+      </div>
+    {% else %}
+      <div class="card card-body text-sm text-muted">Belum ada tema di folder <code>themes/</code>.</div>
+    {% endfor %}
+  </div>
+{% endblock %}

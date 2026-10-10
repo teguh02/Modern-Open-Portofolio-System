@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="id" class="h-full">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Install — {{ site.name|default('MOPS') }}</title>
+  <link rel="stylesheet" href="{{ asset('css/app.css') }}">
+  <script defer src="{{ asset('js/app.js') }}"></script>
+</head>
+<body class="min-h-full bg-bg px-4 py-10 text-ink">
+
+<div class="mx-auto max-w-3xl">
+  <div class="mb-6 flex items-center gap-3">
+    <span class="grid h-11 w-11 place-items-center rounded-lg bg-brand text-lg font-semibold text-brandink">M</span>
+    <div>
+      <p class="text-base font-semibold">MOPS Installer</p>
+      <p class="text-xs text-muted">Modern Open Portfolio System {{ app_version }}</p>
+    </div>
+  </div>
+
+  {% if errors|length > 0 %}
+    <div class="mb-5 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+      <ul class="list-disc pl-5">
+        {% for error in errors %}<li>{{ error }}</li>{% endfor %}
+      </ul>
+    </div>
+  {% endif %}
+
+  <div class="grid gap-5 md:grid-cols-5">
+    {# -------------------------------------------------------- checks #}
+    <div class="card md:col-span-2">
+      <div class="card-header"><h1 class="text-sm font-semibold">Persyaratan</h1></div>
+      <div class="card-body space-y-2">
+        {% for requirement in requirements %}
+          <div class="flex items-start gap-2 text-xs">
+            <span class="{{ requirement.ok ? 'text-green-600' : (requirement.required ? 'text-red-600' : 'text-amber-500') }}">
+              {{ requirement.ok ? '✓' : '•' }}
+            </span>
+            <span class="flex-1">
+              <span class="block font-medium text-ink">{{ requirement.label }}</span>
+              <span class="block text-muted">{{ requirement.detail }}</span>
+            </span>
+          </div>
+        {% endfor %}
+      </div>
+    </div>
+
+    {# ---------------------------------------------------------- form #}
+    <div class="card md:col-span-3">
+      <div class="card-header"><h1 class="text-sm font-semibold">Akun Admin & Situs</h1></div>
+      <form action="/install" method="post" class="card-body space-y-4">
+        {{ csrf_field() }}
+
+        <div>
+          <label class="label" for="site_name">Nama Situs</label>
+          <input class="field" id="site_name" name="site_name" value="{{ values.site_name }}" required>
+        </div>
+
+        <div>
+          <label class="label" for="locale">Bahasa</label>
+          <select class="field" id="locale" name="locale">
+            <option value="id" {{ values.locale == 'id' ? 'selected' : '' }}>Indonesia</option>
+            <option value="en" {{ values.locale == 'en' ? 'selected' : '' }}>English</option>
+          </select>
+        </div>
+
+        <hr class="border-line">
+
+        <div>
+          <label class="label" for="name">Nama Admin</label>
+          <input class="field" id="name" name="name" value="{{ values.name|default('') }}" required>
+        </div>
+
+        <div>
+          <label class="label" for="email">Email</label>
+          <input class="field" type="email" id="email" name="email" value="{{ values.email|default('') }}" required>
+        </div>
+
+        <div>
+          <label class="label" for="password">Password</label>
+          <input class="field" type="password" id="password" name="password" required minlength="8">
+          <p class="hint">Minimal 8 karakter.</p>
+        </div>
+
+        <div>
+          <label class="label" for="password_confirmation">Ulangi Password</label>
+          <input class="field" type="password" id="password_confirmation" name="password_confirmation" required minlength="8">
+        </div>
+
+        <button type="submit" class="btn-primary w-full" {{ can_install ? '' : 'disabled' }}>
+          Install MOPS
+        </button>
+
+        {% if not can_install %}
+          <p class="error-text">Lengkapi persyaratan wajib di samping sebelum melanjutkan.</p>
+        {% endif %}
+      </form>
+    </div>
+  </div>
+
+  <p class="mt-6 text-xs text-muted">
+    Instalasi akan menjalankan migrasi database, membuat akun admin, dan mengaktifkan tema bawaan
+    <span class="font-medium text-ink">vantablo</span> (tema <span class="font-medium text-ink">lumica</span> juga
+    tersedia). Halaman publik baru menampilkan identitas + bio sampai Anda menyalakan bagian lain di Settings.
+  </p>
+</div>
+
+</body>
+</html>

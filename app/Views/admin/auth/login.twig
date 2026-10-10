@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Login — {{ site.name }} Admin</title>
+  <link rel="stylesheet" href="{{ asset('css/app.css') }}">
+  <script defer src="{{ asset('js/app.js') }}"></script>
+</head>
+<body class="grid min-h-full place-items-center bg-bg px-4 py-10 text-ink">
+
+  <div class="w-full max-w-md">
+    <div class="mb-6 flex items-center gap-3">
+      <span class="grid h-10 w-10 place-items-center rounded-lg bg-brand font-semibold text-brandink">M</span>
+      <div>
+        <p class="text-sm font-semibold text-ink">MOPS Admin</p>
+        <p class="text-xs text-muted">{{ site.name }}</p>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-body">
+        <h1 class="text-lg font-semibold text-ink">Masuk ke admin</h1>
+        <p class="mt-1 text-sm text-muted">Gunakan akun admin yang dibuat saat instalasi.</p>
+
+        {% if errors|length > 0 %}
+          <div class="mt-4 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+            {% for error in errors %}<p>{{ error }}</p>{% endfor %}
+          </div>
+        {% endif %}
+
+        <form action="/admin/login" method="post" class="mt-5 space-y-4">
+          {{ csrf_field() }}
+          <input type="hidden" name="redirect" value="{{ redirect }}">
+
+          <div>
+            <label class="label" for="email">Email</label>
+            <input class="field" type="email" id="email" name="email" value="{{ email }}" required autocomplete="username" autofocus>
+          </div>
+
+          <div>
+            <label class="label" for="password">Password</label>
+            <input class="field" type="password" id="password" name="password" required autocomplete="current-password">
+          </div>
+
+          <button type="submit" class="btn-primary w-full">Masuk</button>
+        </form>
+      </div>
+    </div>
+
+    <p class="mt-6 text-center text-xs text-muted">MOPS {{ app_version }} · <a href="/" class="text-brand hover:underline">Lihat situs</a></p>
+  </div>
+
+</body>
+</html>

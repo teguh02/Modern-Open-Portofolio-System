@@ -1,0 +1,83 @@
+{% set view = section.items|first|default(profile) %}
+{% set initials = view.full_name ? view.full_name|split(' ')|slice(0, 2)|map(w => w|slice(0, 1))|join('') : 'MO' %}
+
+<section id="beranda" class="border-b border-line">
+  <div class="mx-auto max-w-content px-5 py-16 md:py-24">
+    <div class="flex flex-col gap-8 md:flex-row md:items-center md:justify-between">
+      <div class="max-w-2xl">
+        {% if view.availability %}
+          <p class="inline-flex items-center gap-2 rounded-full border border-accent/30 bg-accent/10 px-3 py-1 font-mono text-xs text-accent">
+            <span class="h-1.5 w-1.5 rounded-full bg-accent"></span>{{ view.availability }}
+          </p>
+        {% endif %}
+
+        <h1 class="mt-5 font-mono text-3xl font-semibold tracking-tight text-ink md:text-5xl">
+          {{ view.full_name ?: site.name }}
+        </h1>
+
+        {% if view.headline %}
+          <p class="mt-3 text-lg text-muted md:text-xl">{{ view.headline }}</p>
+        {% endif %}
+
+        {% if view.short_bio %}
+          <p class="mt-4 max-w-xl text-sm leading-relaxed text-muted md:text-base">{{ view.short_bio }}</p>
+        {% endif %}
+
+        <div class="mt-6 flex flex-wrap items-center gap-x-6 gap-y-2 font-mono text-xs text-muted">
+          {% if view.location %}<span>{{ view.location }}</span>{% endif %}
+          {% if view.email %}<a href="mailto:{{ view.email }}" class="transition hover:text-accent">{{ view.email }}</a>{% endif %}
+          {% if view.website %}<a href="{{ view.website }}" class="transition hover:text-accent" rel="noopener">{{ view.website }}</a>{% endif %}
+        </div>
+
+        {% if view.focus_areas|default([])|length > 0 %}
+          <div class="mt-6 flex flex-wrap gap-2">
+            {% for area in view.focus_areas %}
+              <span class="rounded-full border border-line bg-surface px-3 py-1 font-mono text-xs text-muted">
+                {{ area is iterable ? area.label|default('') : area }}
+              </span>
+            {% endfor %}
+          </div>
+        {% endif %}
+
+        {% if view.social_links|default([])|length > 0 %}
+          <div class="mt-6 flex flex-wrap gap-3">
+            {% for link in view.social_links %}
+              <a href="{{ link.url }}" rel="noopener"
+                 class="rounded-lg border border-line bg-surface px-3 py-2 font-mono text-xs text-muted transition hover:border-brand/50 hover:text-ink">
+                {{ link.label ?: link.url }}
+              </a>
+            {% endfor %}
+          </div>
+        {% endif %}
+
+        {% if view.resume_file %}
+          <a href="{{ upload_url(view.resume_file) }}" class="mt-7 inline-flex items-center gap-2 rounded-lg bg-brand px-4 py-2.5 font-mono text-sm text-brandink transition hover:opacity-90">
+            Unduh Resume
+          </a>
+        {% endif %}
+      </div>
+
+      <div class="shrink-0">
+        {% if view.photo %}
+          <img src="{{ upload_url(view.photo) }}" alt="{{ view.full_name }}"
+               class="h-40 w-40 rounded-2xl border border-line object-cover md:h-52 md:w-52">
+        {% else %}
+          <div class="grid h-40 w-40 place-items-center rounded-2xl border border-line bg-surface2 font-mono text-4xl font-semibold text-brand md:h-52 md:w-52">
+            {{ initials|upper }}
+          </div>
+        {% endif %}
+      </div>
+    </div>
+
+    {% if view.stats|default([])|length > 0 %}
+      <dl class="mt-12 grid grid-cols-2 gap-4 border-t border-line pt-8 sm:grid-cols-4">
+        {% for stat in view.stats %}
+          <div>
+            <dt class="font-mono text-xs uppercase tracking-widest text-muted">{{ stat.label }}</dt>
+            <dd class="mt-1 font-mono text-2xl font-semibold text-ink">{{ stat.value }}</dd>
+          </div>
+        {% endfor %}
+      </dl>
+    {% endif %}
+  </div>
+</section>

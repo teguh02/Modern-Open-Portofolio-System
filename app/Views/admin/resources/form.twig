@@ -1,0 +1,83 @@
+{% extends 'admin/layout.twig' %}
+{% import 'admin/partials/icon.twig' as icons %}
+
+{% block content %}
+  {% set error_list = error_list|default([]) %}
+
+  {% if error_list|length > 0 %}
+    <div class="mb-5 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+      <p class="font-medium">Periksa kembali isian berikut:</p>
+      <ul class="mt-1 list-disc pl-5">
+        {% for message in error_list %}<li>{{ message }}</li>{% endfor %}
+      </ul>
+    </div>
+  {% endif %}
+
+  <form action="{{ action }}" method="post" enctype="multipart/form-data" class="grid gap-5 lg:grid-cols-3">
+    {{ csrf_field() }}
+
+    {# ------------------------------------------------------------ fields #}
+    <div class="card lg:col-span-2">
+      <div class="card-header">
+        <h2 class="text-sm font-semibold text-ink">{{ resource_title }} details</h2>
+      </div>
+      <div class="card-body grid grid-cols-12 gap-4">
+        {% for field in fields %}
+          {% set name = field.name %}
+          {% set value = values[name]|default(field.default|default(null)) %}
+          {% set fieldErrors = errors[name]|default([]) %}
+          {% set col = field.col|default(12) %}
+          {% set colClass = 'col-span-12' %}
+          {% if col == 3 %}{% set colClass = 'col-span-12 sm:col-span-3' %}
+          {% elseif col == 4 %}{% set colClass = 'col-span-12 sm:col-span-4' %}
+          {% elseif col == 6 %}{% set colClass = 'col-span-12 sm:col-span-6' %}
+          {% elseif col == 8 %}{% set colClass = 'col-span-12 sm:col-span-8' %}
+          {% elseif col == 9 %}{% set colClass = 'col-span-12 sm:col-span-9' %}
+          {% endif %}
+          <div class="{{ colClass }}">
+            {% include 'admin/partials/field.twig' with {
+              field: field,
+              name: name,
+              value: value,
+              errors: fieldErrors,
+            } only %}
+          </div>
+        {% endfor %}
+      </div>
+    </div>
+
+    {# ------------------------------------------------------------ publish #}
+    <div class="space-y-5">
+      <div class="card">
+        <div class="card-header"><h2 class="text-sm font-semibold text-ink">Save</h2></div>
+        <div class="card-body space-y-3">
+          <button type="submit" class="btn-primary w-full">
+            {{ icons.svg('check', 'h-4 w-4') }} Simpan
+          </button>
+          <a href="/admin/{{ route_base }}" class="btn-secondary w-full">Batal</a>
+          <p class="text-xs text-muted">
+            Limit dan urutan bagian di homepage diatur di Settings (Section Registry) — bukan di sini.
+          </p>
+        </div>
+      </div>
+
+      {% if record %}
+        <div class="card border-red-200">
+          <div class="card-header border-red-100">
+            <h2 class="text-sm font-semibold text-red-600">Danger Zone</h2>
+          </div>
+          <div class="card-body">
+            <p class="text-xs text-muted">Menghapus data tidak bisa dibatalkan.</p>
+            <form action="/admin/{{ route_base }}/{{ record.id }}/delete" method="post" class="mt-3">
+              {{ csrf_field() }}
+              <button type="submit" class="btn-danger w-full"
+                      x-data="confirmButton('Hapus {{ singular }} ini?')" @click="ask($event)">
+                {{ icons.svg('trash', 'h-4 w-4') }} Hapus
+              </button>
+            </form>
+          </div>
+        </div>
+      {% endif %}
+    </div>
+  </form>
+{% endblock %}

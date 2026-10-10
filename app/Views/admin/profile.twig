@@ -1,0 +1,151 @@
+{% extends 'admin/layout.twig' %}
+{% import 'admin/partials/icon.twig' as icons %}
+
+{% block content %}
+  {% set error_list = error_list|default([]) %}
+
+  {% if error_list|length > 0 %}
+    <div class="mb-5 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+      <ul class="list-disc pl-5">
+        {% for message in error_list %}<li>{{ message }}</li>{% endfor %}
+      </ul>
+    </div>
+  {% endif %}
+
+  <form action="/admin/profile" method="post" enctype="multipart/form-data" class="grid gap-5 lg:grid-cols-3">
+    {{ csrf_field() }}
+
+    <div class="space-y-5 lg:col-span-2">
+      {# ------------------------------------------------------- identity #}
+      <div class="card">
+        <div class="card-header">
+          <div>
+            <h2 class="text-sm font-semibold text-ink">Identitas</h2>
+            <p class="text-xs text-muted">Bagian <code>profile</code> — selalu tampil di homepage.</p>
+          </div>
+        </div>
+        <div class="card-body grid grid-cols-12 gap-4">
+          {% include 'admin/partials/field.twig' with {field: {name: 'full_name', label: 'Nama Lengkap', type: 'text', required: true, hint: ''}, name: 'full_name', value: values.full_name, errors: errors.full_name|default([])} only %}
+          <div class="col-span-12 sm:col-span-6">
+            {% include 'admin/partials/field.twig' with {field: {name: 'headline', label: 'Headline', type: 'text', hint: 'Fullstack Developer, Product Designer, …'}, name: 'headline', value: values.headline, errors: errors.headline|default([])} only %}
+          </div>
+          <div class="col-span-12">
+            {% include 'admin/partials/field.twig' with {field: {name: 'short_bio', label: 'Bio Singkat', type: 'text', hint: 'Muncul di bawah nama'}, name: 'short_bio', value: values.short_bio, errors: errors.short_bio|default([])} only %}
+          </div>
+          <div class="col-span-12 sm:col-span-6">
+            {% include 'admin/partials/field.twig' with {field: {name: 'location', label: 'Lokasi', type: 'text'}, name: 'location', value: values.location, errors: errors.location|default([])} only %}
+          </div>
+          <div class="col-span-12 sm:col-span-6">
+            {% include 'admin/partials/field.twig' with {field: {name: 'availability', label: 'Status Ketersediaan', type: 'text', hint: 'Terbuka untuk proyek lepas'}, name: 'availability', value: values.availability, errors: errors.availability|default([])} only %}
+          </div>
+        </div>
+      </div>
+
+      {# ------------------------------------------------------------ bio #}
+      <div class="card">
+        <div class="card-header">
+          <div>
+            <h2 class="text-sm font-semibold text-ink">Tentang / Bio</h2>
+            <p class="text-xs text-muted">Bagian <code>about</code> — ditampilkan penuh di homepage.</p>
+          </div>
+        </div>
+        <div class="card-body">
+          {% include 'admin/partials/field.twig' with {field: {name: 'bio', label: 'Isi Bio', type: 'richtext', rows: 12}, name: 'bio', value: values.bio, errors: errors.bio|default([])} only %}
+        </div>
+      </div>
+
+      {# -------------------------------------------------------- contact #}
+      <div class="card">
+        <div class="card-header"><h2 class="text-sm font-semibold text-ink">Kontak & Tautan</h2></div>
+        <div class="card-body grid grid-cols-12 gap-4">
+          <div class="col-span-12 sm:col-span-6">
+            {% include 'admin/partials/field.twig' with {field: {name: 'email', label: 'Email', type: 'email'}, name: 'email', value: values.email, errors: errors.email|default([])} only %}
+          </div>
+          <div class="col-span-12 sm:col-span-6">
+            {% include 'admin/partials/field.twig' with {field: {name: 'phone', label: 'Telepon', type: 'text'}, name: 'phone', value: values.phone, errors: errors.phone|default([])} only %}
+          </div>
+          <div class="col-span-12">
+            {% include 'admin/partials/field.twig' with {field: {name: 'website', label: 'Website', type: 'url'}, name: 'website', value: values.website, errors: errors.website|default([])} only %}
+          </div>
+        </div>
+      </div>
+
+      {# --------------------------------------------------- social links #}
+      <div class="card">
+        <div class="card-header">
+          <div>
+            <h2 class="text-sm font-semibold text-ink">Tautan Sosial</h2>
+            <p class="text-xs text-muted">Kosongkan url untuk membuang baris. Baris kosong diabaikan.</p>
+          </div>
+        </div>
+        <div class="card-body space-y-3">
+          {% for index, row in values.social_rows %}
+            <div class="grid grid-cols-12 items-center gap-3">
+              <input type="text" name="social_label[{{ index }}]" value="{{ row.label }}" placeholder="Label (GitHub)"
+                     class="field col-span-12 sm:col-span-3" aria-label="Label">
+              <input type="text" name="social_icon[{{ index }}]" value="{{ row.icon }}" placeholder="icon (github)"
+                     class="field col-span-12 sm:col-span-3" aria-label="Icon">
+              <input type="url" name="social_url[{{ index }}]" value="{{ row.url }}" placeholder="https://…"
+                     class="field col-span-12 sm:col-span-4" aria-label="URL">
+              <label class="col-span-12 flex items-center gap-2 text-xs text-muted sm:col-span-2">
+                <input type="checkbox" name="social_remove[{{ index }}]" value="1" class="rounded border-line"> hapus
+              </label>
+            </div>
+          {% endfor %}
+        </div>
+      </div>
+
+      {# ----------------------------------------------------------- stats #}
+      <div class="card">
+        <div class="card-header">
+          <div>
+            <h2 class="text-sm font-semibold text-ink">Statistik Singkat</h2>
+            <p class="text-xs text-muted">Contoh: “8 tahun pengalaman”, “40 proyek”.</p>
+          </div>
+        </div>
+        <div class="card-body space-y-3">
+          {% for index, row in values.stat_rows %}
+            <div class="grid grid-cols-12 items-center gap-3">
+              <input type="text" name="stat_label[{{ index }}]" value="{{ row.label }}" placeholder="Label"
+                     class="field col-span-12 sm:col-span-5" aria-label="Label">
+              <input type="text" name="stat_value[{{ index }}]" value="{{ row.value }}" placeholder="Nilai"
+                     class="field col-span-12 sm:col-span-5" aria-label="Nilai">
+              <label class="col-span-12 flex items-center gap-2 text-xs text-muted sm:col-span-2">
+                <input type="checkbox" name="stat_remove[{{ index }}]" value="1" class="rounded border-line"> hapus
+              </label>
+            </div>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+
+    {# ------------------------------------------------------------- side #}
+    <div class="space-y-5">
+      <div class="card">
+        <div class="card-header"><h2 class="text-sm font-semibold text-ink">Foto & Resume</h2></div>
+        <div class="card-body space-y-5">
+          {% include 'admin/partials/field.twig' with {field: {name: 'photo', label: 'Foto Profil', type: 'media'}, name: 'photo', value: values.photo, errors: []} only %}
+          {% include 'admin/partials/field.twig' with {field: {name: 'resume_file', label: 'Resume (PDF)', type: 'media'}, name: 'resume_file', value: values.resume_file, errors: []} only %}
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header"><h2 class="text-sm font-semibold text-ink">Fokus & SEO</h2></div>
+        <div class="card-body space-y-4">
+          {% include 'admin/partials/field.twig' with {field: {name: 'focus_areas', label: 'Bidang Fokus', type: 'list', hint: 'Satu bidang per baris', default: ''}, name: 'focus_areas', value: values.focus_areas, errors: []} only %}
+          {% include 'admin/partials/field.twig' with {field: {name: 'meta_title', label: 'Meta Title', type: 'text'}, name: 'meta_title', value: values.meta_title, errors: []} only %}
+          {% include 'admin/partials/field.twig' with {field: {name: 'meta_description', label: 'Meta Description', type: 'text'}, name: 'meta_description', value: values.meta_description, errors: []} only %}
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-body space-y-3">
+          <button type="submit" class="btn-primary w-full">{{ icons.svg('check', 'h-4 w-4') }} Simpan Profil</button>
+          <a href="/" target="_blank" rel="noopener" class="btn-secondary w-full">
+            {{ icons.svg('external', 'h-4 w-4') }} Lihat homepage
+          </a>
+        </div>
+      </div>
+    </div>
+  </form>
+{% endblock %}

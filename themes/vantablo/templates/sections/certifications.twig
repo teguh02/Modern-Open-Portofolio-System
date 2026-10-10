@@ -1,0 +1,41 @@
+<section id="sertifikasi" class="border-b border-line py-16 md:py-20">
+  <div class="mx-auto max-w-content px-5">
+    <div class="flex flex-wrap items-end justify-between gap-4">
+      <div>
+        <p class="font-mono text-xs uppercase tracking-widest text-accent">06</p>
+        {% if not section.hide_title|default(false) %}
+          <h2 class="mt-1 font-mono text-2xl font-semibold text-ink">{{ section.title }}</h2>
+        {% endif %}
+      </div>
+      {% if section.more_url %}
+        <a href="{{ section.more_url }}" class="font-mono text-sm text-accent transition hover:opacity-80">Lihat selengkapnya →</a>
+      {% endif %}
+    </div>
+
+    <div class="mt-10 grid gap-4 sm:grid-cols-2">
+      {% for item in section.items %}
+        <div class="rounded-xl border border-line bg-surface p-5">
+          <div class="flex items-start justify-between gap-3">
+            <div>
+              <h3 class="font-mono text-sm font-semibold text-ink">{{ item.name }}</h3>
+              <p class="mt-1 text-xs text-muted">{{ item.issuer }}</p>
+            </div>
+            {% if item.is_expired %}
+              <span class="rounded-full border border-line px-2 py-0.5 font-mono text-[11px] text-muted">kedaluwarsa</span>
+            {% endif %}
+          </div>
+          <p class="mt-3 font-mono text-[11px] text-muted">
+            {{ item.issued_label }}{% if item.expiry_label %} — {{ item.expiry_label }}{% else %} — berlaku selamanya{% endif %}
+          </p>
+          {% if item.credential_url %}
+            <a href="{{ item.credential_url }}" rel="noopener" class="mt-3 inline-block font-mono text-xs text-accent hover:opacity-80">
+              Lihat kredensial →
+            </a>
+          {% endif %}
+        </div>
+      {% else %}
+        <p class="rounded-xl border border-dashed border-line p-6 text-center font-mono text-sm text-muted sm:col-span-2">Belum ada sertifikasi.</p>
+      {% endfor %}
+    </div>
+  </div>
+</section>

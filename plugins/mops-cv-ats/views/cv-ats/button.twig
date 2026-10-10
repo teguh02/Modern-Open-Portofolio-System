@@ -1,0 +1,27 @@
+{#
+  Disuntik oleh plugin ke zona `home_after_sections` — tema tidak tahu apa pun
+  soal tombol ini. Kelas memakai design token tema (bg-surface, border-line,
+  text-ink, bg-brand) sehingga tampilannya ikut menyesuaikan tema aktif.
+#}
+<section class="mx-auto max-w-content px-5 pb-16 pt-4 sm:px-6" data-plugin="mops-cv-ats" data-zone="{{ zone }}">
+  <div class="flex flex-col items-start gap-5 rounded-xl border border-line bg-surface p-6 sm:flex-row sm:items-center sm:justify-between">
+    <div>
+      <p class="font-mono text-xs uppercase tracking-widest text-accent">Curriculum Vitae</p>
+      <h2 class="mt-1 text-lg font-semibold text-ink">Unduh CV dalam format PDF</h2>
+      {% if hint %}
+        <p class="mt-1 text-sm text-muted">
+          Satu kolom, teks asli tanpa tabel atau grafis — siap dibaca sistem ATS rekrutmen.
+        </p>
+      {% endif %}
+    </div>
+
+    <a href="{{ download_url }}"
+       download
+       class="inline-flex shrink-0 items-center gap-2 rounded-lg border border-brand/40 bg-brand/10 px-4 py-2 font-mono text-sm text-ink transition hover:bg-brand/20">
+      <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M12 3v12m0 0 4.5-4.5M12 15l-4.5-4.5M4 20h16"/>
+      </svg>
+      Download CV (ATS PDF)
+    </a>
+  </div>
+</section>

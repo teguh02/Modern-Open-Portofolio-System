@@ -1,0 +1,116 @@
+{% extends 'admin/layout.twig' %}
+{% import 'admin/partials/icon.twig' as icons %}
+
+{% block content %}
+  <form action="/admin/settings" method="post" class="grid gap-5 lg:grid-cols-3">
+    {{ csrf_field() }}
+
+    <div class="space-y-5 lg:col-span-2">
+      {# ------------------------------------------------------- site info #}
+      <div class="card">
+        <div class="card-header"><h2 class="text-sm font-semibold text-ink">Site</h2></div>
+        <div class="card-body grid grid-cols-12 gap-4">
+          <div class="col-span-12 sm:col-span-8">
+            {% include 'admin/partials/field.twig' with {field: {name: 'site_name', label: 'Nama Situs', type: 'text', required: true}, name: 'site_name', value: values.site_name, errors: errors.site_name|default([])} only %}
+          </div>
+          <div class="col-span-12 sm:col-span-4">
+            {% include 'admin/partials/field.twig' with {field: {name: 'locale', label: 'Bahasa', type: 'select', options: {'id': 'Indonesia', 'en': 'English'}}, name: 'locale', value: values.locale, errors: errors.locale|default([])} only %}
+          </div>
+          <div class="col-span-12 sm:col-span-8">
+            {% include 'admin/partials/field.twig' with {field: {name: 'site_tagline', label: 'Tagline', type: 'text'}, name: 'site_tagline', value: values.site_tagline, errors: errors.site_tagline|default([])} only %}
+          </div>
+          <div class="col-span-12 sm:col-span-4">
+            {% include 'admin/partials/field.twig' with {field: {name: 'posts_per_page', label: 'Tulisan per halaman', type: 'number', min: 1, max: 50, hint: 'Blog saja (10/halaman disarankan)'}, name: 'posts_per_page', value: values.posts_per_page, errors: errors.posts_per_page|default([])} only %}
+          </div>
+          <div class="col-span-12">
+            {% include 'admin/partials/field.twig' with {field: {name: 'site_description', label: 'Deskripsi Situs', type: 'text'}, name: 'site_description', value: values.site_description, errors: errors.site_description|default([])} only %}
+          </div>
+        </div>
+      </div>
+
+      {# -------------------------------------------------------- sections #}
+      <div class="card">
+        <div class="card-header">
+          <div>
+            <h2 class="text-sm font-semibold text-ink">Homepage Sections</h2>
+            <p class="text-xs text-muted">Toggle visibilitas. Bagian tanpa data otomatis disembunyikan.</p>
+          </div>
+        </div>
+        <div class="table-wrap">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Section</th>
+                <th>Limit</th>
+                <th>Data</th>
+                <th>Status</th>
+                <th class="text-right">Tampil</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for section in sections %}
+                <tr>
+                  <td>
+                    <p class="font-medium text-ink">{{ section.title }}</p>
+                    <p class="text-xs text-muted">{{ section.id }}{{ section.more_url ? ' · ' ~ section.more_url : '' }}</p>
+                  </td>
+                  <td class="text-muted">{{ section.limit ? section.limit ~ ' item' : 'semua' }}</td>
+                  <td class="text-muted">{{ section.total }}</td>
+                  <td>
+                    {% if section.always_visible %}
+                      <span class="pill bg-indigo-100 text-indigo-700">always on</span>
+                    {% elseif section.enabled %}
+                      <span class="pill bg-green-100 text-green-700">on</span>
+                    {% else %}
+                      <span class="pill bg-slate-100 text-slate-600">off</span>
+                    {% endif %}
+                  </td>
+                  <td class="text-right">
+                    {% if section.has_toggle %}
+                      <label class="inline-flex cursor-pointer items-center gap-2">
+                        <input type="checkbox" name="sections[{{ section.id }}]" value="1" {{ section.enabled ? 'checked' : '' }}
+                               class="peer sr-only">
+                        <span class="relative h-5 w-9 rounded-full bg-slate-300 transition peer-checked:bg-brand
+                                     after:absolute after:left-0.5 after:top-0.5 after:h-4 after:w-4 after:rounded-full after:bg-white after:transition
+                                     peer-checked:after:translate-x-4"></span>
+                        <span class="text-xs {{ section.visible ? 'text-green-700' : 'text-muted' }}">
+                          {{ section.visible ? 'visible' : 'hidden' }}
+                        </span>
+                      </label>
+                    {% else %}
+                      <span class="text-xs text-muted">—</span>
+                    {% endif %}
+                  </td>
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+        <div class="card-body border-t border-line text-xs text-muted">
+          Urutan bagian dan limit per bagian dikunci di core (Section Registry) dan tidak bisa diubah dari admin —
+          lihat <code>docs/superpowers/specs/2026-10-10-homepage-sections-design.md</code>.
+        </div>
+      </div>
+    </div>
+
+    <div class="space-y-5">
+      <div class="card">
+        <div class="card-header"><h2 class="text-sm font-semibold text-ink">Save</h2></div>
+        <div class="card-body space-y-3">
+          <button type="submit" class="btn-primary w-full">{{ icons.svg('check', 'h-4 w-4') }} Simpan</button>
+          <p class="text-xs text-muted">Setelan tersimpan di tabel <code>settings</code> (key/value).</p>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header"><h2 class="text-sm font-semibold text-ink">Instalasi</h2></div>
+        <div class="card-body space-y-2 text-xs text-muted">
+          <p>Versi: <span class="font-medium text-ink">MOPS {{ app_version }}</span></p>
+          <p>Environment: <span class="font-medium text-ink">{{ app.env }}</span></p>
+          <p>Tema aktif: <span class="font-medium text-ink">{{ theme.name }}</span></p>
+          <a href="/admin/themes" class="t-link">Kelola tema</a>
+        </div>
+      </div>
+    </div>
+  </form>
+{% endblock %}

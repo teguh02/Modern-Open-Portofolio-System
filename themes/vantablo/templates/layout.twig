@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="{{ site.locale|default('id') }}" class="scroll-smooth">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}{{ page.title|default(site.name) }}{% if site.tagline and page.title is not defined %} — {{ site.tagline }}{% endif %}{% endblock %}</title>
+  {% if page.meta_description|default('') %}
+    <meta name="description" content="{{ page.meta_description }}">
+  {% endif %}
+  <meta property="og:title" content="{{ page.title|default(site.name) }}">
+  <meta property="og:type" content="website">
+  {% if page.canonical|default('') %}<link rel="canonical" href="{{ page.canonical }}">{% endif %}
+  <link rel="stylesheet" href="{{ asset('css/app.css') }}">
+  <link rel="stylesheet" href="{{ theme_asset('theme.css') }}">
+  <script defer src="{{ asset('js/app.js') }}"></script>
+
+  {# Injeksi plugin #1 (zona tema): head, sebelum </head>. #}
+  {{ render_hook('theme_head', { path: current_path, page: page|default({}), user: auth_user }) }}
+</head>
+
+<body class="min-h-screen bg-bg font-sans text-ink antialiased">
+{% set zone_context = { path: current_path, page: page|default({}), site: site, user: auth_user } %}
+{# Injeksi plugin #2 (zona tema): tepat setelah <body> dibuka. #}
+{{ render_hook('theme_body_open', zone_context) }}
+
+{% set profile = portfolio.profile|default({}) %}
+{% set initials = profile.full_name ? profile.full_name|split(' ')|slice(0, 2)|map(w => w|slice(0, 1))|join('') : 'MO' %}
+
+<header class="sticky top-0 z-50 border-b border-line bg-bg/85 backdrop-blur-md" x-data="drawer">
+  <div class="mx-auto flex h-16 max-w-content items-center justify-between px-5">
+    <a href="/" class="group flex items-center gap-3">
+      <span class="grid h-9 w-9 place-items-center rounded-lg bg-brand font-mono text-sm font-bold text-brandink">{{ initials|upper }}</span>
+      <span class="font-mono text-sm font-medium tracking-tight text-ink">
+        {{ site.name }}<span class="text-accent">.</span>
+      </span>
+    </a>
+
+    <nav class="hidden items-center gap-8 md:flex">
+      <a href="/" class="font-mono text-sm text-muted transition hover:text-ink">Beranda</a>
+      {% for item in nav %}
+        <a href="{{ item.url }}" class="font-mono text-sm text-muted transition hover:text-ink">{{ item.title }}</a>
+      {% endfor %}
+      {% if profile.email %}
+        <a href="mailto:{{ profile.email }}" class="rounded-lg border border-brand/40 bg-brand/10 px-4 py-2 font-mono text-sm text-ink transition hover:bg-brand/20">
+          Hire Me
+        </a>
+      {% endif %}
+    </nav>
+
+    <button type="button" class="grid h-10 w-10 place-items-center rounded-lg border border-line bg-surface2 text-ink transition hover:border-brand/50 md:hidden"
+            @click="toggle()" :aria-expanded="open" aria-label="Buka menu navigasi">
+      <svg x-show="!open" class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+        <path d="M4 7h16M4 12h16M4 17h16"/>
+      </svg>
+      <svg x-show="open" x-cloak class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+        <path d="M6 6l12 12M18 6 6 18"/>
+      </svg>
+    </button>
+  </div>
+
+  <div x-show="open" x-cloak class="border-t border-line bg-surface md:hidden">
+    <nav class="mx-auto flex max-w-content flex-col px-5 py-3 font-mono text-sm">
+      <a href="/" @click="close()" class="py-3 text-muted transition hover:text-ink">Beranda</a>
+      {% for item in nav %}
+        <a href="{{ item.url }}" @click="close()" class="py-3 text-muted transition hover:text-ink">{{ item.title }}</a>
+      {% endfor %}
+    </nav>
+  </div>
+</header>
+
+<main>
+  {# Injeksi plugin: awal konten utama, di semua halaman publik. #}
+  {{ render_hook('main_before_content', zone_context) }}
+  {% block content %}{% endblock %}
+  {# Injeksi plugin: akhir konten utama, di semua halaman publik. #}
+  {{ render_hook('main_after_content', zone_context) }}
+</main>
+
+<footer class="border-t border-line py-10">
+  <div class="mx-auto flex max-w-content flex-col gap-3 px-5 font-mono text-xs text-muted sm:flex-row sm:items-center sm:justify-between">
+    <p>{{ site.name }} © {{ 'now'|date('Y') }}{{ profile.full_name ? ' · ' ~ profile.full_name : '' }}</p>
+    <p class="flex flex-wrap items-center gap-4">
+      {% for link in profile.social_links|default([]) %}
+        <a href="{{ link.url }}" class="transition hover:text-accent" rel="noopener">{{ link.label ?: link.url }}</a>
+      {% endfor %}
+      <span>Powered by MOPS</span>
+    </p>
+  </div>
+</footer>
+
+{# Injeksi plugin #3 (zona tema): footer dokumen, setelah elemen <footer>. #}
+{{ render_hook('theme_footer', zone_context) }}
+
+</body>
+</html>

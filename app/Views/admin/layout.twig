@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <title>{{ page.title|default('Dashboard') }} — {{ site.name }} Admin</title>
+  <link rel="stylesheet" href="{{ asset('css/app.css') }}">
+  <script defer src="{{ asset('js/app.js') }}"></script>
+</head>
+<body class="min-h-full bg-bg text-ink" x-data="drawer">
+
+{% import 'admin/partials/icon.twig' as icons %}
+
+{# ----------------------------------------------------------- sidebar #}
+<aside class="fixed inset-y-0 left-0 z-40 hidden w-[260px] flex-col bg-slate-900 lg:flex">
+  {% include 'admin/partials/sidebar.twig' %}
+</aside>
+
+{# mobile drawer #}
+<div x-show="open" x-cloak class="fixed inset-0 z-50 lg:hidden">
+  <div class="absolute inset-0 bg-slate-900/50" @click="close()"></div>
+  <aside class="absolute inset-y-0 left-0 flex w-[260px] flex-col bg-slate-900">
+    {% include 'admin/partials/sidebar.twig' %}
+  </aside>
+</div>
+
+<div class="lg:pl-[260px]">
+  {# ----------------------------------------------------------- topbar #}
+  <header class="sticky top-0 z-30 border-b border-line bg-surface/95 backdrop-blur">
+    <div class="flex h-16 items-center gap-3 px-4 sm:px-6">
+      <button type="button" class="grid h-10 w-10 place-items-center rounded-lg border border-line text-muted lg:hidden"
+              @click="toggle()" aria-label="Toggle navigation">
+        {{ icons.svg('menu') }}
+      </button>
+
+      <div class="min-w-0 flex-1">
+        <nav class="flex items-center gap-2 text-xs text-muted" aria-label="Breadcrumb">
+          <a href="/admin" class="hover:text-brand">Admin</a>
+          {% for crumb in page.crumbs|default([]) %}
+            <span>/</span>
+            {% if crumb.href is defined and crumb.href %}
+              <a href="{{ crumb.href }}" class="hover:text-brand">{{ crumb.label }}</a>
+            {% else %}
+              <span class="font-medium text-ink">{{ crumb.label }}</span>
+            {% endif %}
+          {% endfor %}
+        </nav>
+        <h1 class="truncate text-base font-semibold text-ink">{{ page.title|default('Dashboard') }}</h1>
+      </div>
+
+      <form action="/admin/experiences" method="get" class="hidden md:block">
+        <label class="relative block">
+          <span class="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-muted">{{ icons.svg('search', 'h-4 w-4') }}</span>
+          <input type="search" name="q" value="" placeholder="Search…"
+                 class="field w-56 pl-9" aria-label="Search">
+        </label>
+      </form>
+
+      <div class="relative" x-data="dropdown">
+        <button type="button" class="btn-secondary btn-sm" @click="toggle()" :aria-expanded="open">
+          <span class="grid h-6 w-6 place-items-center rounded-full bg-brand text-[11px] font-semibold text-brandink">
+            {{ current_user.initial|default('A') }}
+          </span>
+          <span class="hidden sm:inline">{{ current_user.name|default('Admin') }}</span>
+        </button>
+        <div x-show="open" x-cloak @click.outside="close()"
+             class="absolute right-0 mt-2 w-48 overflow-hidden rounded-lg border border-line bg-surface py-1 shadow-lg">
+          <a href="/admin/settings" class="block px-4 py-2 text-sm hover:bg-surface2">Settings</a>
+          <a href="/" target="_blank" rel="noopener" class="block px-4 py-2 text-sm hover:bg-surface2">Lihat situs</a>
+          <form action="/admin/logout" method="post" class="border-t border-line">
+            {{ csrf_field() }}
+            <button type="submit" class="block w-full px-4 py-2 text-left text-sm text-red-600 hover:bg-red-50">Logout</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  {# ------------------------------------------------------------- main #}
+  <main class="px-4 py-6 sm:px-6">
+    {% include 'admin/partials/flashes.twig' %}
+    {% block content %}{% endblock %}
+  </main>
+
+  <footer class="border-t border-line px-4 py-5 text-xs text-muted sm:px-6">
+    {{ site.name }} Admin · MOPS {{ app_version }} · {{ app.env|capitalize }}
+  </footer>
+</div>
+
+</body>
+</html>

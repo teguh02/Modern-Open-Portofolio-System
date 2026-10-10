@@ -1,0 +1,41 @@
+{% set grouped = {} %}
+{% for item in section.items %}
+  {% set key = item.category ?: 'Lainnya' %}
+  {% set grouped = grouped|merge({(key): (grouped[key]|default([]))|merge([item])}) %}
+{% endfor %}
+
+<section id="keahlian" class="border-b border-line py-16 md:py-24">
+  <div class="mx-auto max-w-content px-6">
+    <div class="flex flex-wrap items-end justify-between gap-4">
+      {% if not section.hide_title|default(false) %}
+        <h2 class="font-serif text-2xl tracking-tight text-ink md:text-3xl">{{ section.title }}</h2>
+      {% endif %}
+      {% if section.more_url %}
+        <a href="{{ section.more_url }}" class="lumica-underline text-sm text-muted">Lihat selengkapnya</a>
+      {% endif %}
+    </div>
+
+    <div class="mt-12 space-y-10">
+      {% for category, items in grouped %}
+        <div class="lumica-rule pt-8">
+          <h3 class="font-serif text-lg text-ink">{{ category }}</h3>
+          <ul class="mt-5 grid gap-x-10 gap-y-4 sm:grid-cols-2">
+            {% for skill in items %}
+              <li>
+                <div class="flex items-baseline justify-between gap-3">
+                  <span class="text-sm text-ink">{{ skill.name }}</span>
+                  <span class="text-xs text-muted">{{ skill.years ? skill.years ~ ' thn' : skill.level ~ '%' }}</span>
+                </div>
+                <div class="mt-2 h-px w-full bg-line">
+                  <div class="h-px bg-brand" style="width: {{ skill.level }}%"></div>
+                </div>
+              </li>
+            {% endfor %}
+          </ul>
+        </div>
+      {% else %}
+        <p class="text-sm text-muted">Belum ada keahlian.</p>
+      {% endfor %}
+    </div>
+  </div>
+</section>

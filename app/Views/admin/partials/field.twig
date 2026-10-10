@@ -1,0 +1,133 @@
+{% import 'admin/partials/icon.twig' as icons %}
+{% set type = field.type|default('text') %}
+{% set invalid = errors|length > 0 %}
+
+<label class="label" for="field-{{ name }}">{{ field.label|default(name) }}{% if field.required|default(false) %} <span class="text-red-600">*</span>{% endif %}</label>
+
+{% if type == 'textarea' %}
+  <div x-data="charCounter('{{ value|default('')|e('js') }}')">
+    <textarea id="field-{{ name }}" name="{{ name }}" rows="{{ field.rows|default(4) }}"
+              @input="update($event)"
+              class="field {{ invalid ? 'field-error' : '' }}"
+              placeholder="{{ field.placeholder|default('') }}">{{ value }}</textarea>
+    <p class="hint"><span x-text="count"></span> karakter</p>
+  </div>
+
+{% elseif type == 'richtext' %}
+  <div x-data="richEditor">
+    <div class="mb-2 flex flex-wrap items-center gap-1 rounded-lg border border-line bg-surface2 p-1.5">
+      <button type="button" class="btn-secondary btn-sm" @click="wrap('<strong>', '</strong>')">B</button>
+      <button type="button" class="btn-secondary btn-sm italic" @click="wrap('<em>', '</em>')">I</button>
+      <button type="button" class="btn-secondary btn-sm" @click="wrap('<h2>', '</h2>')">H2</button>
+      <button type="button" class="btn-secondary btn-sm" @click="wrap('<h3>', '</h3>')">H3</button>
+      <button type="button" class="btn-secondary btn-sm" @click="wrap('<ul>\n  <li>', '</li>\n</ul>')">List</button>
+      <button type="button" class="btn-secondary btn-sm" @click="wrap('<blockquote>', '</blockquote>')">Quote</button>
+      <button type="button" class="btn-secondary btn-sm" @click="wrap('<a href=&quot;/&quot;>', '</a>')">Link</button>
+      <span class="ml-auto text-[11px] text-muted">HTML ringan, disanitasi saat disimpan</span>
+    </div>
+    <textarea id="field-{{ name }}" name="{{ name }}" rows="{{ field.rows|default(12) }}" x-ref="textarea"
+              class="field font-mono text-xs {{ invalid ? 'field-error' : '' }}">{{ value }}</textarea>
+  </div>
+
+{% elseif type == 'list' %}
+  <textarea id="field-{{ name }}" name="{{ name }}" rows="{{ field.rows|default(4) }}"
+            class="field {{ invalid ? 'field-error' : '' }}"
+            placeholder="Satu baris per item">{{ value }}</textarea>
+
+{% elseif type == 'select' %}
+  <select id="field-{{ name }}" name="{{ name }}" class="field {{ invalid ? 'field-error' : '' }}">
+    {% if not field.required|default(false) %}<option value="">— pilih —</option>{% endif %}
+    {% for optionValue, optionLabel in field.options|default({}) %}
+      <option value="{{ optionValue }}" {{ (value|default('')) == optionValue ? 'selected' : '' }}>{{ optionLabel }}</option>
+    {% endfor %}
+  </select>
+
+{% elseif type == 'toggle' %}
+  <label class="flex cursor-pointer items-center gap-3" for="field-{{ name }}">
+    <input type="checkbox" id="field-{{ name }}" name="{{ name }}" value="1" {{ value ? 'checked' : '' }}
+           class="peer sr-only">
+    <span class="relative h-6 w-11 rounded-full bg-slate-300 transition peer-checked:bg-brand
+                 after:absolute after:left-0.5 after:top-0.5 after:h-5 after:w-5 after:rounded-full after:bg-white after:transition
+                 peer-checked:after:translate-x-5"></span>
+    <span class="text-sm text-muted">{{ field.hint|default('Aktif / tidak') }}</span>
+  </label>
+
+{% elseif type == 'range' %}
+  <div x-data="rangeField({{ value|default(field.default|default(0))|e('js') }})">
+    <input type="range" id="field-{{ name }}" name="{{ name }}" min="{{ field.min|default(0) }}" max="{{ field.max|default(100) }}"
+           x-model="value" class="w-full accent-brand" @input="set($event)">
+    <p class="hint"><span x-text="value"></span> / {{ field.max|default(100) }}</p>
+  </div>
+
+{% elseif type == 'date' or type == 'datetime' %}
+  <input type="{{ type == 'date' ? 'date' : 'datetime-local' }}"
+         id="field-{{ name }}" name="{{ name }}"
+         value="{{ value ? (type == 'date' ? value|slice(0, 10) : value|replace({' ': 'T'})|slice(0, 16)) : '' }}"
+         class="field {{ invalid ? 'field-error' : '' }}">
+
+{% elseif type == 'number' %}
+  <input type="number" id="field-{{ name }}" name="{{ name }}" value="{{ value }}"
+         min="{{ field.min|default('') }}" max="{{ field.max|default('') }}" step="{{ field.step|default(1) }}"
+         class="field {{ invalid ? 'field-error' : '' }}">
+
+{% elseif type == 'media' %}
+  <div x-data="mediaPicker('/admin/media/library.json')" data-value="{{ value }}" class="space-y-2">
+    <input type="hidden" name="{{ name }}" :value="value" x-ref="path">
+    <div class="flex items-start gap-3">
+      <div class="grid h-20 w-20 shrink-0 place-items-center overflow-hidden rounded-lg border border-line bg-surface2">
+        <template x-if="preview">
+          <img :src="preview" alt="" class="h-full w-full object-cover">
+        </template>
+        <template x-if="!preview">
+          <span class="text-muted">{{ icons.svg('photo', 'h-6 w-6') }}</span>
+        </template>
+      </div>
+      <div class="flex-1 space-y-2">
+        <div class="flex flex-wrap gap-2">
+          <button type="button" class="btn-secondary btn-sm" @click="load()">Media library</button>
+          <button type="button" class="btn-text btn-sm" @click="clear()">Kosongkan</button>
+        </div>
+        <input type="file" name="{{ name }}_upload" accept="image/*,.pdf" class="field py-1.5 text-xs"
+               x-data="uploadPreview" @change="pick($event)">
+        <p class="text-[11px] text-muted" x-text="value ? value : 'Belum ada file dipilih'"></p>
+      </div>
+    </div>
+
+    <div x-show="open" x-cloak class="fixed inset-0 z-50 grid place-items-center bg-slate-900/50 p-4">
+      <div class="max-h-[80vh] w-full max-w-3xl overflow-hidden rounded-lg bg-surface shadow-xl">
+        <div class="flex items-center justify-between border-b border-line px-5 py-3">
+          <h3 class="text-sm font-semibold text-ink">Media library</h3>
+          <button type="button" class="btn-text btn-sm" @click="open = false">{{ icons.svg('x', 'h-4 w-4') }}</button>
+        </div>
+        <div class="max-h-[60vh] overflow-y-auto p-4">
+          <p x-show="loading" class="py-6 text-center text-sm text-muted">Memuat…</p>
+          <p x-show="error" class="py-6 text-center text-sm text-red-600" x-text="error"></p>
+          <div class="grid grid-cols-2 gap-3 sm:grid-cols-4">
+            <template x-for="item in items" :key="item.id">
+              <button type="button" class="overflow-hidden rounded-lg border border-line text-left hover:border-brand"
+                      @click="choose(item)">
+                <img :src="item.url" :alt="item.alt" class="h-24 w-full object-cover">
+                <span class="block truncate px-2 py-1 text-[11px] text-muted" x-text="item.name"></span>
+              </button>
+            </template>
+          </div>
+          <p x-show="!loading && !error && items.length === 0" class="py-6 text-center text-sm text-muted">
+            Belum ada media. Unggah dari halaman Media.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+{% else %}
+  <input type="{{ type == 'email' ? 'email' : (type == 'url' ? 'url' : 'text') }}"
+         id="field-{{ name }}" name="{{ name }}" value="{{ value }}"
+         class="field {{ invalid ? 'field-error' : '' }}"
+         placeholder="{{ field.placeholder|default('') }}">
+{% endif %}
+
+{% if invalid %}
+  {% for message in errors %}<p class="error-text">{{ message }}</p>{% endfor %}
+{% elseif field.hint|default('') and type != 'toggle' %}
+  <p class="hint">{{ field.hint }}</p>
+{% endif %}
