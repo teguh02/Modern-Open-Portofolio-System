@@ -122,11 +122,15 @@ $main = static function (SlimApp $app, App $kernel): void {
         $group->post('/settings', Admin\SettingsController::class . ':update');
 
         $group->get('/themes', Admin\ThemeController::class . ':index');
+        $group->post('/themes/upload', Admin\ThemeController::class . ':upload');
         $group->post('/themes/{slug}/activate', Admin\ThemeController::class . ':activate');
+        $group->post('/themes/{slug}/delete', Admin\ThemeController::class . ':destroy');
 
         $group->get('/plugins', Admin\PluginController::class . ':index');
+        $group->post('/plugins/upload', Admin\PluginController::class . ':upload');
         $group->post('/plugins/{slug}/activate', Admin\PluginController::class . ':activate');
         $group->post('/plugins/{slug}/deactivate', Admin\PluginController::class . ':deactivate');
+        $group->post('/plugins/{slug}/delete', Admin\PluginController::class . ':destroy');
 
         $group->get('/backup', Admin\BackupController::class . ':index');
         $group->post('/backup', Admin\BackupController::class . ':create');

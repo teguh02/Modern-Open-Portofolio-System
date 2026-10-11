@@ -11,6 +11,7 @@
 !/storage/cache/.gitkeep
 /storage/backups/*
 !/storage/backups/.gitkeep
+/storage/tmp/
 /public/assets/css/app.css
 /public/assets/js/alpine*.js
 /public/assets/fonts/*

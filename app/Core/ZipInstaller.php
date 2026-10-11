@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Mops\Core;
 
+use Psr\Http\Message\UploadedFileInterface;
 use RuntimeException;
 use Throwable;
 use ZipArchive;
@@ -57,6 +58,59 @@ final class ZipInstaller
             return $slug;
         } finally {
             Paths::deleteTree($extractDir);
+        }
+    }
+
+    /**
+     * Validate an uploaded zip (extension + real MIME) and install it from a
+     * staged copy under the tmp root. The staged copy is always removed.
+     *
+     * @param string $manifest 'plugin.json' or 'theme.json'
+     * @return string the installed slug
+     */
+    public function installUpload(UploadedFileInterface $file, string $targetRoot, string $manifest): string
+    {
+        if ($file->getError() !== UPLOAD_ERR_OK) {
+            throw new RuntimeException('Upload zip gagal — periksa ukuran file dan konfigurasi server.');
+        }
+
+        $clientName = (string) $file->getClientFilename();
+
+        if (strtolower(pathinfo($clientName, PATHINFO_EXTENSION)) !== 'zip') {
+            throw new RuntimeException('File harus berupa arsip .zip.');
+        }
+
+        $staged = $this->tmpRoot . '/upload-' . bin2hex(random_bytes(6)) . '.zip';
+        // Copy rather than rename: PHP's upload tmp dir may live on a different
+        // filesystem (tmpfs) than storage/, where rename() fails with EXDEV.
+        $resource = $file->getStream()->detach();
+
+        if (!is_resource($resource)) {
+            throw new RuntimeException('Stream upload tidak valid.');
+        }
+
+        $target = fopen($staged, 'wb');
+
+        if ($target === false || stream_copy_to_stream($resource, $target) === false) {
+            if (is_resource($target)) {
+                fclose($target);
+            }
+
+            throw new RuntimeException('Gagal menyalin file zip yang diunggah.');
+        }
+
+        fclose($target);
+
+        try {
+            $mime = Uploader::detectMime($staged);
+
+            if (!in_array($mime, ['application/zip', 'application/x-zip', 'application/x-zip-compressed'], true)) {
+                throw new RuntimeException("Tipe file {$mime} bukan zip yang valid.");
+            }
+
+            return $this->install($staged, $targetRoot, $manifest);
+        } finally {
+            @unlink($staged);
         }
     }
 

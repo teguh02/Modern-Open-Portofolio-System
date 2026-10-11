@@ -11,6 +11,7 @@ use Mops\Core\Hook;
 use Mops\Core\Paths;
 use Mops\Core\Settings;
 use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\UploadedFileInterface;
 use Slim\App as SlimApp;
 use Slim\Psr7\Factory\ServerRequestFactory;
 
@@ -130,10 +131,23 @@ abstract class ApplicationTestCase extends TestCase
     }
 
     /**
+     * POST with multipart-style file uploads (attached directly — the CSRF
+     * token still rides in the parsed body).
+     *
+     * @param array<string, mixed>                                $data
+     * @param array<string, UploadedFileInterface>                $files
+     */
+    protected function postUpload(string $path, array $data, array $files): ResponseInterface
+    {
+        return $this->handle('POST', $path, $data, true, [], $files);
+    }
+
+    /**
      * @param array<string, mixed>  $data
      * @param array<string, string> $headers
+     * @param array<string, UploadedFileInterface> $files
      */
-    protected function handle(string $method, string $path, array $data = [], bool $withToken = true, array $headers = []): ResponseInterface
+    protected function handle(string $method, string $path, array $data = [], bool $withToken = true, array $headers = [], array $files = []): ResponseInterface
     {
         $_SERVER['REQUEST_URI'] = $path;
         $_SERVER['REQUEST_METHOD'] = $method;
@@ -142,6 +156,10 @@ abstract class ApplicationTestCase extends TestCase
 
         foreach ($headers as $name => $value) {
             $request = $request->withHeader($name, $value);
+        }
+
+        if ($files !== []) {
+            $request = $request->withUploadedFiles($files);
         }
 
         if ($method === 'POST') {

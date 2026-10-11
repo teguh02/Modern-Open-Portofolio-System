@@ -8,6 +8,24 @@
     Tema hanya merender data: mengganti tema tidak pernah menghapus data.
   </div>
 
+  <div class="card mb-5">
+    <div class="card-header">
+      <h2 class="text-sm font-semibold text-ink">Unggah Tema (ZIP)</h2>
+    </div>
+    <form action="/admin/themes/upload" method="post" enctype="multipart/form-data" class="card-body flex flex-wrap items-end gap-3">
+      {{ csrf_field() }}
+      <div class="flex-1">
+        <label for="theme_zip" class="mb-1 block text-xs text-muted">File .zip</label>
+        <input type="file" name="theme_zip" id="theme_zip" accept=".zip" required class="w-full text-sm">
+      </div>
+      <button type="submit" class="btn-primary">Unggah &amp; Pasang</button>
+    </form>
+    <p class="card-body border-t border-line text-xs text-muted">
+      ZIP harus berisi satu folder dengan <code>theme.json</code>, atau berkas datar dengan
+      field <code>slug</code> di <code>theme.json</code>. Slug yang sudah ada akan ditolak.
+    </p>
+  </div>
+
   <div class="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
     {% for item in themes %}
       <div class="card flex flex-col">
@@ -37,13 +55,21 @@
             <p class="mt-3 text-xs text-red-600">Template hilang: {{ item.missing_templates|join(', ') }}</p>
           {% endif %}
         </div>
-        <div class="card-body border-t border-line">
+        <div class="card-body border-t border-line flex items-center justify-between gap-2">
           {% if item.is_active %}
-            <button type="button" class="btn-secondary w-full" disabled>Aktif</button>
+            <span class="text-xs text-muted">Tema aktif</span>
+            <button type="button" class="btn-secondary" disabled>Aktif</button>
           {% else %}
+            <form action="/admin/themes/{{ item.slug }}/delete" method="post">
+              {{ csrf_field() }}
+              <button type="submit" class="btn-text text-red-600 hover:bg-red-50"
+                      x-data="confirmButton('Hapus tema {{ item.slug }}? Foldernya ikut terhapus.')" @click="ask($event)">
+                {{ icons.svg('trash', 'h-4 w-4') }}
+              </button>
+            </form>
             <form action="/admin/themes/{{ item.slug }}/activate" method="post">
               {{ csrf_field() }}
-              <button type="submit" class="btn-primary w-full" {{ item.valid ? '' : 'disabled' }}>Aktifkan</button>
+              <button type="submit" class="btn-primary" {{ item.valid ? '' : 'disabled' }}>Aktifkan</button>
             </form>
           {% endif %}
         </div>

@@ -4,13 +4,20 @@ declare(strict_types=1);
 
 namespace Mops\Tests\Feature;
 
+use Mops\Core\Paths;
 use Mops\Tests\ApplicationTestCase;
 use Psr\Http\Message\ServerRequestInterface;
+use Slim\Psr7\UploadedFile;
+use ZipArchive;
 
 final class ExtensionParityTest extends ApplicationTestCase
 {
     protected function tearDown(): void
     {
+        foreach (['plugins/mops-e2e-demo', 'plugins/mops-e2e-active', 'themes/mops-e2e-theme'] as $fixture) {
+            Paths::deleteTree(Paths::make($fixture));
+        }
+
         \Mops\Core\AdminMenu::reset();
 
         parent::tearDown();
@@ -60,5 +67,114 @@ final class ExtensionParityTest extends ApplicationTestCase
 
         $this->assertStringContainsString('form', $this->body($this->get('/admin/demo-post')));
         $this->assertStringContainsString('got:Teguh', $this->body($this->post('/admin/demo-post', ['name' => 'Teguh'])));
+    }
+
+    public function test_admin_can_install_a_plugin_from_zip_and_delete_it(): void
+    {
+        if (!class_exists(ZipArchive::class)) {
+            $this->markTestSkipped('ext-zip tidak tersedia.');
+        }
+
+        $this->install();
+        $this->login();
+
+        $this->assertStringContainsString('plugin_zip', $this->body($this->get('/admin/plugins')));
+
+        $response = $this->postUpload('/admin/plugins/upload', [], [
+            'plugin_zip' => $this->zipUpload('mops-e2e-demo', 'plugin.json', ['main' => 'plugin.php']),
+        ]);
+
+        $this->assertSame(302, $response->getStatusCode(), $this->body($response));
+        $target = Paths::make('plugins/mops-e2e-demo');
+        $this->assertDirectoryExists($target);
+        $this->assertFileExists($target . '/plugin.php');
+
+        // Installing the same slug again is refused without touching the folder.
+        $again = $this->postUpload('/admin/plugins/upload', [], [
+            'plugin_zip' => $this->zipUpload('mops-e2e-demo', 'plugin.json', ['main' => 'plugin.php']),
+        ]);
+        $this->assertSame(302, $again->getStatusCode());
+        $this->assertFileExists($target . '/plugin.php');
+
+        $delete = $this->post('/admin/plugins/mops-e2e-demo/delete', []);
+        $this->assertSame(302, $delete->getStatusCode());
+        $this->assertDirectoryDoesNotExist($target);
+    }
+
+    public function test_deleting_an_active_plugin_is_refused_until_it_is_deactivated(): void
+    {
+        if (!class_exists(ZipArchive::class)) {
+            $this->markTestSkipped('ext-zip tidak tersedia.');
+        }
+
+        $this->install();
+        $this->login();
+
+        $this->postUpload('/admin/plugins/upload', [], [
+            'plugin_zip' => $this->zipUpload('mops-e2e-active', 'plugin.json', ['main' => 'plugin.php']),
+        ]);
+        $this->activatePlugin('mops-e2e-active');
+        $target = Paths::make('plugins/mops-e2e-active');
+
+        $this->post('/admin/plugins/mops-e2e-active/delete', []);
+        $this->assertDirectoryExists($target, 'An active plugin must not be deletable.');
+
+        $this->post('/admin/plugins/mops-e2e-active/deactivate', []);
+        $this->post('/admin/plugins/mops-e2e-active/delete', []);
+        $this->assertDirectoryDoesNotExist($target);
+    }
+
+    public function test_admin_can_install_a_theme_from_zip_and_delete_it(): void
+    {
+        if (!class_exists(ZipArchive::class)) {
+            $this->markTestSkipped('ext-zip tidak tersedia.');
+        }
+
+        $this->install();
+        $this->login();
+
+        $this->assertStringContainsString('theme_zip', $this->body($this->get('/admin/themes')));
+
+        $upload = $this->zipUpload('mops-e2e-theme', 'theme.json', ['name' => 'E2E'], [
+            'templates/layout.twig' => '<html>{% block content %}{% endblock %}</html>',
+            'templates/home.twig' => 'home',
+        ]);
+
+        $response = $this->postUpload('/admin/themes/upload', [], ['theme_zip' => $upload]);
+
+        $this->assertSame(302, $response->getStatusCode(), $this->body($response));
+        $target = Paths::make('themes/mops-e2e-theme');
+        $this->assertDirectoryExists($target);
+        $this->assertFileExists($target . '/templates/home.twig');
+
+        $delete = $this->post('/admin/themes/mops-e2e-theme/delete', []);
+        $this->assertSame(302, $delete->getStatusCode());
+        $this->assertDirectoryDoesNotExist($target);
+    }
+
+    /**
+     * A staged zip wrapped as an uploaded file, the way the browser would send it.
+     *
+     * @param array<string, mixed> $manifest
+     * @param array<string, string> $extraEntries
+     */
+    private function zipUpload(string $slug, string $manifest, array $manifestData, array $extraEntries = []): UploadedFile
+    {
+        $path = $this->tempDir() . '/fixture.zip';
+        $zip = new ZipArchive();
+        $zip->open($path, ZipArchive::CREATE | ZipArchive::OVERWRITE);
+        $zip->addFromString($slug . '/' . $manifest, (string) json_encode($manifestData));
+
+        foreach ($extraEntries as $name => $content) {
+            $zip->addFromString($slug . '/' . $name, $content);
+        }
+
+        if ($manifest === 'plugin.json') {
+            $zip->addFromString($slug . '/plugin.php', '<?php // e2e fixture');
+        }
+
+        $zip->close();
+
+        return new UploadedFile($path, $slug . '.zip', 'application/zip', (int) filesize($path), \UPLOAD_ERR_OK);
     }
 }

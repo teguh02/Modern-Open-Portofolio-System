@@ -5,14 +5,18 @@ declare(strict_types=1);
 namespace Mops\Controllers\Admin;
 
 use Mops\Core\Auth;
+use Mops\Core\Paths;
 use Mops\Core\SectionRegistry;
 use Mops\Core\Settings;
 use Mops\Core\Session;
 use Mops\Core\ThemeManager;
 use Mops\Core\View;
+use Mops\Core\ZipInstaller;
 use Mops\Repositories\ActivityRepository;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Message\UploadedFileInterface;
+use RuntimeException;
 use Throwable;
 
 /**
@@ -29,6 +33,7 @@ final class ThemeController extends AdminController
         ActivityRepository $activity,
         SectionRegistry $registry,
         private ThemeManager $themes,
+        private ZipInstaller $installer,
     ) {
         parent::__construct($view, $session, $auth, $settings, $activity, $registry);
     }
@@ -61,6 +66,43 @@ final class ThemeController extends AdminController
             $this->view->refresh();
             $this->activity->log('theme_activate', "Tema diaktifkan: {$slug}", $this->auth->id(), 'theme');
             $this->flash('success', "Tema '{$slug}' diaktifkan.");
+        } catch (Throwable $e) {
+            $this->flash('error', $e->getMessage());
+        }
+
+        return $this->redirect($response, '/admin/themes');
+    }
+
+    public function upload(ServerRequestInterface $request, ResponseInterface $response): ResponseInterface
+    {
+        $files = (array) $request->getUploadedFiles();
+        $file = $files['theme_zip'] ?? null;
+
+        try {
+            if (!$file instanceof UploadedFileInterface) {
+                throw new RuntimeException('Pilih file zip tema.');
+            }
+
+            $slug = $this->installer->installUpload($file, Paths::make('themes'), 'theme.json');
+            $this->themes->flush();
+            $this->activity->log('theme_install', "Tema diinstal dari zip: {$slug}", $this->auth->id(), 'theme');
+            $this->flash('success', "Tema '{$slug}' berhasil diinstal.");
+        } catch (Throwable $e) {
+            $this->flash('error', $e->getMessage());
+        }
+
+        return $this->redirect($response, '/admin/themes');
+    }
+
+    public function destroy(ServerRequestInterface $request, ResponseInterface $response, array $args): ResponseInterface
+    {
+        $slug = (string) ($args['slug'] ?? '');
+
+        try {
+            $this->themes->delete($slug);
+            $this->view->refresh();
+            $this->activity->log('theme_delete', "Tema dihapus: {$slug}", $this->auth->id(), 'theme');
+            $this->flash('success', "Tema '{$slug}' dihapus.");
         } catch (Throwable $e) {
             $this->flash('error', $e->getMessage());
         }

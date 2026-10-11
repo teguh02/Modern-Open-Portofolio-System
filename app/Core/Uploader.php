@@ -66,7 +66,7 @@ final class Uploader
             return null;
         }
 
-        $mime = $this->detectMime($temporary);
+        $mime = self::detectMime($temporary);
 
         if (!in_array($mime, $mimes, true)) {
             $this->errors[] = "Tipe file {$mime} tidak diizinkan.";
@@ -149,7 +149,7 @@ final class Uploader
         ];
     }
 
-    private function detectMime(string $path): string
+    public static function detectMime(string $path): string
     {
         if (function_exists('finfo_open')) {
             $finfo = finfo_open(FILEINFO_MIME_TYPE);

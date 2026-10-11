@@ -15,6 +15,24 @@
 
   <div class="grid gap-5 lg:grid-cols-3">
     <div class="space-y-5 lg:col-span-2">
+      <div class="card">
+        <div class="card-header">
+          <h2 class="text-sm font-semibold text-ink">Unggah Plugin (ZIP)</h2>
+        </div>
+        <form action="/admin/plugins/upload" method="post" enctype="multipart/form-data" class="card-body flex flex-wrap items-end gap-3">
+          {{ csrf_field() }}
+          <div class="flex-1">
+            <label for="plugin_zip" class="mb-1 block text-xs text-muted">File .zip</label>
+            <input type="file" name="plugin_zip" id="plugin_zip" accept=".zip" required class="w-full text-sm">
+          </div>
+          <button type="submit" class="btn-primary">Unggah &amp; Pasang</button>
+        </form>
+        <p class="card-body border-t border-line text-xs text-muted">
+          ZIP harus berisi satu folder dengan <code>plugin.json</code>, atau berkas datar dengan
+          field <code>slug</code> di <code>plugin.json</code>. Slug yang sudah ada akan ditolak.
+        </p>
+      </div>
+
       {% for plugin in plugins %}
         <div class="card">
           <div class="card-header">
@@ -39,7 +57,7 @@
               <p class="mt-2 text-xs text-muted">Membutuhkan MOPS ≥ {{ plugin.requires }}</p>
             {% endif %}
           </div>
-          <div class="card-body border-t border-line">
+          <div class="card-body border-t border-line flex items-center justify-between">
             {% if plugin.is_active %}
               <form action="/admin/plugins/{{ plugin.slug }}/deactivate" method="post">
                 {{ csrf_field() }}
@@ -49,6 +67,13 @@
               <form action="/admin/plugins/{{ plugin.slug }}/activate" method="post">
                 {{ csrf_field() }}
                 <button type="submit" class="btn-primary" {{ plugin.valid ? '' : 'disabled' }}>Aktifkan</button>
+              </form>
+              <form action="/admin/plugins/{{ plugin.slug }}/delete" method="post">
+                {{ csrf_field() }}
+                <button type="submit" class="btn-text text-red-600 hover:bg-red-50"
+                        x-data="confirmButton('Hapus plugin {{ plugin.slug }}? Foldernya ikut terhapus.')" @click="ask($event)">
+                  {{ icons.svg('trash', 'h-4 w-4') }}
+                </button>
               </form>
             {% endif %}
           </div>

@@ -132,6 +132,28 @@ final class PluginManager
     }
 
     /**
+     * Remove an inactive plugin's folder. Plugins must be deactivated first —
+     * WordPress refuses to delete an active plugin for the same reason.
+     */
+    public function delete(string $slug): void
+    {
+        if ($this->isActive($slug)) {
+            throw new \RuntimeException("Plugin '{$slug}' masih aktif — nonaktifkan dulu sebelum menghapus.");
+        }
+
+        $plugin = $this->all()[$slug] ?? null;
+
+        if ($plugin === null) {
+            throw new \RuntimeException("Plugin '{$slug}' tidak ditemukan.");
+        }
+
+        Paths::deleteTree((string) $plugin['path']);
+        $this->flush();
+
+        Hook::doAction('plugin_deleted', $slug);
+    }
+
+    /**
      * Require the entry file of every active plugin.
      */
     public function loadActive(): void

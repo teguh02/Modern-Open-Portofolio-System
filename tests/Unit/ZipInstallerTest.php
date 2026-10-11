@@ -8,6 +8,7 @@ use Mops\Core\Paths;
 use Mops\Core\ZipInstaller;
 use Mops\Tests\TestCase;
 use RuntimeException;
+use Slim\Psr7\UploadedFile;
 use ZipArchive;
 
 final class ZipInstallerTest extends TestCase
@@ -93,6 +94,44 @@ final class ZipInstallerTest extends TestCase
         $this->expectExceptionMessage('sudah ada');
 
         $this->installer()->install($zip, $this->work . '/plugins', 'plugin.json');
+    }
+
+    public function test_install_upload_rejects_a_non_zip_extension(): void
+    {
+        $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessage('.zip');
+
+        $this->installer()->installUpload($this->upload('plugin.txt', 'x'), $this->work . '/plugins', 'plugin.json');
+    }
+
+    public function test_install_upload_rejects_a_fake_zip(): void
+    {
+        $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessage('bukan zip');
+
+        $this->installer()->installUpload($this->upload('plugin.zip', 'bukan zip sebenarnya'), $this->work . '/plugins', 'plugin.json');
+    }
+
+    public function test_install_upload_stages_and_installs_a_real_zip(): void
+    {
+        $zip = $this->zip([
+            'demo/plugin.json' => json_encode(['main' => 'plugin.php']),
+            'demo/plugin.php' => '<?php // entry',
+        ]);
+        $file = new UploadedFile($zip, 'demo.zip', 'application/zip', (int) filesize($zip), UPLOAD_ERR_OK);
+
+        $slug = $this->installer()->installUpload($file, $this->work . '/plugins', 'plugin.json');
+
+        $this->assertSame('demo', $slug);
+        $this->assertFileExists($this->work . '/plugins/demo/plugin.php');
+    }
+
+    private function upload(string $clientName, string $content): UploadedFile
+    {
+        $path = $this->work . '/upload-' . bin2hex(random_bytes(3)) . '.tmp';
+        file_put_contents($path, $content);
+
+        return new UploadedFile($path, $clientName, 'application/octet-stream', strlen($content), UPLOAD_ERR_OK);
     }
 
     private function installer(): ZipInstaller

@@ -230,6 +230,28 @@ final class ThemeManager
         Hook::doAction('theme_activated', $slug, $theme);
     }
 
+    /**
+     * Remove an inactive theme's folder. The active theme is never deletable —
+     * the site would lose its renderer mid-request.
+     */
+    public function delete(string $slug): void
+    {
+        if ($slug === $this->activeSlug()) {
+            throw new RuntimeException("Tema '{$slug}' sedang aktif — ganti tema dulu sebelum menghapus.");
+        }
+
+        $theme = $this->find($slug);
+
+        if ($theme === null) {
+            throw new RuntimeException("Tema '{$slug}' tidak ditemukan.");
+        }
+
+        Paths::deleteTree((string) $theme['path']);
+        $this->flush();
+
+        Hook::doAction('theme_deleted', $slug);
+    }
+
     public function defaultSlug(): string
     {
         foreach ($this->all() as $slug => $theme) {
