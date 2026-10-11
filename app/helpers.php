@@ -81,6 +81,18 @@ if (!function_exists('register_deactivation_hook')) {
     }
 }
 
+if (!function_exists('add_menu_page')) {
+    /**
+     * Register a plugin-owned admin page at /admin/{slug}. The renderer runs
+     * for GET and POST (check the method inside) and returns the page body —
+     * core wraps it in the admin shell.
+     */
+    function add_menu_page(string $slug, string $title, string $icon, callable $renderer): string
+    {
+        return \Mops\Core\AdminMenu::add($slug, $title, $icon, $renderer);
+    }
+}
+
 if (!function_exists('setting')) {
     /**
      * Read a setting (falls back to config defaults, then $default).

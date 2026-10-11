@@ -270,6 +270,7 @@ final class App
             Controllers\Admin\ExperienceController::class,
             Controllers\Admin\AwardController::class,
             Controllers\Admin\MediaController::class,
+            Controllers\Admin\MenuPageController::class,
             Controllers\Admin\PluginController::class,
             Controllers\Admin\PostController::class,
             Controllers\Admin\ProfileController::class,

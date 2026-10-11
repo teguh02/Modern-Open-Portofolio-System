@@ -133,6 +133,12 @@ $main = static function (SlimApp $app, App $kernel): void {
         $group->get('/backup/{filename}/download', Admin\BackupController::class . ':download');
         $group->post('/backup/{filename}/delete', Admin\BackupController::class . ':destroy');
         $group->post('/backup/{filename}/restore', Admin\BackupController::class . ':restore');
+
+        // Plugin-owned pages (add_menu_page). Registered last so static core
+        // routes always win in FastRoute; the 404 for unknown slugs is thrown
+        // by the controller.
+        $group->get('/{menu:[a-z0-9][a-z0-9-]*}', Admin\MenuPageController::class . ':show');
+        $group->post('/{menu:[a-z0-9][a-z0-9-]*}', Admin\MenuPageController::class . ':submit');
     })->add($kernel->get(AdminAuthMiddleware::class));
 };
 

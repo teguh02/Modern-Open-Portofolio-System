@@ -70,7 +70,7 @@ abstract class AdminController extends Controller
             ];
         };
 
-        return [
+        $groups = [
             [
                 'label' => 'Overview',
                 'items' => [
@@ -101,6 +101,30 @@ abstract class AdminController extends Controller
                 ],
             ],
         ];
+
+        // Plugin-owned pages (add_menu_page) get their own group, then plugins
+        // may append or rearrange through the filter.
+        $pages = \Mops\Core\AdminMenu::all();
+
+        if ($pages !== []) {
+            $groups[] = [
+                'label' => 'Plugins',
+                'items' => array_map(
+                    static fn (string $slug, array $page): array => [
+                        'label' => $page['title'],
+                        'href' => '/admin/' . $slug,
+                        'icon' => $page['icon'],
+                        'active' => $path === '/admin/' . $slug,
+                    ],
+                    array_keys($pages),
+                    array_values($pages),
+                ),
+            ];
+        }
+
+        // Plugins append their own group or slide an item into System — the
+        // WordPress add_menu_page() counterpart.
+        return \Mops\Core\Hook::applyFilters('admin_menu', $groups);
     }
 
     /**
