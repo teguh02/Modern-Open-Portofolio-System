@@ -218,6 +218,7 @@ final class App
 
         $container->set(ZipInstaller::class, fn (): ZipInstaller => new ZipInstaller(
             Paths::ensure(Paths::make('storage/tmp')),
+            $this->config,
         ));
 
         $container->bind(View::class);

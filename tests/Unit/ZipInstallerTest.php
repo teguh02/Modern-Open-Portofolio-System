@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Mops\Tests\Unit;
 
+use Mops\Core\Config;
 use Mops\Core\Paths;
 use Mops\Core\ZipInstaller;
 use Mops\Tests\TestCase;
@@ -124,6 +125,42 @@ final class ZipInstallerTest extends TestCase
 
         $this->assertSame('demo', $slug);
         $this->assertFileExists($this->work . '/plugins/demo/plugin.php');
+    }
+
+    public function test_install_upload_rejects_files_over_uploads_max_mb_before_staging(): void
+    {
+        $zip = $this->zip([
+            'demo/plugin.json' => json_encode(['main' => 'plugin.php']),
+            'demo/plugin.php' => '<?php // entry',
+        ]);
+        $file = new UploadedFile($zip, 'demo.zip', 'application/zip', (int) filesize($zip), UPLOAD_ERR_OK);
+        $installer = new ZipInstaller($this->work . '/tmp', new Config(['uploads' => ['max_mb' => 0]]));
+
+        $error = null;
+
+        try {
+            $installer->installUpload($file, $this->work . '/plugins', 'plugin.json');
+        } catch (RuntimeException $e) {
+            $error = $e;
+        }
+
+        $this->assertInstanceOf(RuntimeException::class, $error);
+        $this->assertSame('Ukuran file melebihi batas 0 MB.', $error->getMessage());
+        $this->assertDirectoryDoesNotExist($this->work . '/plugins/demo');
+        $this->assertSame([], glob($this->work . '/tmp/upload-*') ?: []);
+    }
+
+    public function test_install_upload_skips_the_size_check_when_size_is_unknown(): void
+    {
+        $path = $this->work . '/upload-unknown.tmp';
+        file_put_contents($path, 'bukan zip sebenarnya');
+        $file = new UploadedFile($path, 'plugin.zip', 'application/octet-stream', null, UPLOAD_ERR_OK);
+        $installer = new ZipInstaller($this->work . '/tmp', new Config(['uploads' => ['max_mb' => 0]]));
+
+        $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessage('bukan zip');
+
+        $installer->installUpload($file, $this->work . '/plugins', 'plugin.json');
     }
 
     private function upload(string $clientName, string $content): UploadedFile

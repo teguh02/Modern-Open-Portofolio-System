@@ -17,7 +17,7 @@ use ZipArchive;
  */
 final class ZipInstaller
 {
-    public function __construct(private string $tmpRoot)
+    public function __construct(private string $tmpRoot, private Config $config = new Config())
     {
         Paths::ensure($this->tmpRoot);
     }
@@ -78,6 +78,15 @@ final class ZipInstaller
 
         if (strtolower(pathinfo($clientName, PATHINFO_EXTENSION)) !== 'zip') {
             throw new RuntimeException('File harus berupa arsip .zip.');
+        }
+
+        $maxMb = (int) $this->config->get('uploads.max_mb', 8);
+        $size = $file->getSize();
+
+        // Client-reported size; when unknown (null) the server-side limit is
+        // enforced by PHP itself (upload_max_filesize) — skip here.
+        if ($size !== null && $size > $maxMb * 1024 * 1024) {
+            throw new RuntimeException("Ukuran file melebihi batas {$maxMb} MB.");
         }
 
         $staged = $this->tmpRoot . '/upload-' . bin2hex(random_bytes(6)) . '.zip';
