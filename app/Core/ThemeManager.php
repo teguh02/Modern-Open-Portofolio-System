@@ -66,11 +66,24 @@ final class ThemeManager
                 ? "themes/{$slug}/screenshot.svg"
                 : null;
             $manifest['legacy'] = $this->hasLegacyPublicDir($directory);
-            $manifest['missing_templates'] = $this->missingTemplates($directory . '/templates');
-            $manifest['valid'] = $manifest['missing_templates'] === [];
 
             $themes[$slug] = $manifest;
         }
+
+        // Second pass: a child inherits the parent's templates, so "complete"
+        // is evaluated over the chain, never one folder alone.
+        foreach ($themes as $slug => &$theme) {
+            $dirs = [(string) $theme['template_path']];
+            $parentSlug = (string) ($theme['parent'] ?? '');
+
+            if ($parentSlug !== '' && isset($themes[$parentSlug])) {
+                $dirs[] = (string) $themes[$parentSlug]['template_path'];
+            }
+
+            $theme['missing_templates'] = $this->missingTemplatesIn($dirs);
+            $theme['valid'] = $theme['missing_templates'] === [];
+        }
+        unset($theme);
 
         return $this->themes = $themes;
     }
@@ -124,20 +137,46 @@ final class ThemeManager
         ];
     }
 
-    public function templatePath(?string $slug = null): string
+    /**
+     * Template folders for a theme: its own first, then its parent's — the
+     * child-override order WordPress themes use.
+     *
+     * @return array<int, string>
+     */
+    public function templatePaths(?string $slug = null): array
     {
         $slug ??= $this->activeSlug();
         $theme = $this->find($slug);
 
-        if ($theme !== null && is_dir((string) $theme['template_path'])) {
-            return (string) $theme['template_path'];
+        if ($theme === null) {
+            return [Paths::make('app/Views/fallback')];
         }
 
-        // Fall back to the core views directory so pages still render.
-        return Paths::make('app/Views/fallback');
+        $paths = [];
+
+        if (is_dir((string) $theme['template_path'])) {
+            $paths[] = (string) $theme['template_path'];
+        }
+
+        $parentSlug = (string) ($theme['parent'] ?? '');
+        $parent = $parentSlug !== '' ? $this->find($parentSlug) : null;
+
+        if ($parent !== null && is_dir((string) $parent['template_path'])) {
+            $paths[] = (string) $parent['template_path'];
+        }
+
+        return $paths !== [] ? $paths : [Paths::make('app/Views/fallback')];
     }
 
-    public function activate(string $slug): void
+    public function templatePath(?string $slug = null): string
+    {
+        return $this->templatePaths($slug)[0];
+    }
+
+    /**
+     * Everything that must hold before a theme (child or not) may be activated.
+     */
+    public function assertActivatable(string $slug): void
     {
         $theme = $this->find($slug);
 
@@ -151,6 +190,30 @@ final class ThemeManager
             throw new RuntimeException("Tema '{$slug}' tidak lengkap. Template hilang: {$missing}.");
         }
 
+        $parentSlug = (string) ($theme['parent'] ?? '');
+
+        if ($parentSlug === '') {
+            return;
+        }
+
+        $parent = $this->find($parentSlug);
+
+        if ($parent === null || ($parent['valid'] ?? false) !== true) {
+            throw new RuntimeException("Tema induk '{$parentSlug}' untuk '{$slug}' tidak ditemukan atau tidak lengkap.");
+        }
+
+        if ((string) ($parent['parent'] ?? '') !== '') {
+            throw new RuntimeException(
+                "Tema '{$slug}' menunjuk parent '{$parentSlug}' yang sendiri punya parent — MOPS mendukung child theme maksimal 2 level.",
+            );
+        }
+    }
+
+    public function activate(string $slug): void
+    {
+        $this->assertActivatable($slug);
+
+        $theme = $this->find($slug) ?? throw new RuntimeException("Tema '{$slug}' tidak ditemukan.");
         $old = $this->activeSlug();
 
         $this->settings->set('active_theme', $slug);
@@ -175,17 +238,18 @@ final class ThemeManager
         return $this->fallbackSlug;
     }
 
-    /**
-     * Versioned URL for a file in the active theme's assets/ folder.
-     */
     public function assetUrl(string $path, ?string $slug = null): string
     {
         $slug ??= $this->activeSlug();
         $path = ltrim($path, '/');
-        $absolute = rtrim($this->themesPath, '/') . "/{$slug}/assets/{$path}";
-        $version = is_file($absolute) ? (string) filemtime($absolute) : '0';
 
-        return "/theme/{$slug}/assets/{$path}?v={$version}";
+        foreach ($this->assetChain($slug, $path) as $absolute) {
+            if (is_file($absolute)) {
+                return "/theme/{$slug}/assets/{$path}?v=" . filemtime($absolute);
+            }
+        }
+
+        return "/theme/{$slug}/assets/{$path}?v=0";
     }
 
     /**
@@ -193,20 +257,46 @@ final class ThemeManager
      */
     public function assetPath(string $slug, string $path): ?string
     {
+        $relative = ltrim(str_replace('\\', '/', $path), '/');
+
+        foreach ($this->assetChain($slug, $relative) as $base => $absolute) {
+            if (is_file($absolute) && Paths::isInside($absolute, $base)) {
+                return $absolute;
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * Candidate absolute asset paths for a relative file, child first then parent,
+     * keyed by the asset folder each candidate came from.
+     *
+     * @return array<string, string>
+     */
+    private function assetChain(string $slug, string $relative): array
+    {
         $theme = $this->find($slug);
 
         if ($theme === null) {
-            return null;
+            return [];
         }
 
-        $base = (string) $theme['asset_path'];
-        $candidate = $base . '/' . ltrim(str_replace('\\', '/', $path), '/');
+        $bases = [(string) $theme['asset_path']];
+        $parentSlug = (string) ($theme['parent'] ?? '');
+        $parent = $parentSlug !== '' ? $this->find($parentSlug) : null;
 
-        if (!is_file($candidate)) {
-            return null;
+        if ($parent !== null) {
+            $bases[] = (string) $parent['asset_path'];
         }
 
-        return Paths::isInside($candidate, $base) ? $candidate : null;
+        $chain = [];
+
+        foreach ($bases as $base) {
+            $chain[$base] = rtrim($base, '/') . '/' . $relative;
+        }
+
+        return $chain;
     }
 
     /**
@@ -305,18 +395,29 @@ final class ThemeManager
     }
 
     /**
+     * @param array<int, string> $directories
      * @return array<int, string>
      */
-    private function missingTemplates(string $templatePath): array
+    private function missingTemplatesIn(array $directories): array
     {
-        if (!is_dir($templatePath)) {
-            return self::REQUIRED_TEMPLATES;
+        $missing = [];
+
+        foreach (self::REQUIRED_TEMPLATES as $template) {
+            $found = false;
+
+            foreach ($directories as $directory) {
+                if (is_file(rtrim($directory, '/') . '/' . $template)) {
+                    $found = true;
+                    break;
+                }
+            }
+
+            if (!$found) {
+                $missing[] = $template;
+            }
         }
 
-        return array_values(array_filter(
-            self::REQUIRED_TEMPLATES,
-            static fn (string $template): bool => !is_file($templatePath . '/' . $template),
-        ));
+        return $missing;
     }
 
     private function hasLegacyPublicDir(string $directory): bool

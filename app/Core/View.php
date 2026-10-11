@@ -46,7 +46,7 @@ final class View
         // Template lookup order: active theme, app views, core fallback, then any
         // extra paths a plugin registered through the `view_paths` filter.
         $paths = Hook::applyFilters('view_paths', [
-            $this->themes->templatePath(),
+            ...$this->themes->templatePaths(),
             Paths::make('app/Views'),
             Paths::make('app/Views/fallback'),
         ]);
