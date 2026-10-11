@@ -109,8 +109,11 @@ final class ThemeManager
 
         $configured = (string) $this->settings->get('active_theme', $this->fallbackSlug);
 
-        // Never let a missing theme folder take the site down.
-        if (!$this->exists($configured)) {
+        // Never let a missing theme folder — or a child whose parent folder is
+        // gone — take the site down.
+        $theme = $this->find($configured);
+
+        if ($theme === null || !$this->usable($theme)) {
             return $this->active = $this->defaultSlug();
         }
 
@@ -230,12 +233,25 @@ final class ThemeManager
     public function defaultSlug(): string
     {
         foreach ($this->all() as $slug => $theme) {
-            if (($theme['valid'] ?? false) === true) {
+            if (($theme['valid'] ?? false) === true && $this->usable($theme)) {
                 return $slug;
             }
         }
 
         return $this->fallbackSlug;
+    }
+
+    /**
+     * A theme is usable when it exists and its declared parent (if any) still
+     * exists — a child without its parent can't render its inherited templates.
+     *
+     * @param array<string, mixed> $theme
+     */
+    private function usable(array $theme): bool
+    {
+        $parentSlug = (string) ($theme['parent'] ?? '');
+
+        return $parentSlug === '' || $this->exists($parentSlug);
     }
 
     public function assetUrl(string $path, ?string $slug = null): string

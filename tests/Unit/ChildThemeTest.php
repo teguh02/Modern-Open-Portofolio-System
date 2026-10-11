@@ -58,14 +58,58 @@ final class ChildThemeTest extends TestCase
     public function test_asset_urls_fall_back_to_the_parent(): void
     {
         $this->fixtureTheme('parent-theme');
-        file_put_contents($this->themesDir . '/parent-theme/assets/parent.css', 'p{}');
+        $parentCss = $this->themesDir . '/parent-theme/assets/parent.css';
+        file_put_contents($parentCss, 'p{}');
         $this->fixtureTheme('child-theme', ['parent' => 'parent-theme']);
         $themes = $this->manager('child-theme');
 
         $url = $themes->assetUrl('parent.css');
 
-        $this->assertStringStartsWith('/theme/child-theme/assets/parent.css?v=', $url);
+        $this->assertSame('/theme/child-theme/assets/parent.css?v=' . filemtime($parentCss), $url);
         $this->assertNotNull($themes->assetPath('child-theme', 'parent.css'));
+    }
+
+    public function test_asset_paths_reject_traversal_out_of_the_theme(): void
+    {
+        $this->fixtureTheme('parent-theme');
+        $this->fixtureTheme('child-theme', ['parent' => 'parent-theme']);
+
+        // The traversal targets exist on disk: only the containment guard can
+        // keep assetPath() from returning them.
+        $escaped = $this->themesDir . '/child-theme/sibling/x.css';
+        Paths::ensure(dirname($escaped));
+        file_put_contents($escaped, 'x{}');
+        $secret = $this->themesDir . '/config/config.php';
+        Paths::ensure(dirname($secret));
+        file_put_contents($secret, '<?php');
+
+        $themes = $this->manager('child-theme');
+
+        $this->assertFileExists($escaped);
+        $this->assertFileExists($secret);
+        $this->assertNull($themes->assetPath('child-theme', '../sibling/x.css'));
+        $this->assertNull($themes->assetPath('child-theme', '../../config/config.php'));
+    }
+
+    public function test_active_slug_falls_back_when_the_declared_parent_is_gone(): void
+    {
+        $this->fixtureTheme('stable-theme');
+        $this->fixtureTheme('orphan-child', ['parent' => 'gone']);
+        $themes = $this->manager('orphan-child');
+
+        $this->assertSame('stable-theme', $themes->activeSlug());
+    }
+
+    public function test_circular_parent_chains_are_rejected(): void
+    {
+        $this->fixtureTheme('a', ['parent' => 'b']);
+        $this->fixtureTheme('b', ['parent' => 'a']);
+        $themes = $this->manager('a');
+
+        $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessage('level');
+
+        $themes->activate('a');
     }
 
     public function test_activation_is_rejected_when_the_parent_is_missing(): void
