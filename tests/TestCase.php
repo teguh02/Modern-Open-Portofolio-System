@@ -29,7 +29,7 @@ abstract class TestCase extends BaseTestCase
         $this->temporaryFiles = [];
 
         foreach ($this->temporaryDirectories as $directory) {
-            \Mops\Core\Paths::deleteTree($directory);
+            $this->deleteDirectory($directory);
         }
 
         $this->temporaryDirectories = [];
@@ -62,5 +62,32 @@ abstract class TestCase extends BaseTestCase
         $this->temporaryDirectories[] = $path;
 
         return $path;
+    }
+
+    /**
+     * Recursive delete for temp dirs only (no project-root restriction — these
+     * live under sys_get_temp_dir(), which Paths::deleteTree() deliberately refuses).
+     */
+    private function deleteDirectory(string $directory): void
+    {
+        if (!is_dir($directory)) {
+            return;
+        }
+
+        foreach (scandir($directory) ?: [] as $item) {
+            if ($item === '.' || $item === '..') {
+                continue;
+            }
+
+            $path = $directory . '/' . $item;
+
+            if (is_dir($path) && !is_link($path)) {
+                $this->deleteDirectory($path);
+            } else {
+                @unlink($path);
+            }
+        }
+
+        @rmdir($directory);
     }
 }
