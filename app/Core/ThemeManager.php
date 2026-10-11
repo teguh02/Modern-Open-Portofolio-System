@@ -145,8 +145,16 @@ final class ThemeManager
             throw new RuntimeException("Tema '{$slug}' tidak lengkap. Template hilang: {$missing}.");
         }
 
+        $old = $this->activeSlug();
+
         $this->settings->set('active_theme', $slug);
         $this->active = $slug;
+
+        if ($old !== $slug) {
+            Hook::doAction('theme_deactivated', $old);
+            Hook::doAction('after_switch_theme', $slug, $old, $theme);
+        }
+
         Hook::doAction('theme_activated', $slug, $theme);
     }
 
