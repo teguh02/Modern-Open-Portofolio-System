@@ -18,6 +18,12 @@ final class ThemeManager
 
     private ?string $active = null;
 
+    /** @var array<int, string> */
+    private array $functionsLoaded = [];
+
+    /** @var array<int, string> */
+    private array $errors = [];
+
     /**
      * Templates every theme must provide to be activatable.
      *
@@ -203,10 +209,70 @@ final class ThemeManager
         return Paths::isInside($candidate, $base) ? $candidate : null;
     }
 
+    /**
+     * Require functions.php of the active theme and its parent (WordPress
+     * order: child first). Runs once per request; a broken theme is recorded,
+     * never fatal.
+     */
+    public function loadFunctions(): void
+    {
+        foreach ($this->chain() as $theme) {
+            $file = (string) $theme['path'] . '/functions.php';
+            $slug = (string) $theme['slug'];
+
+            if (isset($this->functionsLoaded[$slug]) || !is_file($file)) {
+                continue;
+            }
+
+            $this->functionsLoaded[$slug] = true;
+
+            try {
+                (static function () use ($file): void {
+                    require $file;
+                })();
+            } catch (\Throwable $e) {
+                $this->errors[] = "Tema '{$slug}': functions.php gagal dimuat: " . $e->getMessage();
+            }
+        }
+    }
+
+    /**
+     * @return array<int, string>
+     */
+    public function errors(): array
+    {
+        return $this->errors;
+    }
+
     public function flush(): void
     {
         $this->themes = null;
         $this->active = null;
+        $this->functionsLoaded = [];
+        $this->errors = [];
+    }
+
+    /**
+     * Active theme first, then its parent (max two levels).
+     *
+     * @return array<int, array<string, mixed>>
+     */
+    private function chain(): array
+    {
+        $active = $this->find($this->activeSlug());
+
+        if ($active === null) {
+            return [];
+        }
+
+        $chain = [$active];
+        $parent = isset($active['parent']) ? $this->find((string) $active['parent']) : null;
+
+        if ($parent !== null) {
+            $chain[] = $parent;
+        }
+
+        return $chain;
     }
 
     /**

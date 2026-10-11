@@ -114,6 +114,12 @@ final class App
         }
 
         do_action('plugins_loaded', $this);
+
+        // WordPress order: the active theme's functions.php runs after plugins.
+        if ($this->isInstalled()) {
+            $this->container->get(ThemeManager::class)->loadFunctions();
+            do_action('after_setup_theme');
+        }
     }
 
     public function slim(): SlimApp
