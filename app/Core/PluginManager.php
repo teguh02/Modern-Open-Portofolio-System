@@ -103,16 +103,31 @@ final class PluginManager
             return;
         }
 
+        // A broken bootstrap or activation callback must not leave the plugin
+        // marked active.
+        $this->load($slug, true);
+        Hook::doAction('activate_plugin_' . $slug);
         $this->settings->set('active_plugins', [...$this->activeSlugs(), $slug]);
         $this->manifests = null;
-
-        // Run its bootstrap right away so newly activated hooks work this request.
-        $this->load($slug);
         Hook::doAction('plugin_activated', $slug, $plugin);
     }
 
     public function deactivate(string $slug): void
     {
+        if (!$this->isActive($slug)) {
+            return;
+        }
+
+        $plugin = $this->all()[$slug] ?? null;
+
+        try {
+            $this->load($slug, true);
+            Hook::doAction('deactivate_plugin_' . $slug);
+        } catch (Throwable $e) {
+            // A broken plugin must always remain deactivatable (recovery path).
+            $this->errors[] = "Plugin '{$slug}' callback deaktivasi gagal: " . $e->getMessage();
+        }
+
         $remaining = array_values(array_filter(
             $this->activeSlugs(),
             static fn (string $active): bool => $active !== $slug,
@@ -121,7 +136,7 @@ final class PluginManager
         $this->settings->set('active_plugins', $remaining);
         $this->manifests = null;
 
-        Hook::doAction('plugin_deactivated', $slug);
+        Hook::doAction('plugin_deactivated', $slug, $plugin);
     }
 
     /**
@@ -183,7 +198,7 @@ final class PluginManager
         $this->manifests = null;
     }
 
-    private function load(string $slug): void
+    private function load(string $slug, bool $failHard = false): void
     {
         $plugin = $this->all()[$slug] ?? null;
 
@@ -206,7 +221,12 @@ final class PluginManager
 
             $this->loaded[] = $slug;
         } catch (Throwable $e) {
-            $this->errors[] = "Plugin '{$slug}' gagal dimuat: " . $e->getMessage();
+            $message = "Plugin '{$slug}' gagal dimuat: " . $e->getMessage();
+            $this->errors[] = $message;
+
+            if ($failHard) {
+                throw new \RuntimeException($message, 0, $e);
+            }
         }
     }
 

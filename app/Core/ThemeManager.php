@@ -18,6 +18,12 @@ final class ThemeManager
 
     private ?string $active = null;
 
+    /** @var array<int, string> */
+    private array $loaded = [];
+
+    /** @var array<int, string> */
+    private array $errors = [];
+
     /**
      * Templates every theme must provide to be activatable.
      *
@@ -61,7 +67,9 @@ final class ThemeManager
                 : null;
             $manifest['legacy'] = $this->hasLegacyPublicDir($directory);
             $manifest['missing_templates'] = $this->missingTemplates($directory . '/templates');
-            $manifest['valid'] = $manifest['missing_templates'] === [];
+            $manifest['missing_zones'] = $this->missingZones($directory . '/templates');
+            $manifest['functions_exists'] = is_file($directory . '/functions.php');
+            $manifest['valid'] = $manifest['missing_templates'] === [] && $manifest['missing_zones'] === [];
 
             $themes[$slug] = $manifest;
         }
@@ -90,8 +98,9 @@ final class ThemeManager
 
         $configured = (string) $this->settings->get('active_theme', $this->fallbackSlug);
 
-        // Never let a missing theme folder take the site down.
-        if (!$this->exists($configured)) {
+        // Never let a missing or contract-breaking theme take the site down.
+        $theme = $this->find($configured);
+        if ($theme === null || ($theme['valid'] ?? false) !== true) {
             return $this->active = $this->defaultSlug();
         }
 
@@ -141,13 +150,55 @@ final class ThemeManager
 
         if (($theme['valid'] ?? false) !== true) {
             $missing = implode(', ', (array) $theme['missing_templates']);
+            $zones = implode(', ', (array) ($theme['missing_zones'] ?? []));
 
-            throw new RuntimeException("Tema '{$slug}' tidak lengkap. Template hilang: {$missing}.");
+            throw new RuntimeException("Tema '{$slug}' tidak lengkap. Template hilang: {$missing}; zona injeksi hilang: {$zones}.");
         }
 
+        $previous = $this->activeSlug();
+
+        if ($previous === $slug) {
+            return;
+        }
+
+        Hook::doAction('theme_deactivating', $previous, $slug);
         $this->settings->set('active_theme', $slug);
         $this->active = $slug;
-        Hook::doAction('theme_activated', $slug, $theme);
+        Hook::doAction('theme_deactivated', $previous, $slug);
+        Hook::doAction('theme_activated', $slug, $theme, $previous);
+    }
+
+    /** Load optional functions.php from the active theme once per request. */
+    public function loadActive(): void
+    {
+        $slug = $this->activeSlug();
+
+        if (in_array($slug, $this->loaded, true)) {
+            return;
+        }
+
+        $file = rtrim($this->themesPath, '/') . '/' . $slug . '/functions.php';
+
+        if (!is_file($file)) {
+            $this->loaded[] = $slug;
+
+            return;
+        }
+
+        try {
+            (static function () use ($file): void {
+                require $file;
+            })();
+            $this->loaded[] = $slug;
+        } catch (\Throwable $e) {
+            $this->errors[] = "Tema '{$slug}' gagal memuat functions.php: " . $e->getMessage();
+        }
+    }
+
+    /** @return array<int, string> */
+    public function errors(): array
+    {
+        return $this->errors;
     }
 
     public function defaultSlug(): string
@@ -241,6 +292,28 @@ final class ThemeManager
             self::REQUIRED_TEMPLATES,
             static fn (string $template): bool => !is_file($templatePath . '/' . $template),
         ));
+    }
+
+    /** @return array<int, string> */
+    private function missingZones(string $templatePath): array
+    {
+        $files = [
+            'layout.twig' => HookZones::REQUIRED_THEME_ZONES,
+            'home.twig' => HookZones::REQUIRED_HOME_ZONES,
+        ];
+        $missing = [];
+
+        foreach ($files as $template => $zones) {
+            $source = @file_get_contents($templatePath . '/' . $template);
+
+            foreach ($zones as $zone) {
+                if (!is_string($source) || !str_contains($source, "render_hook('{$zone}'")) {
+                    $missing[] = $zone;
+                }
+            }
+        }
+
+        return $missing;
     }
 
     private function hasLegacyPublicDir(string $directory): bool

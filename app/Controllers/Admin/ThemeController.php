@@ -48,6 +48,7 @@ final class ThemeController extends AdminController
             'crumbs' => $this->crumbs('Themes'),
             'themes' => $themes,
             'active_slug' => $active,
+            'load_errors' => $this->themes->errors(),
         ]);
     }
 

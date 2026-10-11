@@ -48,6 +48,35 @@ if (!function_exists('apply_filters')) {
     }
 }
 
+if (!function_exists('register_activation_hook')) {
+    /** Run once after this plugin is activated successfully. */
+    function register_activation_hook(string $pluginFile, callable $callback): void
+    {
+        add_action('activate_plugin_' . mops_plugin_slug($pluginFile), $callback);
+    }
+}
+
+if (!function_exists('register_deactivation_hook')) {
+    /** Run before this plugin is removed from the active plugin list. */
+    function register_deactivation_hook(string $pluginFile, callable $callback): void
+    {
+        add_action('deactivate_plugin_' . mops_plugin_slug($pluginFile), $callback);
+    }
+}
+
+if (!function_exists('mops_plugin_slug')) {
+    function mops_plugin_slug(string $pluginFile): string
+    {
+        $slug = basename(dirname(str_replace('\\', '/', $pluginFile)));
+
+        if (preg_match('/^[a-z0-9][a-z0-9_-]*$/', $slug) !== 1) {
+            throw new InvalidArgumentException('Folder plugin harus memakai slug huruf kecil, angka, tanda hubung, atau garis bawah.');
+        }
+
+        return $slug;
+    }
+}
+
 if (!function_exists('setting')) {
     /**
      * Read a setting (falls back to config defaults, then $default).

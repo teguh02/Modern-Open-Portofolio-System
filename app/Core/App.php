@@ -114,6 +114,12 @@ final class App
         }
 
         do_action('plugins_loaded', $this);
+
+        if ($this->isInstalled()) {
+            $this->container->get(ThemeManager::class)->loadActive();
+        }
+
+        do_action('after_setup_theme', $this->container->get(ThemeManager::class)->active());
     }
 
     public function slim(): SlimApp

@@ -11,6 +11,8 @@ pernah tahu plugin apa yang aktif.
 | `apply_filters()` / `add_filter()` | `apply_filters()` / `add_filter()` | transformasi nilai, bukan output |
 | `add_menu_page()` | `admin_dashboard_widgets` (zona) | dashboard admin menerima kartu dari plugin |
 | `plugin_dir_url()` | `plugin_asset($slug, $path)` | aset plugin disajikan core dari `plugins/<slug>/assets/` |
+| `register_activation_hook()` / `register_deactivation_hook()` | nama & semantik sama | callback lifecycle hanya untuk plugin tersebut |
+| `functions.php` tema | `functions.php` opsional | dimuat hanya dari tema yang aktif |
 | `wp_head()` wajib di tema | `HookZones::REQUIRED_THEME_ZONES` | tema wajib mencetak zona inti, kalau tidak plugin "hilang" |
 | `wp_register_sidebar_widget` (widget area) | `home_before_sections` / `home_after_sections` | area bertema halaman, khusus homepage |
 
@@ -64,8 +66,14 @@ Tema hanya render, tapi wajib mencetak zona inti (seperti tema WordPress wajib m
 </body>
 ```
 
-Zona wajib (dijaga `tests/Unit/HookZonesTest.php`, jadi tema yang lupa akan gagal build):
-`theme_head`, `theme_body_open`, `main_before_content`, `main_after_content`, `theme_footer`.
+Zona wajib (dijaga saat discovery/aktivasi dan oleh test): `theme_head`, `theme_body_open`,
+`main_before_content`, `main_after_content`, `theme_footer`, `home_before_sections`, dan
+`home_after_sections`. Tema yang tidak memenuhi kontrak tetap terlihat di admin, tetapi tidak dapat
+diaktifkan. Bila tema aktif hilang atau rusak, MOPS kembali ke tema valid bawaan.
+
+Tema boleh memiliki `functions.php`. File ini hanya dimuat ketika tema tersebut aktif dan dapat memakai
+`add_action()`/`add_filter()` untuk perilaku khusus tema. Jangan mengambil alih query domain dari sini;
+data tetap disiapkan core, tema tetap bertugas mempresentasikan data.
 
 Tema boleh menambah zona sendiri (mis. `vantablo_hero_extra`) dengan `render_hook('<nama>')`; zona buatan
 tema tidak muncul di registry core, jadi dokumentasikan di tema tersebut. Tema **tidak** boleh menaruh
@@ -87,14 +95,15 @@ Urutan boot yang bisa diandalkan:
 1. `mops_before_plugins` — hook API sudah tersedia, plugin belum dimuat.
 2. entry file setiap plugin aktif di-`require` (di sini: `add_action`, `add_filter`).
 3. `plugins_loaded`
-4. core mendaftarkan route-nya, lalu `routes_registered` (plugin menambah route).
-5. core mendaftarkan **catch-all** `/ {path:.*}` paling akhir.
-6. per request render: zona injeksi + `page_viewed`.
+4. `functions.php` tema aktif dimuat, lalu `after_setup_theme`.
+5. core mendaftarkan route-nya, lalu `routes_registered` (plugin menambah route).
+6. core mendaftarkan **catch-all** `/ {path:.*}` paling akhir.
+7. per request render: zona injeksi + `page_viewed`.
 
 ## 4. Hook yang disediakan core
 
-Action: `mops_before_plugins`, `plugins_loaded`, `routes_registered`, `page_viewed`,
-`theme_activated`, `plugin_activated`, `plugin_deactivated`, `backup_created`, `backup_restored`,
+Action: `mops_before_plugins`, `plugins_loaded`, `after_setup_theme`, `routes_registered`, `page_viewed`,
+`theme_deactivating`, `theme_deactivated`, `theme_activated`, `plugin_activated`, `plugin_deactivated`,
 event repository `<tabel>_created`, `<tabel>_updated`, `<tabel>_deleting`, `<tabel>_deleted`
 (mis. `posts_created`, `experiences_updated`).
 
@@ -156,7 +165,31 @@ $value = setting('site_name');                               // baca setting
 Tabel milik plugin dibuat sendiri (lihat `plugins/mops-analytics-lite/plugin.php`, `Schema` + `Blueprint`,
 idempoten, tanpa migrasi core). Jangan menulis SQL spesifik driver — aturan portabilitas yang sama berlaku.
 
-## 8. Contoh lengkap: `mops-cv-ats`
+## 8. Aktivasi dan deaktivasi
+
+Folder plugin berarti **terpasang**, bukan otomatis aktif. Hanya slug di setting `active_plugins` yang
+dimuat. Admin bebas mengaktifkan sebagian plugin; misalnya dua dari lima plugin. Callback aktivasi hanya
+dijalankan sekali ketika status berubah dari nonaktif ke aktif, bukan pada setiap request:
+
+```php
+register_activation_hook(__FILE__, static function (): void {
+    // Buat tabel/default milik plugin secara idempoten.
+});
+
+register_deactivation_hook(__FILE__, static function (): void {
+    // Hentikan scheduler/cache sementara; jangan hapus data pengguna.
+});
+```
+
+Jika bootstrap atau callback aktivasi melempar exception, aktivasi dibatalkan dan plugin tidak disimpan
+sebagai aktif. Deaktivasi juga menjalankan callback sebelum status dihapus. Menghapus data permanen bukan
+tugas deaktivasi; sediakan mekanisme uninstall terpisah bila kelak diperlukan.
+
+Tema mengikuti model WordPress: tepat satu tema aktif. Tidak ada tombol "nonaktifkan tema"; mengaktifkan
+tema lain otomatis mengganti tema lama. Event pergantian berurutan:
+`theme_deactivating` → simpan tema baru → `theme_deactivated` → `theme_activated`.
+
+## 9. Contoh lengkap: `mops-cv-ats`
 
 Plugin contoh injeksi sekaligus generator PDF tanpa dependency:
 
@@ -172,7 +205,7 @@ Plugin contoh injeksi sekaligus generator PDF tanpa dependency:
 Menonaktifkan tanpa menyentuh kode: `apply_filters('cv_ats_button_enabled', false)`,
 `apply_filters('cv_ats_show_hint', false)`, `apply_filters('cv_ats_footer_note', false)`.
 
-## 9. Memeriksa hasil kerja
+## 10. Memeriksa hasil kerja
 
 ```bash
 php bin/mops plugin:list      # daftar plugin + status
@@ -181,7 +214,7 @@ php dev/smoke.php             # end-to-end in-process
 composer serve                # lalu buka /admin/plugins -> kartu "Injection Zones"
 ```
 
-## 10. Guardrail
+## 11. Guardrail
 
 - Jangan mengedit `app/` atau `themes/` dari plugin. Semua lewat hook, zona, route, manifest.
 - Plugin hanya menulis di folder plugin itu sendiri dan di `storage/`.

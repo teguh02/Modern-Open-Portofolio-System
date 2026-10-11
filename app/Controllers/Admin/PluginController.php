@@ -76,10 +76,14 @@ final class PluginController extends AdminController
     {
         $slug = (string) ($args['slug'] ?? '');
 
-        $this->plugins->deactivate($slug);
-        $this->view->refresh();
-        $this->activity->log('plugin_deactivate', "Plugin dinonaktifkan: {$slug}", $this->auth->id(), 'plugin');
-        $this->flash('success', "Plugin '{$slug}' dinonaktifkan.");
+        try {
+            $this->plugins->deactivate($slug);
+            $this->view->refresh();
+            $this->activity->log('plugin_deactivate', "Plugin dinonaktifkan: {$slug}", $this->auth->id(), 'plugin');
+            $this->flash('success', "Plugin '{$slug}' dinonaktifkan.");
+        } catch (Throwable $e) {
+            $this->flash('error', $e->getMessage());
+        }
 
         return $this->redirect($response, '/admin/plugins');
     }
