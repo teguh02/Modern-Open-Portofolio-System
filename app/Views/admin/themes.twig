@@ -2,6 +2,12 @@
 {% import 'admin/partials/icon.twig' as icons %}
 
 {% block content %}
+  {% if load_errors|length > 0 %}
+    <div class="mb-5 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+      {% for error in load_errors %}<p>{{ error }}</p>{% endfor %}
+    </div>
+  {% endif %}
+
   <div class="mb-5 rounded-lg border border-line bg-surface px-5 py-4 text-sm text-muted">
     Dua tema bawaan (<span class="font-medium text-ink">vantablo</span> — developer, gelap dan
     <span class="font-medium text-ink">lumica</span> — designer, terang) ikut terpasang sejak awal.

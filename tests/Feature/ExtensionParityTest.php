@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace Mops\Tests\Feature;
 
+use Mops\Core\Hook;
 use Mops\Core\Paths;
+use Mops\Core\Settings;
 use Mops\Tests\ApplicationTestCase;
 use Psr\Http\Message\ServerRequestInterface;
 use Slim\Psr7\UploadedFile;
@@ -14,7 +16,7 @@ final class ExtensionParityTest extends ApplicationTestCase
 {
     protected function tearDown(): void
     {
-        foreach (['plugins/mops-e2e-demo', 'plugins/mops-e2e-active', 'plugins/mops-e2e-uninstall', 'themes/mops-e2e-theme'] as $fixture) {
+        foreach (['plugins/mops-e2e-demo', 'plugins/mops-e2e-active', 'plugins/mops-e2e-uninstall', 'themes/mops-e2e-theme', 'themes/mops-e2e-child'] as $fixture) {
             Paths::deleteTree(Paths::make($fixture));
         }
 
@@ -179,6 +181,62 @@ final class ExtensionParityTest extends ApplicationTestCase
         $delete = $this->post('/admin/themes/mops-e2e-theme/delete', []);
         $this->assertSame(302, $delete->getStatusCode());
         $this->assertDirectoryDoesNotExist($target);
+    }
+
+    public function test_theme_zip_upload_switch_hooks_and_delete_rules(): void
+    {
+        if (!class_exists(ZipArchive::class)) {
+            $this->markTestSkipped('ext-zip tidak tersedia.');
+        }
+
+        $this->install();
+        $this->login();
+
+        $child = 'mops-e2e-child';
+        $childDir = Paths::make('themes/' . $child);
+        $parentDir = Paths::make('themes/vantablo');
+
+        $switches = [];
+        Hook::addAction('after_switch_theme', static function (string $new, string $old) use (&$switches): void {
+            $switches[] = "{$old}->{$new}";
+        });
+
+        try {
+            $upload = $this->zipUpload($child, 'theme.json', [
+                'name' => 'E2E Child',
+                'version' => '1.0.0',
+                'parent' => 'vantablo',
+            ], [
+                'templates/layout.twig' => '<html>{% block content %}{% endblock %}</html>',
+                'templates/home.twig' => 'child home',
+            ]);
+
+            $response = $this->postUpload('/admin/themes/upload', [], ['theme_zip' => $upload]);
+            $this->assertSame(302, $response->getStatusCode(), $this->body($response));
+            $this->assertDirectoryExists($childDir);
+
+            $activate = $this->post('/admin/themes/' . $child . '/activate', []);
+            $this->assertSame(302, $activate->getStatusCode(), $this->body($activate));
+            $this->assertSame($child, $this->app->getContainer()->get(Settings::class)->get('active_theme'));
+            $this->assertContains('vantablo->' . $child, $switches);
+
+            // The active theme cannot be deleted.
+            $this->post('/admin/themes/' . $child . '/delete', []);
+            $this->assertDirectoryExists($childDir, 'Tema aktif tidak boleh bisa dihapus.');
+
+            // Nor can the parent of the active child — deleting it breaks the child.
+            $this->post('/admin/themes/vantablo/delete', []);
+            $this->assertDirectoryExists($parentDir, 'Induk tema aktif tidak boleh bisa dihapus.');
+
+            // Switch back, then the child is deletable.
+            $this->post('/admin/themes/vantablo/activate', []);
+            $this->assertSame('vantablo', $this->app->getContainer()->get(Settings::class)->get('active_theme'));
+
+            $this->post('/admin/themes/' . $child . '/delete', []);
+            $this->assertDirectoryDoesNotExist($childDir);
+        } finally {
+            Paths::deleteTree($childDir);
+        }
     }
 
     /**

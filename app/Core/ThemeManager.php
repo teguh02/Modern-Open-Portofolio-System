@@ -232,7 +232,9 @@ final class ThemeManager
 
     /**
      * Remove an inactive theme's folder. The active theme is never deletable —
-     * the site would lose its renderer mid-request.
+     * the site would lose its renderer mid-request — and neither is the parent
+     * of the active theme, which would leave the active child without the
+     * templates it inherits.
      */
     public function delete(string $slug): void
     {
@@ -246,7 +248,19 @@ final class ThemeManager
             throw new RuntimeException("Tema '{$slug}' tidak ditemukan.");
         }
 
-        Paths::deleteTree((string) $theme['path']);
+        $active = $this->active();
+
+        if ((string) ($active['parent'] ?? '') === $slug) {
+            throw new RuntimeException("Tema '{$slug}' adalah induk tema aktif '{$active['slug']}' dan tidak bisa dihapus.");
+        }
+
+        $directory = (string) $theme['path'];
+
+        if (!Paths::isInside($directory, $this->themesPath)) {
+            throw new RuntimeException("Folder tema '{$slug}' tidak aman untuk dihapus.");
+        }
+
+        Paths::deleteTree($directory);
         $this->flush();
 
         Hook::doAction('theme_deleted', $slug);

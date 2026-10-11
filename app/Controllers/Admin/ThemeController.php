@@ -54,6 +54,7 @@ final class ThemeController extends AdminController
             'themes' => $themes,
             'active_slug' => $active,
             'supports_zip' => class_exists(\ZipArchive::class),
+            'load_errors' => $this->themes->errors(),
         ]);
     }
 
@@ -78,6 +79,7 @@ final class ThemeController extends AdminController
     {
         $files = (array) $request->getUploadedFiles();
         $file = $files['theme_zip'] ?? null;
+        $slug = null;
 
         try {
             if (!$file instanceof UploadedFileInterface) {
@@ -86,9 +88,17 @@ final class ThemeController extends AdminController
 
             $slug = $this->installer->installUpload($file, Paths::make('themes'), 'theme.json');
             $this->themes->flush();
+            $this->themes->assertActivatable($slug);
             $this->activity->log('theme_install', "Tema diinstal dari zip: {$slug}", $this->auth->id(), 'theme');
             $this->flash('success', "Tema '{$slug}' berhasil diinstal.");
         } catch (Throwable $e) {
+            // Roll back a half-accepted zip: an unusable child (bad parent,
+            // three levels, incomplete) never stays on disk.
+            if ($slug !== null) {
+                Paths::deleteTree(Paths::make('themes/' . $slug));
+                $this->themes->flush();
+            }
+
             $this->flash('error', $e->getMessage());
         }
 
