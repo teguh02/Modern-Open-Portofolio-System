@@ -108,11 +108,18 @@ final class PluginManager
 
         // Run its bootstrap right away so newly activated hooks work this request.
         $this->load($slug);
+        Hook::doAction('activate_' . $slug, $slug, $plugin);
         Hook::doAction('plugin_activated', $slug, $plugin);
     }
 
     public function deactivate(string $slug): void
     {
+        // The entry file must have been loaded for its deactivation hook to run.
+        if ($this->isActive($slug)) {
+            $this->load($slug);
+            Hook::doAction('deactivate_' . $slug, $slug);
+        }
+
         $remaining = array_values(array_filter(
             $this->activeSlugs(),
             static fn (string $active): bool => $active !== $slug,

@@ -15,6 +15,9 @@ abstract class TestCase extends BaseTestCase
     /** @var array<int, string> */
     private array $temporaryFiles = [];
 
+    /** @var array<int, string> */
+    private array $temporaryDirectories = [];
+
     protected function tearDown(): void
     {
         foreach ($this->temporaryFiles as $file) {
@@ -24,6 +27,12 @@ abstract class TestCase extends BaseTestCase
         }
 
         $this->temporaryFiles = [];
+
+        foreach ($this->temporaryDirectories as $directory) {
+            \Mops\Core\Paths::deleteTree($directory);
+        }
+
+        $this->temporaryDirectories = [];
         $_SESSION = [];
 
         parent::tearDown();
@@ -38,6 +47,19 @@ abstract class TestCase extends BaseTestCase
         }
 
         $this->temporaryFiles[] = $path;
+
+        return $path;
+    }
+
+    protected function tempDir(): string
+    {
+        $path = sys_get_temp_dir() . '/mops-dir-' . bin2hex(random_bytes(4));
+
+        if (!is_dir($path)) {
+            mkdir($path, 0775, true);
+        }
+
+        $this->temporaryDirectories[] = $path;
 
         return $path;
     }

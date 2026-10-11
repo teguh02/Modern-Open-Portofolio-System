@@ -48,6 +48,39 @@ if (!function_exists('apply_filters')) {
     }
 }
 
+if (!function_exists('register_activation_hook')) {
+    /**
+     * Run $callback once, when this plugin is activated. Pass __FILE__ — the
+     * slug is derived from the plugin folder, WordPress-style.
+     */
+    function register_activation_hook(string $file, callable $callback): void
+    {
+        $slug = basename(dirname($file));
+
+        if (!is_file(dirname($file) . '/plugin.json')) {
+            return;
+        }
+
+        add_action('activate_' . $slug, $callback);
+    }
+}
+
+if (!function_exists('register_deactivation_hook')) {
+    /**
+     * Run $callback once, when this plugin is deactivated. Pass __FILE__.
+     */
+    function register_deactivation_hook(string $file, callable $callback): void
+    {
+        $slug = basename(dirname($file));
+
+        if (!is_file(dirname($file) . '/plugin.json')) {
+            return;
+        }
+
+        add_action('deactivate_' . $slug, $callback);
+    }
+}
+
 if (!function_exists('setting')) {
     /**
      * Read a setting (falls back to config defaults, then $default).

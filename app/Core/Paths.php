@@ -51,6 +51,34 @@ final class Paths
     }
 
     /**
+     * Recursively delete a directory. Refuses anything outside the project root.
+     */
+    public static function deleteTree(string $directory): void
+    {
+        if (!is_dir($directory) || !self::isInside($directory)) {
+            return;
+        }
+
+        $items = scandir($directory) ?: [];
+
+        foreach ($items as $item) {
+            if ($item === '.' || $item === '..') {
+                continue;
+            }
+
+            $path = $directory . '/' . $item;
+
+            if (is_dir($path) && !is_link($path)) {
+                self::deleteTree($path);
+            } else {
+                @unlink($path);
+            }
+        }
+
+        @rmdir($directory);
+    }
+
+    /**
      * Reject traversal: only paths that stay inside the project root are allowed.
      */
     public static function isInside(string $path, ?string $base = null): bool
