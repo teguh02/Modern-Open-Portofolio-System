@@ -14,7 +14,7 @@ final class ExtensionParityTest extends ApplicationTestCase
 {
     protected function tearDown(): void
     {
-        foreach (['plugins/mops-e2e-demo', 'plugins/mops-e2e-active', 'themes/mops-e2e-theme'] as $fixture) {
+        foreach (['plugins/mops-e2e-demo', 'plugins/mops-e2e-active', 'plugins/mops-e2e-uninstall', 'themes/mops-e2e-theme'] as $fixture) {
             Paths::deleteTree(Paths::make($fixture));
         }
 
@@ -122,6 +122,35 @@ final class ExtensionParityTest extends ApplicationTestCase
         $this->post('/admin/plugins/mops-e2e-active/deactivate', []);
         $this->post('/admin/plugins/mops-e2e-active/delete', []);
         $this->assertDirectoryDoesNotExist($target);
+    }
+
+    public function test_plugin_delete_runs_uninstall_php(): void
+    {
+        if (!class_exists(ZipArchive::class)) {
+            $this->markTestSkipped('ext-zip tidak tersedia.');
+        }
+
+        $this->install();
+        $this->login();
+
+        $marker = Paths::make('storage/tmp/uninstall-marker.txt');
+        @unlink($marker);
+
+        $this->postUpload('/admin/plugins/upload', [], [
+            'plugin_zip' => $this->zipUpload('mops-e2e-uninstall', 'plugin.json', ['main' => 'plugin.php'], [
+                'uninstall.php' => '<?php file_put_contents(' . var_export($marker, true) . ', "cleaned");',
+            ]),
+        ]);
+
+        try {
+            $this->post('/admin/plugins/mops-e2e-uninstall/delete', []);
+
+            $this->assertSame('cleaned', is_file($marker) ? file_get_contents($marker) : '');
+            $this->assertDirectoryDoesNotExist(Paths::make('plugins/mops-e2e-uninstall'));
+        } finally {
+            @unlink($marker);
+            Paths::deleteTree(Paths::make('plugins/mops-e2e-uninstall'));
+        }
     }
 
     public function test_admin_can_install_a_theme_from_zip_and_delete_it(): void

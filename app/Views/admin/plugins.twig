@@ -15,6 +15,7 @@
 
   <div class="grid gap-5 lg:grid-cols-3">
     <div class="space-y-5 lg:col-span-2">
+      {% if supports_zip %}
       <div class="card">
         <div class="card-header">
           <h2 class="text-sm font-semibold text-ink">Unggah Plugin (ZIP)</h2>
@@ -32,6 +33,7 @@
           field <code>slug</code> di <code>plugin.json</code>. Slug yang sudah ada akan ditolak.
         </p>
       </div>
+      {% endif %}
 
       {% for plugin in plugins %}
         <div class="card">

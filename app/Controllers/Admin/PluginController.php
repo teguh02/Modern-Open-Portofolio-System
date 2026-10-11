@@ -57,6 +57,7 @@ final class PluginController extends AdminController
             'zones' => HookZones::all(),
             'filled_zones' => HookZones::filled(),
             'load_errors' => $this->plugins->errors(),
+            'supports_zip' => class_exists(\ZipArchive::class),
         ]);
     }
 

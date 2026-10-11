@@ -147,7 +147,21 @@ final class PluginManager
             throw new \RuntimeException("Plugin '{$slug}' tidak ditemukan.");
         }
 
-        Paths::deleteTree((string) $plugin['path']);
+        $directory = (string) $plugin['path'];
+
+        if (!Paths::isInside($directory, $this->pluginsPath)) {
+            throw new \RuntimeException("Plugin '{$slug}' berada di luar folder plugins — tidak dihapus.");
+        }
+
+        // Defensive: never leave a deleted slug behind in the active list.
+        $this->settings->set('active_plugins', array_values(array_filter(
+            $this->activeSlugs(),
+            static fn (string $active): bool => $active !== $slug,
+        )));
+
+        $this->runUninstall($slug, $directory);
+
+        Paths::deleteTree($directory);
         $this->flush();
 
         Hook::doAction('plugin_deleted', $slug);
@@ -236,6 +250,28 @@ final class PluginManager
             $this->loaded[] = $slug;
         } catch (Throwable $e) {
             $this->errors[] = "Plugin '{$slug}' gagal dimuat: " . $e->getMessage();
+        }
+    }
+
+    /**
+     * Run the plugin's uninstall.php (WordPress parity: clean up options,
+     * tables, files). A failing uninstall is recorded in errors() but the
+     * delete proceeds anyway.
+     */
+    private function runUninstall(string $slug, string $directory): void
+    {
+        $uninstall = $directory . '/uninstall.php';
+
+        if (!is_file($uninstall)) {
+            return;
+        }
+
+        try {
+            (static function () use ($uninstall): void {
+                require $uninstall;
+            })();
+        } catch (Throwable $e) {
+            $this->errors[] = "Plugin '{$slug}': uninstall.php gagal dijalankan: " . $e->getMessage();
         }
     }
 

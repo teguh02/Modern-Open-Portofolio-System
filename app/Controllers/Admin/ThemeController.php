@@ -53,6 +53,7 @@ final class ThemeController extends AdminController
             'crumbs' => $this->crumbs('Themes'),
             'themes' => $themes,
             'active_slug' => $active,
+            'supports_zip' => class_exists(\ZipArchive::class),
         ]);
     }
 
