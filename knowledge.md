@@ -55,7 +55,7 @@ Note: when running Composer as root (containers), prefix with `COMPOSER_ALLOW_SU
 | Path | Contents |
 |---|---|
 | `public/` | **The only web-accessible folder.** `index.php` front controller, `.htaccess`, built assets. |
-| `app/Core/` | Kernel: `App`, `Container`, `Database`, `QueryBuilder`, `Schema`/`Blueprint`/`Migrator`, `Hook`, `Settings`, `Session`, `Csrf`, `Auth`, `View`, `Uploader`, `Validator`, `SectionRegistry`, `ThemeManager`, `PluginManager`, `Navigation`, `Backup`, `ErrorHandler`, `Str`, `Paths`, `Env`, `Config`. |
+| `app/Core/` | Kernel: `App`, `Container`, `Database`, `QueryBuilder`, `Schema`/`Blueprint`/`Migrator`, `Hook`, `Settings`, `Session`, `Csrf`, `Auth`, `View`, `Uploader`, `Validator`, `SectionRegistry`, `ThemeManager`, `PluginManager`, `AdminMenu`, `ZipInstaller`, `Navigation`, `Backup`, `ErrorHandler`, `Str`, `Paths`, `Env`, `Config`. |
 | `app/Controllers/` | Public + installer + auth controllers; `Controllers/Admin/` holds `ResourceController` (generic CRUD) and the per-resource subclasses. |
 | `app/Repositories/` | Data access. `Repository` base + one class per table. |
 | `app/Middleware/` | Session → Install gate → CSRF → Security headers (order matters, see gotchas). |
@@ -130,10 +130,22 @@ visibility and detail route.
   hand-polish prototype HTML. **If a prototype conflicts with a spec, the spec wins.**
 - Public labels are Indonesian; **admin UI is English** (see `docs/admin-ui.md`).
 - `.env` is gitignored; `config/config.php` reads it through `Mops\Core\Env`.
+- Activation/deactivation hooks are named `activate_{slug}` / `deactivate_{slug}` and only fire from
+  `PluginManager::activate()`/`deactivate()` — never `do_action()` them at boot.
+- Theme `functions.php` runs after `plugins_loaded` (before `after_setup_theme`) and only after the
+  site is installed (`isInstalled()`); load errors are collected in `ThemeManager::errors()` and shown
+  on `/admin/themes` via `load_errors`, never fatal (language-level fatals still abort,
+  WordPress-style).
+- Child themes: `templatePaths()` and the asset chain are child-first; `assertActivatable()` enforces
+  parent-exists and max 2 levels — call it after any programmatic theme install.
+- Zip installs extract under `storage/tmp/` first (structure + slug detection happen there, then one
+  atomic `rename()`); a half-finished install never lands in `plugins/`/`themes/`.
 
 ## Roadmap status
 
 0.1 (installer, auth, profile/experience/education/skills/certifications, projects, media, default
-theme, admin) · 0.2 blog · 0.3 themes · 0.4 plugins — all implemented. 1.0 backup/restore + security
-headers/CSP are implemented; **automatic updates** are not (no release server), and page-view analytics
-deliberately lives in the sample plugin rather than core.
+theme, admin) · 0.2 blog · 0.3 themes · 0.4 plugins — plugin manager + hooks, plus lifecycle hooks,
+`add_menu_page`, theme functions.php, child themes, zip install/delete (WordPress parity, spec
+`docs/superpowers/specs/2026-10-11-wordpress-parity-design.md`) — all implemented. 1.0
+backup/restore + security headers/CSP are implemented; **automatic updates** are not (no release
+server), and page-view analytics deliberately lives in the sample plugin rather than core.

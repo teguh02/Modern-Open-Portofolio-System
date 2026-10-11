@@ -13,6 +13,13 @@ pernah tahu plugin apa yang aktif.
 | `plugin_dir_url()` | `plugin_asset($slug, $path)` | aset plugin disajikan core dari `plugins/<slug>/assets/` |
 | `wp_head()` wajib di tema | `HookZones::REQUIRED_THEME_ZONES` | tema wajib mencetak zona inti, kalau tidak plugin "hilang" |
 | `wp_register_sidebar_widget` (widget area) | `home_before_sections` / `home_after_sections` | area bertema halaman, khusus homepage |
+| `register_activation_hook()` | `register_activation_hook(__FILE__, $cb)` | jalan sekali saat plugin diaktifkan |
+| `register_deactivation_hook()` | `register_deactivation_hook(__FILE__, $cb)` | jalan sekali saat dinonaktifkan |
+| `after_switch_theme` | `after_switch_theme` | nama hook sama; plus `theme_deactivated` |
+| `add_menu_page()` | `add_menu_page($slug, $title, $icon, $renderer)` | halaman admin milik plugin di `/admin/{slug}` (GET+POST) |
+| `functions.php` tema | `themes/<slug>/functions.php` | dimuat setelah `plugins_loaded`, sebelum `after_setup_theme` |
+| Child theme (`Template:`) | `theme.json` `"parent": "<slug>"` | fallback template + asset ke parent, maks 2 level |
+| Upload/hapus plugin & tema | form Upload + tombol Delete di `/admin/plugins`, `/admin/themes` | zip lokal, validasi di staging, `uninstall.php` dijalankan saat hapus |
 
 Sumber kebenaran daftar zona: `app/Core/HookZones.php`. Halaman `/admin/plugins` menampilkan daftar ini
 lengkap dengan posisi dan status "dipakai/kosong".
@@ -188,3 +195,140 @@ composer serve                # lalu buka /admin/plugins -> kartu "Injection Zon
 - Label publik berbahasa Indonesia, UI admin berbahasa Inggris (`docs/admin-ui.md`).
 - Fitur non-core (analitik, SEO, contact form, integrasi GitHub/Spotify, ekspor PDF/CV) memang tempatnya
   di plugin — bukan di core.
+
+## 11. Lifecycle hooks
+
+Callback hidup-mati per plugin, dengan urutan yang sama seperti WordPress. Daftarkan dari entry file:
+
+```php
+register_activation_hook(__FILE__, function (string $slug, array $manifest): void { /* ... */ });
+register_deactivation_hook(__FILE__, function (string $slug): void { /* ... */ });
+```
+
+Slug di-derive dari nama folder (`basename(dirname($file))`), jadi tak perlu ditulis manual. Helper
+membungkam dirinya sendiri bila folder itu tidak punya `plugin.json` (aman di-`require` di luar MOPS).
+Di balik layar helper hanya memanggil `add_action('activate_{slug}' | 'deactivate_{slug}', $cb)`.
+
+`PluginManager::activate($slug)` — urutan wajib:
+
+1. validasi manifest + `checkRequirements()`;
+2. tulis slug ke `active_plugins`;
+3. **load entry file** — supaya callback `register_*_hook` ikut terdaftar di request yang sama;
+4. `do_action('activate_{slug}', $slug, $manifest)`;
+5. `do_action('plugin_activated', $slug, $manifest)`.
+
+`PluginManager::deactivate($slug)` — urutan wajib:
+
+1. pastikan entry file termuat pada request ini (no-op bila plugin memang sudah aktif saat boot);
+2. `do_action('deactivate_{slug}', $slug)`;
+3. hapus slug dari `active_plugins`;
+4. `do_action('plugin_deactivated', $slug)`.
+
+Tema (`ThemeManager::activate()`): saat **benar-benar pindah** tema — `theme_deactivated($old)`,
+lalu `after_switch_theme($slug, $old, $theme)` (nama hook persis WP), diakhiri
+`theme_activated($slug, $theme)`. Aktivasi ulang tema yang sama hanya memicu `theme_activated`.
+
+Penting: hook hidup-mati hanya dipicu dari `PluginManager::activate()` / `deactivate()` (POST
+`/admin/plugins/{slug}/activate` dan `.../deactivate`) — **jangan pernah** memanggil
+`do_action('activate_…')` saat boot.
+
+## 12. Halaman settings plugin
+
+Satu halaman admin per plugin lewat `add_menu_page($slug, $title, $icon, $renderer)`. Route `GET`
+dan `POST` `/admin/{slug}` ada di dalam group `/admin`, jadi auth + CSRF sudah berlaku; `$renderer`
+menerima `ServerRequestInterface` dan mengembalikan body HTML — core membungkusnya dengan shell
+admin (`plugin-page.twig`).
+
+```php
+add_menu_page('cv-settings', 'CV Settings', 'document', function ($request): string {
+    if ($request->getMethod() === 'POST') {
+        mops(\Mops\Core\Settings::class)->set('cv_title', trim((string) ($_POST['cv_title'] ?? '')));
+
+        return '<div class="card card-body">Saved.</div>';
+    }
+
+    return mops(\Mops\Core\View::class)->render('cv-ats/settings.twig', [
+        'value' => setting('cv_title', ''),
+    ]);
+});
+```
+
+Aturan:
+
+- **Slug cadangan core** ditolak `add_menu_page()` (RuntimeException saat aktivasi): `login`,
+  `logout`, `profile`, `experiences`, `education`, `skills`, `certifications`, `awards`,
+  `projects`, `posts`, `media`, `settings`, `themes`, `plugins`, `backup`. Pola slug
+  `[a-z0-9][a-z0-9-]*`; slug yang kembar juga ditolak.
+- Form memakai `{{ csrf_field() }}`, dan **POST kembali ke URL yang sama** (`/admin/{slug}`) —
+  tidak perlu route khusus untuk menyimpan settings.
+- `setting()` hanya membaca; menulis lewat `mops(\Mops\Core\Settings::class)->set()`.
+- Daftarkan dari entry file plugin (hanya plugin **aktif** yang punya halaman). Nonaktifkan
+  plugin → halaman dan menunya hilang otomatis; slug yang tak terdaftar → 404.
+- Sidebar: halaman plugin muncul di grup `Plugins`; plugin bisa menata/menyisipkan item lewat
+  filter `admin_menu`.
+
+## 13. Tema: functions.php & child theme
+
+Urutan boot (`App::loadPlugins()`), mengikuti WordPress:
+
+1. `mops_before_plugins`
+2. entry file setiap plugin aktif
+3. `plugins_loaded`
+4. `ThemeManager::loadFunctions()` — `functions.php` tema aktif (child dulu, lalu parent)
+5. `do_action('after_setup_theme')`
+
+`functions.php` hanya dimuat setelah sistem terpasang (`isInstalled()`) dan sekali per request; di
+dalamnya hook API, `mops()`, `setting()`, `theme_asset()` tersedia. Error di-guard `try/catch` —
+dicatat di `ThemeManager::errors()` dan tampil di `/admin/themes` (field `load_errors`), bukan
+white-screen. Fatal di level bahasa (mis. mendeklarasi ulang fungsi) tetap menggugurkan request,
+seperti WordPress.
+
+Child theme = field `parent` di manifest tema:
+
+```json
+{ "name": "Teguh Custom", "parent": "vantablo", "version": "1.0.0" }
+```
+
+- **Template:** `templatePaths()` → `[child/templates, parent/templates]`; `templatePath()`
+  (string) tetap ada dan mengembalikan jalur pertama. `missing_templates` dihitung atas gabungan
+  child + parent, jadi child yang hanya meng-override `home.twig` tetap dianggap lengkap.
+- **Asset:** rantai child dulu, baru parent — `assetUrl()` dan `assetPath()` mengecek file di
+  child sebelum jatuh ke parent.
+- **Validasi:** `assertActivatable()` menuntut parent ada & lengkap, parent tidak punya parent
+  sendiri (maksimal 2 level), dan tidak ada lingkaran. Dipanggil otomatis oleh `activate()` dan
+  oleh upload zip.
+- Runtime: child yang kehilangan parent-nya jatuh ke tema default (`activeSlug()`), jadi situs
+  tidak pernah mati.
+
+## 14. Installer zip
+
+Form "Upload Plugin" di `/admin/plugins` (field `plugin_zip`) dan "Upload Theme" di
+`/admin/themes` (field `theme_zip`); tombol disembunyikan bila ekstensi `ZipArchive` tidak ada.
+Semua POST melewati CSRF middleware.
+
+Alur (`ZipInstaller::installUpload()` → `install()`):
+
+1. upload divalidasi (ekstensi `.zip` + MIME nyata via `Uploader::detectMime()`), disalin ke
+   `storage/tmp/upload-<rand>.zip`;
+2. ekstrak ke `storage/tmp/install-<rand>/` — tiap entry ditolak bila path absolut, mengandung
+   `..`, atau symlink (Zip Slip = `RuntimeException`);
+3. deteksi struktur: **satu folder di root** yang berisi `plugin.json`/`theme.json` → slug = nama
+   folder itu; selain itu (**zip datar**) manifest root **wajib punya field `"slug"`** yang valid;
+   slug yang sudah ada di `plugins/`/`themes/` → tolak;
+4. `rename()` atomik ke `plugins/<slug>` atau `themes/<slug>`; folder staging dibersihkan selalu
+   (`finally`), jadi instalasi setengah jadi tidak pernah mendarat di `plugins/`/`themes/`;
+5. **tema:** setelah pindah, controller memanggil `assertActivatable()` (template wajib + parent
+   sah); gagal → folder hasil install dihapus kembali (rollback), error muncul sebagai flash.
+
+Plugin tidak divalidasi lebih jauh saat install — file entry dicek saat aktivasi
+(`PluginManager::activate()` melempar "manifest atau file utama tidak ditemukan").
+
+**Hapus** (`POST /admin/plugins/{slug}/delete`, `POST /admin/themes/{slug}/delete`):
+
+- Plugin: wajib sudah nonaktif (melempar "masih aktif", seperti WP); `uninstall.php` (kalau ada)
+  dijalankan **sebelum** folder dihapus — errornya dicatat di `errors()`, penghapusan tetap lanjut;
+  guard `Paths::isInside` mencegah hapus di luar `plugins/`.
+- Tema: ditolak bila sedang aktif atau menjadi parent tema aktif; tidak ada `uninstall.php` untuk
+  tema.
+- Gagal install/hapus muncul sebagai flash message di halaman admin; `load_errors` di
+  `/admin/plugins` dan `/admin/themes` khusus error load (`functions.php` / entry file).

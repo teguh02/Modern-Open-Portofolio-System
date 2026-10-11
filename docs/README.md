@@ -59,6 +59,7 @@ Dibuat dengan workflow: prompt di `prototype/prompts/` → paste ke DeepSeek →
 - [x] MOPS 0.2: blog (index + detail, pagination 10/halaman, editor + media)
 - [x] MOPS 0.3: theme manager (dua tema bawaan, ganti tema tanpa kehilangan data)
 - [x] MOPS 0.4: plugin manager + hook/event API (+ plugin contoh `mops-analytics-lite`)
+- [x] WordPress parity: activation/deactivation hooks, `add_menu_page`, theme functions.php, child themes, zip installer + delete (spec: [2026-10-11](superpowers/specs/2026-10-11-wordpress-parity-design.md))
 - [x] 1.0 (sebagian): backup/restore, CSP + security headers. Auto-update belum ada (butuh release server).
 
 ## Aturan main
