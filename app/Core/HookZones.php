@@ -13,9 +13,8 @@ namespace Mops\Core;
  * `add_action('<zone>', fn () => ...)`. A plugin therefore never edits a theme
  * to place its output — it picks one of the available zones.
  *
- * Themes must print the `theme_*` and `main_*` zones (part of the theme
- * contract, exactly like `wp_head()` / `wp_footer()`), and may print the
- * `home_*` zones on the homepage.
+ * Themes must print the `theme_*`, `main_*`, and homepage `home_*` zones
+ * (part of the theme contract, exactly like `wp_head()` / `wp_footer()`).
  */
 final class HookZones
 {
@@ -88,6 +87,12 @@ final class HookZones
         'main_before_content',
         'main_after_content',
         'theme_footer',
+    ];
+
+    /** @var array<int, string> */
+    public const REQUIRED_HOME_ZONES = [
+        'home_before_sections',
+        'home_after_sections',
     ];
 
     /**

@@ -7,6 +7,7 @@ namespace Mops\Tests\Unit;
 use Mops\Core\Config;
 use Mops\Core\Database;
 use Mops\Core\Hook;
+use Mops\Core\HookZones;
 use Mops\Core\Paths;
 use Mops\Core\Settings;
 use Mops\Core\ThemeManager;
@@ -169,7 +170,15 @@ final class ChildThemeTest extends TestCase
             'name' => ucfirst($slug),
             'version' => '1.0.0',
         ], $extra)));
-        file_put_contents($dir . '/templates/layout.twig', 'x');
-        file_put_contents($dir . '/templates/home.twig', 'x');
+        file_put_contents($dir . '/templates/layout.twig', $this->zoneTemplate(HookZones::REQUIRED_THEME_ZONES));
+        file_put_contents($dir . '/templates/home.twig', $this->zoneTemplate(HookZones::REQUIRED_HOME_ZONES));
+    }
+
+    private function zoneTemplate(array $zones): string
+    {
+        return implode('', array_map(
+            static fn (string $zone): string => "{{ render_hook('{$zone}') }}",
+            $zones,
+        ));
     }
 }

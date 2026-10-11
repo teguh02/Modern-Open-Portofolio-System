@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Mops\Tests\Feature;
 
 use Mops\Core\Hook;
+use Mops\Core\HookZones;
 use Mops\Core\Paths;
 use Mops\Core\Settings;
 use Mops\Tests\ApplicationTestCase;
@@ -167,8 +168,8 @@ final class ExtensionParityTest extends ApplicationTestCase
         $this->assertStringContainsString('theme_zip', $this->body($this->get('/admin/themes')));
 
         $upload = $this->zipUpload('mops-e2e-theme', 'theme.json', ['name' => 'E2E'], [
-            'templates/layout.twig' => '<html>{% block content %}{% endblock %}</html>',
-            'templates/home.twig' => 'home',
+            'templates/layout.twig' => $this->zoneTemplate(HookZones::REQUIRED_THEME_ZONES),
+            'templates/home.twig' => $this->zoneTemplate(HookZones::REQUIRED_HOME_ZONES),
         ]);
 
         $response = $this->postUpload('/admin/themes/upload', [], ['theme_zip' => $upload]);
@@ -209,8 +210,8 @@ final class ExtensionParityTest extends ApplicationTestCase
                 'version' => '1.0.0',
                 'parent' => 'vantablo',
             ], [
-                'templates/layout.twig' => '<html>{% block content %}{% endblock %}</html>',
-                'templates/home.twig' => 'child home',
+                'templates/layout.twig' => $this->zoneTemplate(HookZones::REQUIRED_THEME_ZONES),
+                'templates/home.twig' => $this->zoneTemplate(HookZones::REQUIRED_HOME_ZONES),
             ]);
 
             $response = $this->postUpload('/admin/themes/upload', [], ['theme_zip' => $upload]);
@@ -266,6 +267,15 @@ final class ExtensionParityTest extends ApplicationTestCase
                 copy($item->getPathname(), $target);
             }
         }
+    }
+
+    /** A template body that prints the given injection zones. */
+    private function zoneTemplate(array $zones): string
+    {
+        return implode('', array_map(
+            static fn (string $zone): string => "{{ render_hook('{$zone}') }}",
+            $zones,
+        ));
     }
 
     /**

@@ -66,6 +66,7 @@ final class ThemeManager
                 ? "themes/{$slug}/screenshot.svg"
                 : null;
             $manifest['legacy'] = $this->hasLegacyPublicDir($directory);
+            $manifest['functions_exists'] = is_file($directory . '/functions.php');
 
             $themes[$slug] = $manifest;
         }
@@ -81,7 +82,8 @@ final class ThemeManager
             }
 
             $theme['missing_templates'] = $this->missingTemplatesIn($dirs);
-            $theme['valid'] = $theme['missing_templates'] === [];
+            $theme['missing_zones'] = $this->missingZonesIn($dirs);
+            $theme['valid'] = $theme['missing_templates'] === [] && $theme['missing_zones'] === [];
         }
         unset($theme);
 
@@ -189,8 +191,9 @@ final class ThemeManager
 
         if (($theme['valid'] ?? false) !== true) {
             $missing = implode(', ', (array) $theme['missing_templates']);
+            $zones = implode(', ', (array) ($theme['missing_zones'] ?? []));
 
-            throw new RuntimeException("Tema '{$slug}' tidak lengkap. Template hilang: {$missing}.");
+            throw new RuntimeException("Tema '{$slug}' tidak lengkap. Template hilang: {$missing}; zona injeksi hilang: {$zones}.");
         }
 
         $parentSlug = (string) ($theme['parent'] ?? '');
@@ -466,6 +469,44 @@ final class ThemeManager
 
             if (!$found) {
                 $missing[] = $template;
+            }
+        }
+
+        return $missing;
+    }
+
+    /**
+     * Zones the theme must print. A child inherits templates from its parent,
+     * so for each template the first file in the child-then-parent chain wins —
+     * the same order the Twig loader resolves.
+     *
+     * @param array<int, string> $directories
+     * @return array<int, string>
+     */
+    private function missingZonesIn(array $directories): array
+    {
+        $files = [
+            'layout.twig' => HookZones::REQUIRED_THEME_ZONES,
+            'home.twig' => HookZones::REQUIRED_HOME_ZONES,
+        ];
+        $missing = [];
+
+        foreach ($files as $template => $zones) {
+            $source = null;
+
+            foreach ($directories as $directory) {
+                $path = rtrim($directory, '/') . '/' . $template;
+
+                if (is_file($path)) {
+                    $source = (string) file_get_contents($path);
+                    break;
+                }
+            }
+
+            foreach ($zones as $zone) {
+                if ($source === null || !str_contains($source, "render_hook('{$zone}'")) {
+                    $missing[] = $zone;
+                }
             }
         }
 

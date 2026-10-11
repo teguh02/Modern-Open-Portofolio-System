@@ -71,8 +71,11 @@ Tema hanya render, tapi wajib mencetak zona inti (seperti tema WordPress wajib m
 </body>
 ```
 
-Zona wajib (dijaga `tests/Unit/HookZonesTest.php`, jadi tema yang lupa akan gagal build):
-`theme_head`, `theme_body_open`, `main_before_content`, `main_after_content`, `theme_footer`.
+Zona wajib (dijaga saat discovery/aktivasi dan oleh test): `theme_head`, `theme_body_open`,
+`main_before_content`, `main_after_content`, `theme_footer`, `home_before_sections`, dan
+`home_after_sections`. Tema yang tidak memenuhi kontrak tetap terlihat di admin, tetapi tidak dapat
+diaktifkan. Bila tema aktif hilang (foldernya tidak ada) atau induknya hilang, MOPS kembali ke tema
+valid bawaan.
 
 Tema boleh menambah zona sendiri (mis. `vantablo_hero_extra`) dengan `render_hook('<nama>')`; zona buatan
 tema tidak muncul di registry core, jadi dokumentasikan di tema tersebut. Tema **tidak** boleh menaruh
@@ -94,14 +97,16 @@ Urutan boot yang bisa diandalkan:
 1. `mops_before_plugins` — hook API sudah tersedia, plugin belum dimuat.
 2. entry file setiap plugin aktif di-`require` (di sini: `add_action`, `add_filter`).
 3. `plugins_loaded`
-4. core mendaftarkan route-nya, lalu `routes_registered` (plugin menambah route).
-5. core mendaftarkan **catch-all** `/ {path:.*}` paling akhir.
-6. per request render: zona injeksi + `page_viewed`.
+4. `functions.php` tema aktif dimuat, lalu `after_setup_theme`.
+5. core mendaftarkan route-nya, lalu `routes_registered` (plugin menambah route).
+6. core mendaftarkan **catch-all** `/ {path:.*}` paling akhir.
+7. per request render: zona injeksi + `page_viewed`.
 
 ## 4. Hook yang disediakan core
 
-Action: `mops_before_plugins`, `plugins_loaded`, `routes_registered`, `page_viewed`,
-`theme_activated`, `plugin_activated`, `plugin_deactivated`, `backup_created`, `backup_restored`,
+Action: `mops_before_plugins`, `plugins_loaded`, `after_setup_theme`, `routes_registered`, `page_viewed`,
+`theme_deactivated`, `theme_activated`, `plugin_activated`, `plugin_deactivated`, `backup_created`,
+`backup_restored`,
 event repository `<tabel>_created`, `<tabel>_updated`, `<tabel>_deleting`, `<tabel>_deleted`
 (mis. `posts_created`, `experiences_updated`).
 
@@ -201,9 +206,18 @@ composer serve                # lalu buka /admin/plugins -> kartu "Injection Zon
 Callback hidup-mati per plugin, dengan urutan yang sama seperti WordPress. Daftarkan dari entry file:
 
 ```php
-register_activation_hook(__FILE__, function (string $slug, array $manifest): void { /* ... */ });
-register_deactivation_hook(__FILE__, function (string $slug): void { /* ... */ });
+register_activation_hook(__FILE__, function (string $slug, array $manifest): void {
+    // Buat tabel/default milik plugin secara idempoten.
+});
+
+register_deactivation_hook(__FILE__, function (string $slug): void {
+    // Hentikan scheduler/cache sementara; jangan hapus data pengguna.
+});
 ```
+
+Folder plugin berarti **terpasang**, bukan otomatis aktif. Hanya slug di setting `active_plugins` yang
+dimuat, jadi admin bebas mengaktifkan sebagian plugin. Callback aktivasi hanya dijalankan sekali ketika
+status berubah dari nonaktif ke aktif, bukan pada setiap request.
 
 Slug di-derive dari nama folder (`basename(dirname($file))`), jadi tak perlu ditulis manual. Helper
 membungkam dirinya sendiri bila folder itu tidak punya `plugin.json` (aman di-`require` di luar MOPS).
@@ -224,9 +238,14 @@ Di balik layar helper hanya memanggil `add_action('activate_{slug}' | 'deactivat
 3. hapus slug dari `active_plugins`;
 4. `do_action('plugin_deactivated', $slug)`.
 
+Menghapus data permanen bukan tugas deaktivasi; `uninstall.php` (kalau ada) dijalankan saat plugin
+dihapus (§14).
+
 Tema (`ThemeManager::activate()`): saat **benar-benar pindah** tema — `theme_deactivated($old)`,
 lalu `after_switch_theme($slug, $old, $theme)` (nama hook persis WP), diakhiri
 `theme_activated($slug, $theme)`. Aktivasi ulang tema yang sama hanya memicu `theme_activated`.
+Tema mengikuti model WordPress: tepat satu tema aktif — tidak ada tombol "nonaktifkan tema";
+mengaktifkan tema lain otomatis mengganti tema lama.
 
 Penting: hook hidup-mati hanya dipicu dari `PluginManager::activate()` / `deactivate()` (POST
 `/admin/plugins/{slug}/activate` dan `.../deactivate`) — **jangan pernah** memanggil
