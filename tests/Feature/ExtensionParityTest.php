@@ -201,6 +201,8 @@ final class ExtensionParityTest extends ApplicationTestCase
             $switches[] = "{$old}->{$new}";
         });
 
+        $snapshot = $this->tempDir() . '/vantablo-snapshot';
+
         try {
             $upload = $this->zipUpload($child, 'theme.json', [
                 'name' => 'E2E Child',
@@ -225,6 +227,10 @@ final class ExtensionParityTest extends ApplicationTestCase
             $this->assertDirectoryExists($childDir, 'Tema aktif tidak boleh bisa dihapus.');
 
             // Nor can the parent of the active child — deleting it breaks the child.
+            // Snapshot the git-tracked fixture first: if the guard ever regresses,
+            // the finally below restores it so a failing run never dirties the tree.
+            $this->copyTree($parentDir, $snapshot);
+
             $this->post('/admin/themes/vantablo/delete', []);
             $this->assertDirectoryExists($parentDir, 'Induk tema aktif tidak boleh bisa dihapus.');
 
@@ -235,7 +241,30 @@ final class ExtensionParityTest extends ApplicationTestCase
             $this->post('/admin/themes/' . $child . '/delete', []);
             $this->assertDirectoryDoesNotExist($childDir);
         } finally {
+            if (!is_dir($parentDir) && is_dir($snapshot)) {
+                $this->copyTree($snapshot, $parentDir);
+            }
+
             Paths::deleteTree($childDir);
+        }
+    }
+
+    private function copyTree(string $from, string $to): void
+    {
+        Paths::ensure($to);
+        $iterator = new \RecursiveIteratorIterator(
+            new \RecursiveDirectoryIterator($from, \FilesystemIterator::SKIP_DOTS),
+            \RecursiveIteratorIterator::SELF_FIRST
+        );
+
+        foreach ($iterator as $item) {
+            $target = $to . '/' . $iterator->getSubPathname();
+
+            if ($item->isDir()) {
+                Paths::ensure($target);
+            } else {
+                copy($item->getPathname(), $target);
+            }
         }
     }
 
