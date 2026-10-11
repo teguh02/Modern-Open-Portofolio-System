@@ -216,6 +216,10 @@ final class App
             $c->get(Settings::class),
         ));
 
+        $container->set(ZipInstaller::class, fn (): ZipInstaller => new ZipInstaller(
+            Paths::ensure(Paths::make('storage/tmp')),
+        ));
+
         $container->bind(View::class);
         $container->bind(AdminAuthMiddleware::class);
 
