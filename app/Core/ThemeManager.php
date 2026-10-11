@@ -18,7 +18,7 @@ final class ThemeManager
 
     private ?string $active = null;
 
-    /** @var array<int, string> */
+    /** @var array<int, true> */
     private array $functionsLoaded = [];
 
     /** @var array<int, string> */
@@ -211,8 +211,10 @@ final class ThemeManager
 
     /**
      * Require functions.php of the active theme and its parent (WordPress
-     * order: child first). Runs once per request; a broken theme is recorded,
-     * never fatal.
+     * order: child first). Runs once per request. Throwables, including
+     * ParseError, from functions.php are caught and recorded in errors();
+     * language-level fatals (e.g. redeclaring a defined function) still
+     * abort, matching WordPress.
      */
     public function loadFunctions(): void
     {
